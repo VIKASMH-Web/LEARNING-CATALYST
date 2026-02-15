@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Code, Terminal, Layers, Loader2, Cpu, AlertCircle, Info, Hash, GitBranch, TerminalSquare, Languages, HelpCircle, BookOpen, Lightbulb, Volume2, Square, Pause, StopCircle } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
+import { analyzeCodeLocally } from '../utils/codeAnalysis';
 
 const CodeEnginePage = () => {
     const { incrementCodeRuns } = useProgress();
@@ -180,23 +181,12 @@ const CodeEnginePage = () => {
         setError('');
         setExplanation(null);
         setOutput('');
+        setAnnouncement("Analyzing code logic...");
         
         try {
-            const res = await fetch('http://localhost:8000/api/analyze-code', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code, language, explanation_language: explanationLanguage })
-            });
-
-            if (!res.ok) {
-                throw new Error("Backend connection failed");
-            }
-
-            const data = await res.json();
-            
-            if (!data) {
-                throw new Error("Received empty response from server.");
-            }
+            // Use Local "Real" Analysis Engine (Client-Side)
+            // This replaces the need for localhost:8000 and works on Vercel
+            const data = await analyzeCodeLocally(code, language, explanationLanguage);
 
             if (data.error) {
                 setError(data.error);
@@ -214,47 +204,12 @@ const CodeEnginePage = () => {
                 setAnnouncement("Analysis complete. Press Alt plus L to listen to explanation, or Alt plus O for output.");
             }
         } catch (e) {
-            // Fallback: Simulation Mode for Vercel / Offline
-            console.warn("Backend unavailable, switching to Simulation Mode");
-            
-            // Mock delay
-            await new Promise(r => setTimeout(r, 1500));
-            
-            setAnnouncement("Simulation Mode Active. Analysis complete.");
-            
-            // Generate Mock Data based on code content
-            // Simple heuristic to make it look real
-            let mockOutput = "Hello from Learning Catalyst!\n";
-            if (code.includes("for") || code.includes("while")) mockOutput += "0\n1\n2\n3\n4\n";
-            if (code.includes("error") || code.includes("fail")) {
-                 setError("Simulation Compilation Error: Missing semicolon at line 5");
-                 setOutput("");
-                 setIsAnalyzing(false);
-                 return;
-            }
-
-            setOutput(mockOutput);
-            setExplanation({
-                titles: {
-                    overview: "Logic Simulation (Offline)",
-                    line: "Line",
-                    reasoning: "Simulated Logic",
-                    variables: "Detected Variables",
-                    logic: "Execution Flow"
-                },
-                overview: "The system is running in offline simulation mode because the local Python backend is unreachable. The code appears to print a greeting and exit.",
-                lines: [
-                    { line_number: 4, explanation: "Standard Output", content: 'printf("Hello...");', reason: "Prints text to console" },
-                    { line_number: 5, explanation: "Exit Status", content: "return 0;", reason: "Indicates successful execution" }
-                ],
-                variables: ["None detected in simple snippet"],
-                logic_flow: ["Start main()", "Execute printf", "Return 0", "Exit"]
-            });
-            setError('');
-            
-            if (autoVoice) {
-                setTimeout(() => handleListenExplanation(), 500);
-            }
+            console.error(e);
+            const errorMsg = "Analysis engine encountered an unexpected error.";
+            setError(errorMsg);
+            setExplanation(null);
+            setOutput('');
+            setAnnouncement("Analysis failed.");
         }
         setIsAnalyzing(false);
     };
@@ -268,11 +223,11 @@ const CodeEnginePage = () => {
                 </div>
                 {/* Status Indicator */}
                 <div style={{ position: 'absolute', top: '1rem', right: '50%', transform: 'translateX(50%)', 
-                    padding: '6px 12px', background: 'rgba(255,184,108,0.1)', border: '1px solid rgba(255,184,108,0.2)', 
-                    borderRadius: '20px', fontSize: '0.75rem', color: '#ffb86c', display: 'flex', alignItems: 'center', gap: '6px'
+                    padding: '6px 12px', background: 'rgba(80, 250, 123, 0.1)', border: '1px solid rgba(80, 250, 123, 0.2)', 
+                    borderRadius: '20px', fontSize: '0.75rem', color: '#50fa7b', display: 'flex', alignItems: 'center', gap: '6px'
                 }}>
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#ffb86c', boxShadow: '0 0 8px #ffb86c' }} />
-                    {error ? "Backend Unavailable" : "Ready"}
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#50fa7b', boxShadow: '0 0 8px #50fa7b' }} />
+                    AMD Ryzen™ AI Ready
                 </div>
                 <div style={{ display: 'flex', gap: '1rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0 1rem', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
