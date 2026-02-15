@@ -25,11 +25,11 @@
   /* --- Semantic Variables (Theme Aware) --- */
   
   /* Backgrounds */
-  --bg-primary: #09090b;   /* Deepest background */
-  --bg-secondary: #121214; /* Sidebar / Secondary */
-  --bg-card: #18181b;      /* Cards */
-  --bg-card-hover: #27272a;
-  --bg-elevated: #27272a;  /* Modals / Dropdowns */
+  --bg-primary: #060612;   /* Deep indigo-tinted background */
+  --bg-secondary: #0c0c1d; /* Sidebar / Secondary */
+  --bg-card: #12122a;      /* Cards — subtle indigo tint */
+  --bg-card-hover: #1a1a3a;
+  --bg-elevated: #1e1e3a;  /* Modals / Dropdowns */
   
   /* Text */
   --text-primary: #f4f4f5;
@@ -38,8 +38,8 @@
   --text-inverse: #09090b;
 
   /* Borders */
-  --border-color: #27272a;
-  --border-hover: #3f3f46;
+  --border-color: #1e1e3e;
+  --border-hover: #2e2e55;
 
   /* Accent */
   --accent-color: #7c3aed;

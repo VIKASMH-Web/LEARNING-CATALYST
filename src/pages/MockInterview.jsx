@@ -1,28 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useProgress } from '../context/ProgressContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, Video, Camera, Clock, CheckCircle, Play, Share, HelpCircle, AlertTriangle, Monitor, Volume2, X } from 'lucide-react';
+import { Mic, Video, Camera, Clock, CheckCircle, Play, Share, HelpCircle, AlertTriangle, Monitor, Volume2, X, Sparkles, ArrowRight, Brain, Eye, MessageCircle, BarChart3, Zap, Target } from 'lucide-react';
 
 const MockInterview = () => {
     const { interviewHistory, addInterviewSession, careerProfile } = useProgress();
-    const [view, setView] = useState('lobby'); // lobby, permission, interview, feedback
+    const [view, setView] = useState('lobby');
     const [stream, setStream] = useState(null);
     const videoRef = useRef(null);
-    const [timeLeft, setTimeLeft] = useState(45); // Set shorter time for demo
+    const [timeLeft, setTimeLeft] = useState(45);
     const [isRecording, setIsRecording] = useState(false);
-    const [activeMessage, setActiveMessage] = useState(null);
 
-    // Mock Real-Time Feedback Data
     const feedbackMetrics = [
-        { label: 'Body Language', status: 'Good', color: '#50fa7b', sub: 'Maintain Eye Contact' },
-        { label: 'Speaking Pace', status: 'A bit fast', color: '#ffb86c', sub: '160 wpm' },
-        { label: 'Clarity', status: 'Excellent', color: '#50fa7b', sub: 'Articulation' }
+        { label: 'Body Language', status: 'Good', color: '#50fa7b', sub: 'Maintain Eye Contact', icon: Eye },
+        { label: 'Pace', status: 'A bit fast', color: '#ffb86c', sub: 'Speaking Speed', icon: BarChart3 },
+        { label: 'Clarity', status: 'Excellent', color: '#50fa7b', sub: 'Articulation', icon: MessageCircle }
     ];
 
     const currentQuestion = "How would you handle a situation where a critical production bug is found 10 minutes before a major feature launch? Walk me through your decision-making process.";
 
+    const features = [
+        { icon: Eye, title: 'Body Language Analysis', desc: 'AI tracks eye contact, posture and facial expressions in real-time' },
+        { icon: MessageCircle, title: 'Speech Analysis', desc: 'Monitors pace, clarity, filler words and articulation quality' },
+        { icon: Brain, title: 'Answer Intelligence', desc: 'Evaluates answer structure using STAR method and relevance scoring' },
+        { icon: BarChart3, title: 'Performance Report', desc: 'Detailed post-session analytics with improvement suggestions' },
+    ];
+
     const startSession = () => setView('permission');
-    
+
     const requestPermissions = async () => {
         try {
             const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -47,68 +52,224 @@ const MockInterview = () => {
         }
     }, [view, stream]);
 
-    // --- RENDER ---
+    // =======================
+    // LOBBY VIEW — Premium
+    // =======================
     if (view === 'lobby') {
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '2rem' }}>
-                <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                        <h1 className="h2">AI Interview Coach</h1>
-                        <p className="body-sm">Behavioral and Technical practice with real-time feedback.</p>
-                    </div>
-                     <button onClick={startSession} className="btn btn-primary" style={{ padding: '0.75rem 1.5rem', borderRadius: '20px' }}>
-                        Start Mock Interview
-                    </button>
-                </header>
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
+            >
+                {/* Hero Section */}
+                <div style={{
+                    position: 'relative', overflow: 'hidden',
+                    padding: '3rem', borderRadius: '24px',
+                    background: 'linear-gradient(135deg, rgba(79,70,229,0.15) 0%, rgba(124,58,237,0.08) 50%, rgba(15,15,30,0.9) 100%)',
+                    border: '1px solid rgba(124,58,237,0.15)'
+                }}>
+                    {/* Background orb */}
+                    <div style={{
+                        position: 'absolute', top: '-60px', right: '-40px',
+                        width: '300px', height: '300px', borderRadius: '50%',
+                        background: 'radial-gradient(circle, rgba(124,58,237,0.2), transparent 70%)',
+                        pointerEvents: 'none'
+                    }} />
+                    <div style={{
+                        position: 'absolute', bottom: '-80px', left: '20%',
+                        width: '250px', height: '250px', borderRadius: '50%',
+                        background: 'radial-gradient(circle, rgba(79,70,229,0.12), transparent 70%)',
+                        pointerEvents: 'none'
+                    }} />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', height: '100%' }}>
-                     {/* Empty State / Previous Sessions */}
-                     <div className="glass-card" style={{ gridColumn: 'span 3', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '400px', border: '2px dashed var(--border-color)', background: 'transparent' }}>
-                        <div style={{ width: 80, height: 80, background: 'var(--bg-elevated)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
-                            <Video size={40} color="var(--accent-color)" />
+                    <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem' }}>
+                        <div style={{ maxWidth: '600px' }}>
+                            <div style={{
+                                display: 'inline-flex', alignItems: 'center', gap: '6px',
+                                padding: '6px 14px', background: 'rgba(124,58,237,0.2)',
+                                borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700,
+                                color: '#a78bfa', marginBottom: '1rem', letterSpacing: '0.05em'
+                            }}>
+                                <Sparkles size={12} />
+                                AI-POWERED
+                            </div>
+                            <h1 style={{ 
+                                fontSize: '2.5rem', fontWeight: 800, color: '#f4f4f5', 
+                                margin: '0 0 0.75rem 0', letterSpacing: '-0.03em', lineHeight: 1.15 
+                            }}>
+                                AI Interview Coach
+                            </h1>
+                            <p style={{ 
+                                fontSize: '1rem', color: '#a1a1aa', lineHeight: 1.6, margin: 0 
+                            }}>
+                                Practice behavioral and technical interviews with real-time AI feedback on body language, speech clarity, and answer quality.
+                            </p>
+                            <button 
+                                onClick={startSession} 
+                                style={{
+                                    marginTop: '1.5rem', padding: '0.875rem 2rem',
+                                    background: '#7c3aed', color: 'white', border: 'none',
+                                    borderRadius: '14px', fontSize: '0.95rem', fontWeight: 700,
+                                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px',
+                                    boxShadow: '0 0 30px rgba(124,58,237,0.3)',
+                                    transition: 'all 0.2s ease'
+                                }}
+                            >
+                                <Play size={18} fill="white" />
+                                Start Mock Interview
+                            </button>
                         </div>
-                        <h3 className="h3" style={{ marginBottom: '0.5rem' }}>Ready to Practice?</h3>
-                        <p className="body-sm" style={{ maxWidth: '400px', textAlign: 'center', marginBottom: '2rem' }}>
-                            Our AI analyzes your facial expressions, voice tonality, and answer quality in real-time.
-                        </p>
-                     </div>
+
+                        {/* Preview mockup */}
+                        <div style={{
+                            width: '280px', height: '200px', borderRadius: '16px',
+                            background: 'linear-gradient(145deg, rgba(30,30,60,0.8), rgba(15,15,30,0.9))',
+                            border: '1px solid rgba(255,255,255,0.06)',
+                            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                            position: 'relative', overflow: 'hidden'
+                        }}>
+                            <div style={{
+                                width: '64px', height: '64px', borderRadius: '50%',
+                                background: 'rgba(124,58,237,0.15)', border: '2px solid rgba(124,58,237,0.3)',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem'
+                            }}>
+                                <Video size={28} color="#a78bfa" />
+                            </div>
+                            <div style={{ fontSize: '0.8rem', color: '#71717a', fontWeight: 600 }}>Camera Preview</div>
+                            {/* Glassmorphic controls mockup */}
+                            <div style={{
+                                position: 'absolute', bottom: '12px', left: '50%', transform: 'translateX(-50%)',
+                                display: 'flex', gap: '8px', padding: '6px 12px',
+                                background: 'rgba(255,255,255,0.06)', borderRadius: '20px',
+                                backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.08)'
+                            }}>
+                                <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Mic size={12} color="#71717a" />
+                                </div>
+                                <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Video size={12} color="#71717a" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                {/* Features Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+                    {features.map((f, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 + i * 0.1 }}
+                            style={{
+                                padding: '1.5rem', borderRadius: '18px',
+                                background: 'var(--bg-card)', border: '1px solid var(--border-color)',
+                                cursor: 'default', transition: 'border-color 0.2s, transform 0.2s'
+                            }}
+                        >
+                            <div style={{
+                                width: 40, height: 40, borderRadius: '12px',
+                                background: 'rgba(124,58,237,0.12)',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem'
+                            }}>
+                                <f.icon size={20} color="#a78bfa" />
+                            </div>
+                            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.4rem' }}>{f.title}</h3>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>{f.desc}</p>
+                        </motion.div>
+                    ))}
+                </div>
+
+                {/* Recent Sessions placeholder */}
+                <div style={{
+                    padding: '2rem', borderRadius: '18px',
+                    background: 'var(--bg-card)', border: '1px solid var(--border-color)',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                    minHeight: '180px'
+                }}>
+                    <div style={{
+                        width: 56, height: 56, borderRadius: '50%',
+                        background: 'rgba(124,58,237,0.08)', border: '2px dashed rgba(124,58,237,0.2)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem'
+                    }}>
+                        <Target size={24} color="#7c3aed" />
+                    </div>
+                    <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>No Sessions Yet</h3>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', textAlign: 'center', maxWidth: '400px', margin: 0 }}>
+                        Start your first mock interview to receive AI-powered feedback and build your interview skills.
+                    </p>
+                </div>
+            </motion.div>
+        );
+    }
+
+    // =======================
+    // PERMISSION VIEW
+    // =======================
+    if (view === 'permission') {
+        return (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    style={{
+                        padding: '3rem', textAlign: 'center', maxWidth: '480px',
+                        borderRadius: '24px', background: 'var(--bg-card)',
+                        border: '1px solid var(--border-color)'
+                    }}
+                >
+                    <div style={{
+                        width: 72, height: 72, borderRadius: '50%',
+                        background: 'rgba(124,58,237,0.12)', border: '2px solid rgba(124,58,237,0.2)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        margin: '0 auto 1.5rem'
+                    }}>
+                        <Camera size={32} color="#a78bfa" />
+                    </div>
+                    <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#f4f4f5', marginBottom: '0.75rem' }}>Camera Access Required</h2>
+                    <p style={{ fontSize: '0.9rem', color: '#a1a1aa', lineHeight: 1.6, marginBottom: '2rem' }}>
+                        To provide real-time body language analysis, we need access to your webcam and microphone. Data is processed locally.
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        <button onClick={requestPermissions} style={{
+                            width: '100%', padding: '0.875rem', background: '#7c3aed', color: 'white',
+                            border: 'none', borderRadius: '14px', fontSize: '0.95rem', fontWeight: 700,
+                            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                            boxShadow: '0 0 20px rgba(124,58,237,0.25)'
+                        }}>
+                            <Camera size={18} />
+                            Enable Camera & Start
+                        </button>
+                        <button onClick={() => setView('lobby')} style={{
+                            width: '100%', padding: '0.75rem', background: 'transparent',
+                            color: '#71717a', border: '1px solid var(--border-color)',
+                            borderRadius: '14px', fontSize: '0.9rem', fontWeight: 600,
+                            cursor: 'pointer'
+                        }}>
+                            Cancel
+                        </button>
+                    </div>
+                </motion.div>
             </div>
         );
     }
 
-    if (view === 'permission') {
-         return (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                <div className="glass-card" style={{ padding: '3rem', textAlign: 'center', maxWidth: '480px' }}>
-                    <div style={{ width: 64, height: 64, background: 'var(--bg-elevated)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
-                        <Camera size={32} color="var(--accent-color)" />
-                    </div>
-                    <h2 className="h2" style={{ marginBottom: '1rem' }}>Camera Access Required</h2>
-                    <p className="body-sm" style={{ marginBottom: '2rem' }}>
-                        To provide real-time body language analysis, we need access to your webcam and microphone. Data is processed locally.
-                    </p>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                        <button onClick={requestPermissions} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
-                            Enable Camera & Start
-                        </button>
-                        <button onClick={() => setView('lobby')} className="btn btn-ghost" style={{ width: '100%', justifyContent: 'center' }}>
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            </div>
-         );
-    }
-
+    // =======================
+    // INTERVIEW VIEW — Matching Figma
+    // =======================
     if (view === 'interview') {
         return (
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: '1.5rem', height: '100%' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: '1.5rem', height: 'calc(100vh - 140px)' }}>
                 
                 {/* Main Video Stage */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', height: '100%' }}>
-                    <div className="glass-card" style={{ flex: 1, padding: 0, overflow: 'hidden', position: 'relative', background: 'black', border: 'none' }}>
-                        
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div style={{
+                        flex: 1, padding: 0, overflow: 'hidden', position: 'relative',
+                        background: '#0a0a0f', borderRadius: '20px',
+                        border: '1px solid rgba(255,255,255,0.06)'
+                    }}>
                         {/* Video Feed */}
                         <video 
                             ref={videoRef} 
@@ -117,52 +278,71 @@ const MockInterview = () => {
                             style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }} 
                         />
                         
-                        {/* Status Overlay */}
-                        <div style={{ position: 'absolute', top: 20, left: 20, display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', background: 'rgba(0,0,0,0.6)', borderRadius: '20px', backdropFilter: 'blur(4px)' }}>
-                            <div style={{ width: 8, height: 8, background: '#50fa7b', borderRadius: '50%', boxShadow: '0 0 10px #50fa7b' }} />
-                            <span style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px' }}>AI ACTIVE</span>
-                        </div>
-
-                         <div style={{ position: 'absolute', top: 20, left: 120, display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', background: 'rgba(0,0,0,0.6)', borderRadius: '20px', backdropFilter: 'blur(4px)' }}>
-                             <div style={{ display: 'flex', gap: '2px', height: '10px', alignItems: 'flex-end' }}>
-                                 {[1,2,3,4,3,2,1].map((h, i) => (
-                                     <motion.div 
+                        {/* AI Active Badge */}
+                        <div style={{
+                            position: 'absolute', top: 20, left: 20,
+                            display: 'flex', alignItems: 'center', gap: '8px',
+                            padding: '8px 14px', background: 'rgba(0,0,0,0.7)',
+                            borderRadius: '20px', backdropFilter: 'blur(8px)',
+                            border: '1px solid rgba(255,255,255,0.08)'
+                        }}>
+                            <div style={{ display: 'flex', gap: '2px', height: '12px', alignItems: 'flex-end' }}>
+                                {[1,2,3,4,3,2,1].map((h, i) => (
+                                    <motion.div 
                                         key={i} 
-                                        animate={{ height: [4, 10, 4] }} 
-                                        transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.1 }}
-                                        style={{ width: 2, background: 'white', borderRadius: 1 }} 
-                                     />
-                                 ))}
-                             </div>
-                            <span style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px' }}>LISTENING</span>
+                                        animate={{ height: [3, 12, 3] }} 
+                                        transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.08 }}
+                                        style={{ width: 2, background: '#a78bfa', borderRadius: 1 }} 
+                                    />
+                                ))}
+                            </div>
+                            <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', color: '#e4e4e7' }}>AI IS LISTENING</span>
                         </div>
 
-                        {/* Controls Overlay */}
-                        <div style={{ position: 'absolute', bottom: 30, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '1rem' }}>
-                            <button className="btn btn-secondary" style={{ borderRadius: '50%', width: 50, height: 50, padding: 0, justifyContent: 'center', background: 'rgba(255,255,255,0.2)', color: 'white' }}>
-                                <Mic size={20} />
-                            </button>
-                            <button className="btn btn-secondary" style={{ borderRadius: '50%', width: 50, height: 50, padding: 0, justifyContent: 'center', background: 'rgba(255,255,255,0.2)', color: 'white' }}>
-                                <Video size={20} />
-                            </button>
-                            <button onClick={endSession} className="btn btn-primary" style={{ borderRadius: '30px', padding: '0 2rem', background: '#ff5555', border: 'none' }}>
-                                End Interview
-                            </button>
-                             <button className="btn btn-secondary" style={{ borderRadius: '50%', width: 50, height: 50, padding: 0, justifyContent: 'center', background: 'rgba(255,255,255,0.2)', color: 'white' }}>
-                                <Share size={20} />
+                        {/* Glassmorphic Controls Bar */}
+                        <div style={{
+                            position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+                            display: 'flex', gap: '0.75rem', alignItems: 'center',
+                            padding: '10px 20px', borderRadius: '50px',
+                            background: 'rgba(255,255,255,0.06)',
+                            backdropFilter: 'blur(16px)',
+                            border: '1px solid rgba(255,255,255,0.1)'
+                        }}>
+                            <ControlBtn icon={<Mic size={18} />} />
+                            <ControlBtn icon={<Video size={18} />} />
+                            <button onClick={endSession} style={{
+                                padding: '10px 24px', borderRadius: '30px',
+                                background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)',
+                                color: 'white', fontSize: '0.8rem', fontWeight: 700,
+                                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px',
+                                letterSpacing: '0.02em'
+                            }}>
+                                <Monitor size={14} />
+                                Share Screen
                             </button>
                         </div>
                     </div>
 
                     {/* Question Card */}
-                    <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', alignItems: 'start', gap: '1rem', background: 'var(--bg-elevated)', borderLeft: '4px solid var(--accent-color)' }}>
-                        <div style={{ width: 32, height: 32, background: 'var(--accent-color)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                            <HelpCircle size={18} color="white" />
+                    <div style={{
+                        padding: '1.5rem 2rem', borderRadius: '18px',
+                        background: 'var(--bg-card)', border: '1px solid var(--border-color)',
+                        display: 'flex', alignItems: 'start', gap: '1rem'
+                    }}>
+                        <div style={{
+                            width: 36, height: 36, borderRadius: '50%',
+                            background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(124,58,237,0.25)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                        }}>
+                            <HelpCircle size={18} color="#a78bfa" />
                         </div>
                         <div>
-                            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Interviewer Question:</div>
-                            <div style={{ fontSize: '1.1rem', fontWeight: 600, lineHeight: 1.4 }}>"{currentQuestion}"</div>
-                            <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.5rem', fontStyle: 'italic' }}>Thinking time suggestions: Take 15-30 seconds to structure your answer.</div>
+                            <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#71717a', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>
+                                Interviewer Question:
+                            </div>
+                            <div style={{ fontSize: '1.1rem', fontWeight: 500, lineHeight: 1.5, color: '#d4d4d8', fontStyle: 'italic' }}>
+                                "{currentQuestion}"
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -171,64 +351,131 @@ const MockInterview = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     
                     {/* Live Metrics */}
-                    <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <AlertTriangle size={16} color="#ffb86c" />
-                            <h3 style={{ fontSize: '0.9rem', fontWeight: 700, textTransform: 'uppercase' }}>Live Feedback</h3>
-                        </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            {feedbackMetrics.map((m, i) => (
-                                <div key={i} style={{ padding: '1rem', background: 'var(--bg-primary)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '4px' }}>{m.label}</div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{m.sub}</span>
-                                        <span style={{ fontSize: '0.8rem', color: m.color, fontWeight: 700 }}>{m.status}</span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    {feedbackMetrics.map((m, i) => (
+                        <motion.div 
+                            key={i}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: i * 0.15 }}
+                            style={{
+                                padding: '1.25rem 1.5rem', borderRadius: '18px',
+                                background: 'var(--bg-card)', border: '1px solid var(--border-color)'
+                            }}
+                        >
+                            <div style={{ fontSize: '0.65rem', color: '#71717a', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem', fontWeight: 700 }}>
+                                {m.label}
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontWeight: 700, fontSize: '1rem', color: '#e4e4e7' }}>{m.sub}</span>
+                                <span style={{ fontSize: '0.85rem', color: m.color, fontWeight: 700 }}>{m.status}</span>
+                            </div>
+                        </motion.div>
+                    ))}
 
                     {/* Recommended Prep */}
-                    <div className="glass-card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', border: 'none', color: 'white' }}>
-                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
-                            <Monitor size={16} />
-                            <h3 style={{ fontSize: '0.9rem', fontWeight: 700, textTransform: 'uppercase' }}>Recommended Prep</h3>
+                    <div style={{
+                        padding: '1.5rem', borderRadius: '18px',
+                        background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+                        border: 'none', color: 'white', marginTop: 'auto'
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.75rem' }}>
+                            <BarChart3 size={16} />
+                            <h3 style={{ fontSize: '0.95rem', fontWeight: 800 }}>Recommended Prep</h3>
                         </div>
-                        <p style={{ fontSize: '0.85rem', lineHeight: 1.5, opacity: 0.9, marginBottom: '1rem' }}>
+                        <p style={{ fontSize: '0.85rem', lineHeight: 1.5, opacity: 0.9, marginBottom: '1rem', margin: '0 0 1rem 0' }}>
                             Based on your previous sessions, you should review the "STAR Method" for behavioral questions.
                         </p>
-                        <button style={{ width: '100%', padding: '0.5rem', background: 'white', color: '#4f46e5', border: 'none', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                            Open Resource <Share size={12} />
+                        <button style={{
+                            width: '100%', padding: '0.625rem',
+                            background: 'rgba(255,255,255,0.2)', color: 'white',
+                            border: '1px solid rgba(255,255,255,0.3)',
+                            borderRadius: '12px', fontSize: '0.85rem', fontWeight: 700,
+                            cursor: 'pointer', display: 'flex', alignItems: 'center',
+                            justifyContent: 'center', gap: '6px',
+                            backdropFilter: 'blur(4px)'
+                        }}>
+                            Open Resource <ArrowRight size={14} />
                         </button>
                     </div>
-
                 </div>
             </div>
         );
     }
 
+    // =======================
+    // FEEDBACK VIEW
+    // =======================
     if (view === 'feedback') {
         return (
             <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div className="glass-card" style={{ textAlign: 'center', padding: '3rem', maxWidth: '500px' }}>
-                    <div style={{ width: 80, height: 80, background: '#50fa7b', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', boxShadow: '0 0 20px rgba(80, 250, 123, 0.4)' }}>
-                        <CheckCircle size={40} color="#000" />
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    style={{
+                        textAlign: 'center', padding: '3rem', maxWidth: '500px',
+                        borderRadius: '24px', background: 'var(--bg-card)',
+                        border: '1px solid var(--border-color)'
+                    }}
+                >
+                    <div style={{
+                        width: 80, height: 80, borderRadius: '50%',
+                        background: 'rgba(80,250,123,0.15)', border: '2px solid rgba(80,250,123,0.3)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        margin: '0 auto 1.5rem',
+                        boxShadow: '0 0 30px rgba(80, 250, 123, 0.15)'
+                    }}>
+                        <CheckCircle size={40} color="#50fa7b" />
                     </div>
-                    <h2 className="h2" style={{ marginBottom: '0.5rem' }}>Interview Complete</h2>
-                    <p className="body-sm" style={{ marginBottom: '2rem' }}>
+                    <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f4f4f5', marginBottom: '0.5rem' }}>Interview Complete</h2>
+                    <p style={{ fontSize: '0.9rem', color: '#a1a1aa', lineHeight: 1.6, marginBottom: '2rem' }}>
                         Your session has been recorded. AI is generating a detailed analysis of your performance.
                     </p>
-                    <button onClick={() => setView('lobby')} className="btn btn-secondary">
+
+                    {/* Mock Score Cards */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem', marginBottom: '2rem' }}>
+                        {[
+                            { label: 'Eye Contact', score: '87%', color: '#50fa7b' },
+                            { label: 'Clarity', score: '92%', color: '#50fa7b' },
+                            { label: 'Pacing', score: '74%', color: '#ffb86c' }
+                        ].map((s, i) => (
+                            <div key={i} style={{
+                                padding: '1rem', borderRadius: '14px',
+                                background: 'rgba(255,255,255,0.03)',
+                                border: '1px solid var(--border-color)'
+                            }}>
+                                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: s.color }}>{s.score}</div>
+                                <div style={{ fontSize: '0.7rem', color: '#71717a', fontWeight: 600, textTransform: 'uppercase', marginTop: '4px' }}>{s.label}</div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <button onClick={() => setView('lobby')} style={{
+                        padding: '0.75rem 2rem', background: 'transparent',
+                        color: '#a1a1aa', border: '1px solid var(--border-color)',
+                        borderRadius: '14px', fontSize: '0.9rem', fontWeight: 600,
+                        cursor: 'pointer'
+                    }}>
                         Back to Dashboard
                     </button>
-                </div>
+                </motion.div>
             </div>
         );
     }
 
     return null;
 };
+
+// --- Reusable Control Button ---
+const ControlBtn = ({ icon }) => (
+    <button style={{
+        width: 44, height: 44, borderRadius: '50%',
+        background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.12)',
+        color: 'white', cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        transition: 'all 0.2s'
+    }}>
+        {icon}
+    </button>
+);
 
 export default MockInterview;
