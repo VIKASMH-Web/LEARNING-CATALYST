@@ -2,57 +2,85 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Clock, Zap, Trophy, Target, 
-  TrendingUp, BarChart2, MoreHorizontal, ArrowRight, 
-  Cpu, Activity
+  TrendingUp, BarChart2, MoreHorizontal, ArrowRight, Activity
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { Link } from 'react-router-dom';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 const Overview = () => {
-    const { focusMinutes, codeRuns, activeDays, roadmapProgress, getSkillLevel } = useProgress();
+    const { focusMinutes, roadmapProgress, activeDays, getSkillLevel } = useProgress();
     const [selectedPeriod, setSelectedPeriod] = useState('Last 7 days');
 
-    // Derived Stats
+    // --- 1. REAL DATA CALCULATION ---
     const totalHours = (focusMinutes / 60).toFixed(1);
-    const coursesCompleted = Object.values(roadmapProgress).filter(i => i.completed).length; 
-    // Mock avg score based on code runs success (simulated)
-    const avgScore = 94; 
-    // Mock rank
-    const rank = "#124";
+    
+    // Count completed STAGES across all roadmaps
+    const completedStages = Object.values(roadmapProgress).filter(item => item.completed).length;
 
-    // Chart Data (Mocked based on activeDays for "Learning Activity")
+    // Avg Score (Mocked for now, but linked to data structure)
+    const avgScore = 92; 
+    const rank = "#42"; // Placeholder
+
+    // --- 2. ACTIVITY CHART DATA (Mocked based on activeDays) ---
+    // In a real app, we would query the backend for daily focus duration.
+    // Here we generate plausible data for the chart.
     const activityData = [
-        { day: 'Mon', value: 2.5 },
-        { day: 'Tue', value: 1.8 },
-        { day: 'Wed', value: 4.2 },
-        { day: 'Thu', value: 3.1 },
-        { day: 'Fri', value: 5.5 }, // Peak
-        { day: 'Sat', value: 1.2 },
-        { day: 'Sun', value: 3.9 },
+        { day: 'Mon', hours: 2.5 },
+        { day: 'Tue', hours: 3.8 },
+        { day: 'Wed', hours: 1.5 },
+        { day: 'Thu', hours: 4.2 },
+        { day: 'Fri', hours: 5.0 },
+        { day: 'Sat', hours: 2.0 },
+        { day: 'Sun', hours: 3.5 },
     ];
-    const maxActivity = Math.max(...activityData.map(d => d.value));
 
-    // Skill Radar Data (Mocked from actual progress)
+    // --- 3. SKILL RADAR DATA ---
     const skills = [
-        { name: 'React', value: getSkillLevel('Full Stack Developer').percentage || 60 },
-        { name: 'Node.js', value: getSkillLevel('Backend Developer').percentage || 45 },
-        { name: 'Python', value: getSkillLevel('Python').percentage || 30 },
-        { name: 'System Design', value: 40 }, // Mock
-        { name: 'Algorithms', value: getSkillLevel('AI Engineer').percentage || 50 },
-        { name: 'AI/ML', value: 70 }, // Mock
+        { subject: 'React', A: getSkillLevel('Full Stack Developer').percentage || 60, fullMark: 100 },
+        { subject: 'Node.js', A: getSkillLevel('Backend Developer').percentage || 40, fullMark: 100 },
+        { subject: 'Python', A: getSkillLevel('Python').percentage || 20, fullMark: 100 },
+        { subject: 'System Design', A: 45, fullMark: 100 },
+        { subject: 'Algorithms', A: 55, fullMark: 100 },
+        { subject: 'AI/ML', A: getSkillLevel('AI Engineer').percentage || 10, fullMark: 100 },
     ];
+
+    // --- 4. BROWSER NOTIFICATIONS ---
+    useEffect(() => {
+        if ('Notification' in window && Notification.permission !== 'granted') {
+            Notification.requestPermission();
+        }
+    }, []);
+
+    // --- 5. CURRENT ROADMAPS (SORTED BY RECENT) ---
+    // Get unique roadmap names from progress
+    const activeRoadmaps = Array.from(new Set(
+        Object.keys(roadmapProgress).map(k => k.split('-')[0])
+    )).map(title => {
+        const stats = getSkillLevel(title);
+        return { title, ...stats };
+    }).sort((a,b) => b.percentage - a.percentage).slice(0, 3); // Top 3
+
+    // Fallback if empty
+    if (activeRoadmaps.length === 0) {
+        activeRoadmaps.push({ title: "Full Stack Developer", percentage: 0, levelColor: "#bd93f9" });
+    }
+
+    // --- 6. AI RECOMMENDATION ---
+    const recommendedRoadmap = activeRoadmaps.find(r => r.percentage < 100) || activeRoadmaps[0];
 
     return (
         <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
             style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
         >
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
                     <h1 className="h1" style={{ marginBottom: '0.5rem' }}>Welcome back, John</h1>
-                    <p className="body-sm">You're in the top 5% of React learners this week. Keep it up!</p>
+                    <p className="body-sm">You've maintained a {activeDays.length} day streak! Keep it up!</p>
                 </div>
                 <button className="btn btn-primary" style={{ borderRadius: '20px', padding: '0.5rem 1.5rem' }}>
                     + Start New Session
@@ -70,8 +98,8 @@ const Overview = () => {
                 />
                 <StatsCard 
                     icon={<Zap size={20} color="#ffb86c" />} 
-                    label="Courses Completed" 
-                    value={coursesCompleted} 
+                    label="Stages Completed" 
+                    value={completedStages} 
                     trend="+2" 
                     trendColor="#50fa7b"
                 />
@@ -84,49 +112,60 @@ const Overview = () => {
                 />
                 <StatsCard 
                     icon={<TrendingUp size={20} color="#ff5555" />} 
-                    label="Rank" 
+                    label="Global Rank" 
                     value={rank} 
                     trend="-2" 
-                    trendColor="#ffb86c" // neutral/down
+                    trendColor="#ffb86c" 
                 />
             </div>
 
             {/* Charts Row */}
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
-                {/* Learning Activity Bar Chart */}
-                <div className="glass-card" style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                {/* Learning Activity Chart */}
+                <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', minHeight: '300px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                         <div>
                             <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Learning Activity</h3>
                             <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Weekly progress breakdown</p>
                         </div>
-                        <div style={{ padding: '4px 12px', background: 'var(--bg-secondary)', borderRadius: '8px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                        <div style={{ padding: '4px 12px', background: 'var(--bg-elevated)', borderRadius: '8px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                             {selectedPeriod}
                         </div>
                     </div>
                     
-                    <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1rem', height: '200px', paddingBottom: '1rem' }}>
-                        {activityData.map((d, i) => (
-                            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, gap: '8px' }}>
-                                <motion.div 
-                                    initial={{ height: 0 }}
-                                    animate={{ height: `${(d.value / maxActivity) * 100}%` }}
-                                    transition={{ duration: 0.8, delay: i * 0.1 }}
-                                    style={{ 
-                                        width: '100%', maxWidth: '40px', 
-                                        background: d.value === maxActivity ? 'var(--accent-color)' : 'var(--bg-elevated)', 
-                                        borderRadius: '6px',
-                                        minHeight: '4px',
-                                        opacity: d.value === maxActivity ? 1 : 0.6
-                                    }}
+                    <div style={{ flex: 1, width: '100%', minHeight: 0 }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={activityData}>
+                                <defs>
+                                    <linearGradient id="colorMeasure" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.3}/>
+                                        <stop offset="95%" stopColor="#7c3aed" stopOpacity={0}/>
+                                    </linearGradient>
+                                </defs>
+                                <XAxis 
+                                    dataKey="day" 
+                                    tick={{fill: 'var(--text-secondary)', fontSize: 12}} 
+                                    axisLine={false} tickLine={false} 
                                 />
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{d.day}</span>
-                            </div>
-                        ))}
+                                {/* <YAxis hide /> */}
+                                <Tooltip 
+                                    contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: '8px' }}
+                                    itemStyle={{ color: 'white' }}
+                                />
+                                <Area 
+                                    type="monotone" 
+                                    dataKey="hours" 
+                                    stroke="var(--accent-color)" 
+                                    strokeWidth={3}
+                                    fillOpacity={1} 
+                                    fill="url(#colorMeasure)" 
+                                />
+                            </AreaChart>
+                        </ResponsiveContainer>
                     </div>
                 </div>
 
-                {/* Skill Intelligence Radar (Simulated with Polygon) */}
+                {/* Skill Intelligence Radar */}
                 <div className="glass-card" style={{ display: 'flex', flexDirection: 'column' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                          <div>
@@ -154,18 +193,15 @@ const Overview = () => {
                     </div>
                     
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                        <RoadmapItem 
-                            icon="⚛️" title="Fullstack React Mastery" 
-                            progress={75} color="#bd93f9" 
-                        />
-                        <RoadmapItem 
-                            icon="🏗️" title="Advanced System Design" 
-                            progress={42} color="#f1fa8c" 
-                        />
-                        <RoadmapItem 
-                            icon="🤖" title="AI Engineer Path" 
-                            progress={15} color="#50fa7b" 
-                        />
+                        {activeRoadmaps.map((map, i) => (
+                             <RoadmapItem 
+                                key={i}
+                                icon={i === 0 ? "⚛️" : i === 1 ? "🏗️" : "🤖"} 
+                                title={map.title} 
+                                progress={map.percentage} 
+                                color={map.levelColor} 
+                            />
+                        ))}
                     </div>
                 </div>
 
@@ -183,19 +219,19 @@ const Overview = () => {
                     }}>
                         <div>
                             <div style={{ fontSize: '0.75rem', fontWeight: 700, opacity: 0.8, marginBottom: '0.5rem', letterSpacing: '0.5px' }}>NEXT CHALLENGE</div>
-                            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.75rem' }}>Mastering GraphQL Mutations</h3>
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.75rem' }}>Mastering {recommendedRoadmap.title}</h3>
                             <p style={{ fontSize: '0.85rem', opacity: 0.9, lineHeight: 1.5, maxWidth: '90%' }}>
-                                Based on your React proficiency, you should focus on data fetching patterns next.
+                                Based on your progress ({recommendedRoadmap.percentage}%), continue to the next module to bridge your skill gap.
                             </p>
                         </div>
-                        <button style={{ 
+                        <Link to="/roadmaps" style={{ 
                             alignSelf: 'flex-start', padding: '0.5rem 1rem', 
                             background: 'white', color: '#4f46e5', border: 'none', 
                             borderRadius: '20px', fontWeight: 700, fontSize: '0.85rem',
-                            cursor: 'pointer', marginTop: '1rem'
+                            cursor: 'pointer', marginTop: '1rem', textDecoration: 'none'
                         }}>
-                            Start Module
-                        </button>
+                            Start Next Stage
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -243,10 +279,9 @@ const RoadmapItem = ({ icon, title, progress, color }) => (
     </div>
 );
 
-// Simplified Radar Chart SVG
+// Simplified Radar Chart SVG (Reused for consistent look without heavy libs if Recharts radar is complex to setup quickly)
+// Actually, passing data to this component makes it dynamic
 const RadarChart = ({ skills }) => {
-    // Generate polygon points based on values
-    // This is a simplified visual representation
     return (
         <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg width="200" height="200" viewBox="0 0 200 200">
@@ -263,27 +298,28 @@ const RadarChart = ({ skills }) => {
                     />
                 ))}
                 
-                {/* Data Polygon (Approximation) */}
+                {/* Data Polygon */}
                 <polygon 
-                    points="100,50 160,80 150,140 100,180 50,140 40,80" 
+                    points={skills.map((s, i) => {
+                        const angle = (Math.PI / 3) * i - (Math.PI / 2); // Start at top
+                        const value = s.A / 100;
+                        const r = 90 * value; // Radius 90
+                        const x = 100 + r * Math.cos(angle);
+                        const y = 100 + r * Math.sin(angle);
+                        return `${x},${y}`;
+                    }).join(' ')}
                     fill="rgba(124, 58, 237, 0.2)"
                     stroke="var(--accent-color)"
                     strokeWidth="2"
                 />
                 
-                {/* Labels */}
-                {/* Top */}
-                <text x="100" y="15" textAnchor="middle" fill="var(--text-secondary)" fontSize="10">{skills[0]?.name}</text>
-                {/* Top Right */}
-                <text x="180" y="60" textAnchor="start" fill="var(--text-secondary)" fontSize="10">{skills[1]?.name}</text>
-                {/* Bottom Right */}
-                <text x="180" y="160" textAnchor="start" fill="var(--text-secondary)" fontSize="10">{skills[2]?.name}</text>
-                {/* Bottom - Center */}
-                <text x="100" y="210" textAnchor="middle" fill="var(--text-secondary)" fontSize="10">{skills[3]?.name}</text>
-                {/* Bottom Left */}
-                <text x="20" y="160" textAnchor="end" fill="var(--text-secondary)" fontSize="10">{skills[4]?.name}</text>
-                {/* Top Left */}
-                <text x="20" y="60" textAnchor="end" fill="var(--text-secondary)" fontSize="10">{skills[5]?.name}</text>
+                {/* Labels (Approximate positions) */}
+                <text x="100" y="15" textAnchor="middle" fill="var(--text-secondary)" fontSize="10">{skills[0].subject}</text>
+                <text x="180" y="60" textAnchor="start" fill="var(--text-secondary)" fontSize="10">{skills[1].subject}</text>
+                <text x="180" y="160" textAnchor="start" fill="var(--text-secondary)" fontSize="10">{skills[2].subject}</text>
+                <text x="100" y="210" textAnchor="middle" fill="var(--text-secondary)" fontSize="10">{skills[3].subject}</text>
+                <text x="20" y="160" textAnchor="end" fill="var(--text-secondary)" fontSize="10">{skills[4].subject}</text>
+                <text x="20" y="60" textAnchor="end" fill="var(--text-secondary)" fontSize="10">{skills[5].subject}</text>
             </svg>
         </div>
     );

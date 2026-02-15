@@ -1,187 +1,167 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Pause, RotateCcw, Coffee, Zap, Timer } from 'lucide-react';
+import { Play, Pause, RotateCcw, Volume2, Plus, Music } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 
 const FocusMode = () => {
+    // --- 1. CIRCULAR TIMER (25:00 DEFAULT) ---
+    const [timeLeft, setTimeLeft] = useState(25 * 60);
+    const [isActive, setIsActive] = useState(false);
+    const [mode, setMode] = useState('Focus'); // Focus, Short Break
     const { addFocusMinutes } = useProgress();
-    
-    // Initial state from localStorage
-    const [timeLeft, setTimeLeft] = useState(() => {
-        const saved = localStorage.getItem('lc_focus_time');
-        return saved ? parseInt(saved) : 25 * 60;
-    });
 
-    const [isActive, setIsActive] = useState(() => {
-        const saved = localStorage.getItem('lc_focus_active');
-        return saved === 'true';
-    });
-
-    const [sessionsCompleted, setSessionsCompleted] = useState(() => {
-        const saved = localStorage.getItem('lc_focus_sessions');
-        return saved ? parseInt(saved) : 0;
-    });
-
-    const [sessionDuration, setSessionDuration] = useState(25);
-
-    // Sync state
-    useEffect(() => {
-        localStorage.setItem('lc_focus_time', timeLeft);
-        localStorage.setItem('lc_focus_active', isActive);
-        localStorage.setItem('lc_focus_sessions', sessionsCompleted);
-    }, [timeLeft, isActive, sessionsCompleted]);
-
-    // Timer Logic
     useEffect(() => {
         let interval = null;
         if (isActive && timeLeft > 0) {
             interval = setInterval(() => {
-                setTimeLeft((prev) => {
-                    if (prev <= 1) {
-                        setIsActive(false);
-                        setSessionsCompleted(s => s + 1);
-                        addFocusMinutes(sessionDuration);
-                        clearInterval(interval);
-                        return 0;
-                    }
-                    return prev - 1;
-                });
+                setTimeLeft((prev) => prev - 1);
             }, 1000);
+        } else if (timeLeft === 0) {
+            setIsActive(false);
+            // 2. DEVICE NOTIFICATION
+            if (Notification.permission === 'granted') {
+                new Notification("Focus Session Complete", { body: "Great job! Take a short break." });
+            }
+            addFocusMinutes(mode === 'Focus' ? 25 : 5);
         }
         return () => clearInterval(interval);
-    }, [isActive, timeLeft, sessionDuration, addFocusMinutes]);
+    }, [isActive, timeLeft, mode, addFocusMinutes]);
 
-    const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    };
-
-    const startTimer = (minutes) => {
-        setSessionDuration(minutes);
-        setTimeLeft(minutes * 60);
-        setIsActive(true);
-    };
-
+    const toggleTimer = () => setIsActive(!isActive);
+    
     const resetTimer = () => {
         setIsActive(false);
+        setTimeLeft(mode === 'Focus' ? 25 * 60 : 5 * 60);
+    };
+
+    const setFocusMode = () => {
+        setMode('Focus');
         setTimeLeft(25 * 60);
-        setSessionDuration(25);
+        setIsActive(false);
+    };
+
+    const setBreakMode = () => {
+        setMode('Short Break');
+        setTimeLeft(5 * 60);
+        setIsActive(false);
+    };
+
+    const formatTime = (seconds) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     };
 
     // Calculate progress for ring
-    const totalSeconds = sessionDuration * 60;
-    const progress = totalSeconds > 0 ? (totalSeconds - timeLeft) / totalSeconds : 0;
-    const radius = 120;
+    const totalTime = mode === 'Focus' ? 25 * 60 : 5 * 60;
+    const progress = (totalTime - timeLeft) / totalTime;
+    const radius = 140; 
     const circumference = 2 * Math.PI * radius;
     const strokeDashoffset = circumference - (progress * circumference);
 
     return (
-        <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <motion.div 
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="card glass-panel"
-                style={{ 
-                    padding: '3rem', 
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', 
-                    gap: '2.5rem', width: '100%', maxWidth: '480px', textAlign: 'center',
-                    background: 'var(--bg-elevated)',
-                    boxShadow: 'var(--shadow-lg)'
-                }}
-            >
-                <div>
-                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', marginBottom: '0.5rem', color: 'var(--accent-color)' }}>
-                        <Timer size={24} /> 
-                        <span style={{ fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Focus Mode</span>
-                     </div>
-                     <p className="body-sm">Immersive deep work environment.</p>
-                </div>
+        <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex flex-col items-center justify-center h-full relative"
+            style={{ height: 'calc(100vh - 100px)' }}
+        >
+            {/* Background Glow */}
+            <div style={{ position: 'absolute', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, rgba(0,0,0,0) 70%)', borderRadius: '50%', zIndex: -1 }} />
 
-                <div style={{ position: 'relative', width: 260, height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <svg width="260" height="260" style={{ transform: 'rotate(-90deg)' }}>
-                         <circle 
-                            cx="130" cy="130" r={radius} 
-                            fill="none" 
-                            stroke="var(--border-color)" 
-                            strokeWidth="8" 
-                         />
-                         <motion.circle 
-                            cx="130" cy="130" r={radius} 
-                            fill="none" 
-                            stroke="var(--accent-color)" 
-                            strokeWidth="8" 
-                            strokeDasharray={circumference}
-                            strokeDashoffset={strokeDashoffset}
-                            strokeLinecap="round"
-                            initial={{ strokeDashoffset: circumference }}
-                            animate={{ strokeDashoffset }}
-                            transition={{ duration: 0.5 }}
-                         />
-                    </svg>
-                    <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <div style={{ fontSize: '4rem', fontWeight: 800, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)', lineHeight: 1 }}>
-                            {formatTime(timeLeft)}
-                        </div>
-                        <div style={{ fontSize: '0.875rem', color: isActive ? 'var(--accent-color)' : 'var(--text-tertiary)', fontWeight: 600, marginTop: '8px' }}>
-                            {isActive ? 'FOCUSING' : 'PAUSED'}
-                        </div>
+            {/* Mode Switcher */}
+            <div style={{ display: 'flex', gap: '1rem', marginBottom: '3rem' }}>
+                <ModeButton label="Deep Work" active={mode === 'Focus'} onClick={setFocusMode} />
+                <ModeButton label="Short Break" active={mode === 'Short Break'} onClick={setBreakMode} />
+            </div>
+
+            {/* Circular Timer */}
+            <div style={{ position: 'relative', width: 320, height: 320, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="320" height="320" style={{ transform: 'rotate(-90deg)' }}>
+                    {/* Background Ring */}
+                    <circle cx="160" cy="160" r={radius} stroke="var(--bg-elevated)" strokeWidth="8" fill="transparent" />
+                    {/* Progress Ring */}
+                    <circle 
+                        cx="160" cy="160" r={radius} 
+                        stroke={mode === 'Focus' ? 'var(--accent-color)' : '#50fa7b'} 
+                        strokeWidth="8" 
+                        fill="transparent" 
+                        strokeDasharray={circumference} 
+                        strokeDashoffset={strokeDashoffset} 
+                        strokeLinecap="round"
+                        style={{ transition: 'stroke-dashoffset 1s linear' }}
+                    />
+                </svg>
+
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ fontSize: '4rem', fontWeight: 800, fontFamily: 'monospace', letterSpacing: '-2px' }}>
+                        {formatTime(timeLeft)}
+                    </div>
+                    <div style={{ fontSize: '1rem', opacity: 0.6, marginTop: '0.5rem' }}>
+                        {isActive ? 'FOCUSING' : 'READY'}
                     </div>
                 </div>
+            </div>
 
-                <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-                    <button 
-                        onClick={() => setIsActive(!isActive)}
-                        className="btn btn-primary"
-                        style={{ 
-                            width: 64, height: 64, borderRadius: '50%', padding: 0,
-                            boxShadow: '0 0 20px var(--accent-glow)'
-                        }}
-                    >
-                        {isActive ? <Pause size={28} fill="currentColor" /> : <Play size={28} style={{ marginLeft: 4 }} fill="currentColor" />}
-                    </button>
-                    
-                    <button 
-                        onClick={resetTimer}
-                        className="btn btn-secondary"
-                        style={{ 
-                            width: 56, height: 56, borderRadius: '50%', padding: 0,
-                            background: 'transparent', borderColor: 'var(--border-color)'
-                        }}
-                    >
-                        <RotateCcw size={20} />
-                    </button>
-                </div>
+            {/* Controls */}
+            <div style={{ display: 'flex', gap: '1.5rem', marginTop: '3rem' }}>
+                <button 
+                    onClick={toggleTimer} 
+                    className="btn btn-primary"
+                    style={{ 
+                        width: 64, height: 64, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        background: isActive ? 'var(--bg-elevated)' : 'var(--accent-color)',
+                        color: isActive ? 'white' : 'white',
+                        border: isActive ? '1px solid var(--border-color)' : 'none',
+                        boxShadow: isActive ? 'none' : '0 0 30px rgba(124, 58, 237, 0.4)'
+                    }}
+                >
+                    {isActive ? <Pause size={28} /> : <Play size={28} fill="white" />}
+                </button>
+                
+                <button 
+                    onClick={resetTimer} 
+                    className="btn btn-secondary"
+                    style={{ 
+                        width: 64, height: 64, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        background: 'transparent', border: '1px solid var(--border-color)'
+                    }}
+                >
+                    <RotateCcw size={24} />
+                </button>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', width: '100%' }}>
-                    <button 
-                        onClick={() => startTimer(25)}
-                        className="btn btn-secondary"
-                        style={{ justifyContent: 'center', height: '48px', opacity: sessionDuration === 25 ? 1 : 0.7, borderColor: sessionDuration === 25 ? 'var(--accent-color)' : 'var(--border-color)' }}
-                    >
-                        <Zap size={16} /> 25 Min
-                    </button>
-                    <button 
-                         onClick={() => startTimer(50)}
-                         className="btn btn-secondary"
-                         style={{ justifyContent: 'center', height: '48px', opacity: sessionDuration === 50 ? 1 : 0.7, borderColor: sessionDuration === 50 ? 'var(--accent-color)' : 'var(--border-color)' }}
-                    >
-                        <Coffee size={16} /> 50 Min
-                    </button>
-                </div>
+                <button 
+                    className="btn btn-secondary"
+                    style={{ 
+                        width: 64, height: 64, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        background: 'transparent', border: '1px solid var(--border-color)'
+                    }}
+                >
+                    <Music size={24} />
+                </button>
 
-                {sessionsCompleted > 0 && (
-                    <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        style={{ fontSize: '0.85rem', color: 'var(--success)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}
-                    >
-                        <span>★</span> {sessionsCompleted} sessions completed
-                    </motion.div>
-                )}
-            </motion.div>
-        </div>
+            </div>
+        </motion.div>
     );
 };
+
+const ModeButton = ({ label, active, onClick }) => (
+    <button 
+        onClick={onClick}
+        style={{ 
+            padding: '0.5rem 1.5rem', 
+            borderRadius: '20px', 
+            background: active ? 'rgba(255,255,255,0.1)' : 'transparent', 
+            color: active ? 'white' : 'var(--text-secondary)',
+            border: active ? '1px solid var(--accent-color)' : '1px solid transparent',
+            cursor: 'pointer',
+            fontWeight: 600,
+            fontSize: '0.9rem',
+            transition: 'all 0.2s'
+        }}
+    >
+        {label}
+    </button>
+);
 
 export default FocusMode;

@@ -19,6 +19,7 @@ const VoiceControl = () => {
   }, [isListening]);
 
   useEffect(() => {
+    // Browser Support Check
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
       setIsSupported(false);
       return;
@@ -27,7 +28,9 @@ const VoiceControl = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
     
-    recognition.continuous = true;
+    // IMPORTANT: Continuous FALSE for single command mode as per User Request
+    // "Speak once -> Navigate -> Disable voice mode"
+    recognition.continuous = false; 
     recognition.interimResults = true;
     recognition.lang = 'en-US';
 
@@ -36,37 +39,25 @@ const VoiceControl = () => {
     };
 
     recognition.onend = () => {
-      // Only restart if we are still supposed to be listening
-      // AND we didn't just manually stop it in handleCommand which sets isListeningRef to false
-      if (isListeningRef.current) {
-        try {
-            recognition.start();
-        } catch (e) {
-            // ignore
+        // If we processed a command, isListening will be false, so we stop.
+        // If we just stopped speaking without a command, we might want to restart?
+        // User Request: "Never re-trigger."
+        // So we just stop.
+        if (isListeningRef.current) {
+            setIsListening(false);
+            setStatusMessage('');
         }
-      } else {
-        setStatusMessage('');
-      }
     };
 
     recognition.onresult = (event) => {
       let finalTranscript = '';
-      let interimTranscript = '';
-
       for (let i = event.resultIndex; i < event.results.length; ++i) {
         if (event.results[i].isFinal) {
           finalTranscript += event.results[i][0].transcript;
           handleCommand(finalTranscript);
         } else {
-          interimTranscript += event.results[i][0].transcript;
+            setTranscript(event.results[i][0].transcript);
         }
-      }
-      
-      if (interimTranscript) {
-           setTranscript(interimTranscript);
-           setStatusMessage(''); 
-      } else if (finalTranscript) {
-           setTranscript(finalTranscript);
       }
     };
     
@@ -75,6 +66,11 @@ const VoiceControl = () => {
        if(event.error === 'not-allowed') {
            setIsListening(false);
            setStatusMessage('Microphone access denied');
+       }
+       // If no-speech, just stop.
+       if (event.error === 'no-speech') {
+           setIsListening(false);
+           setStatusMessage('No speech detected');
        }
     };
 
@@ -97,15 +93,16 @@ const VoiceControl = () => {
               // already started
           }
       } else {
-          recognitionRef.current.stop();
+          try {
+            recognitionRef.current.stop();
+          } catch(e) {}
           setTranscript('');
-          setStatusMessage('');
       }
   }, [isListening]);
 
   const speak = (text) => {
     if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel(); // Cancel any current speech
+      window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       window.speechSynthesis.speak(utterance);
     }
@@ -136,8 +133,6 @@ const VoiceControl = () => {
     let targetPath = null;
     let targetLabel = '';
 
-    // Check if spoken text contains any key
-    // We sort keys by length descending to match specific phrases first if overlaps exist
     const keys = Object.keys(commandMap).sort((a, b) => b.length - a.length);
     
     for (const key of keys) {
@@ -150,36 +145,28 @@ const VoiceControl = () => {
 
     if (targetPath) {
         // 1. Stop recognition immediately
-        if (recognitionRef.current) {
-            recognitionRef.current.stop();
-        }
+        if (recognitionRef.current) recognitionRef.current.stop();
         
-        // 2. Critical: Update REF immediately so onend doesn't restart
+        // 2. Set state to false so it doesn't restart
         isListeningRef.current = false;
         setIsListening(false);
 
         setStatusMessage(`Open ${targetLabel}`);
         
-        // 3. Speak Confirmation
+        // 3. One-time feedback
         speak(`Opening ${targetLabel}`);
         
-        // 4. Navigate after short delay
         setTimeout(() => {
             navigate(targetPath);
             setTranscript('');
             setStatusMessage('');
-        }, 800);
+        }, 500);
         
     } else {
-        if (lowerCmd.length > 0) {
-             setStatusMessage("Sorry, I didn't understand that command.");
-             speak("Sorry, I didn't understand that command.");
-             
-             // Clear error after 2s but DO NOT restart if we stopped
-             setTimeout(() => {
-                 if(isListeningRef.current) setStatusMessage('Listening...');
-             }, 2000);
-        }
+         // No match logic
+         setIsListening(false); 
+         setStatusMessage("Command not recognized");
+         speak("Sorry, I didn't catch that.");
     }
   };
 
@@ -191,21 +178,11 @@ const VoiceControl = () => {
         className={`voice-toggle-btn ${isListening ? 'listening' : ''}`}
         onClick={() => setIsListening(!isListening)}
         title={isListening ? "Stop Listening" : "Start Voice Navigation"}
+        style={{ width: isListening ? '180px' : '140px' }} // Dynamic width
       >
-        {isListening ? <Mic size={18} /> : <MicOff size={18} />}
-        <span className="voice-btn-label">{isListening ? 'Listening...' : 'Voice Mode'}</span>
+        {isListening ? <Mic size={18} className="pulse-anim" /> : <MicOff size={18} />}
+        <span className="voice-btn-label">{isListening ? (transcript || 'Listening...') : 'Voice Mode'}</span>
       </button>
-      
-      {isListening && (
-        <div className="voice-status">
-            <div className="voice-feedback">
-                <div className="voice-indicator"></div>
-                <span className="voice-text">
-                   {transcript ? `"${transcript}"` : statusMessage}
-                </span>
-            </div>
-        </div>
-      )}
     </div>
   );
 };

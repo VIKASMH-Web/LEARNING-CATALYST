@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { User, Shield, Award, Edit2, Save, RotateCcw, UserMinus, BarChart2, Download, X, Mail, Calendar, MapPin, Briefcase } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
-import { enDomains } from '../data/domains';
+import { ResponsiveContainer, AreaChart, Area, XAxis, Tooltip } from 'recharts';
 
 const Profile = () => {
     // Context
     const { 
         activeDays, focusMinutes, codeRuns, badges, 
-        getSkillLevel, generateWeeklyReport
+        getSkillLevel, generateWeeklyReport, careerProfile, updateCareerProfile
     } = useProgress();
 
     // Local State
@@ -20,10 +20,10 @@ const Profile = () => {
         const saved = localStorage.getItem('lc_profile');
         return saved ? JSON.parse(saved) : {
             name: 'John Doe',
-            title: 'Senior Software Engineer @ TechFlow',
+            title: 'Senior Software Engineer',
             username: 'johndoe_dev',
             location: 'San Francisco, CA',
-            email: 'john.doe@example.com',
+            email: 'john.doe@techflow.com',
             bio: 'Building scalable systems and exploring AI integration patterns.',
             xp: '12.4k',
             tier: 'Elite Tier'
@@ -42,10 +42,16 @@ const Profile = () => {
         setShowReport(true);
     };
 
-    // Derived Stats
-    const streak = activeDays.length;
-    const totalHours = (focusMinutes / 60).toFixed(1);
-    const logicScore = 85 + (codeRuns > 10 ? 5 : 0) + (streak > 3 ? 5 : 0); // Simulated Logic Score
+    // Derived Stats for "Cognitive Performance" Chart
+    const performanceData = [
+        { day: 'Mon', score: 65 },
+        { day: 'Tue', score: 72 },
+        { day: 'Wed', score: 68 },
+        { day: 'Thu', score: 85 },
+        { day: 'Fri', score: 90 },
+        { day: 'Sat', score: 78 },
+        { day: 'Sun', score: 88 },
+    ];
 
     return (
         <motion.div 
@@ -94,17 +100,26 @@ const Profile = () => {
                         {/* Name & Title */}
                         <div style={{ marginBottom: '0.5rem' }}>
                              {isEditing ? (
-                                <input 
-                                    value={profile.name} 
-                                    onChange={(e) => setProfile({...profile, name: e.target.value})}
-                                    className="h2" style={{ background: 'transparent', border: '1px solid var(--border-color)', color: 'white', marginBottom: '0.25rem' }}
-                                />
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                    <input 
+                                        value={profile.name} 
+                                        onChange={(e) => setProfile({...profile, name: e.target.value})}
+                                        className="h2" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid var(--border-color)', color: 'white', padding: '4px 8px', borderRadius: '4px' }}
+                                    />
+                                    <input 
+                                        value={profile.title} 
+                                        onChange={(e) => setProfile({...profile, title: e.target.value})}
+                                        style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid var(--border-color)', color: 'var(--text-secondary)', padding: '4px 8px', borderRadius: '4px' }}
+                                    />
+                                </div>
                              ) : (
-                                <h1 className="h2" style={{ marginBottom: '0.25rem' }}>{profile.name}</h1>
+                                <>
+                                    <h1 className="h2" style={{ marginBottom: '0.25rem' }}>{profile.name}</h1>
+                                    <p style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <Briefcase size={14} /> {profile.title}
+                                    </p>
+                                </>
                              )}
-                             <p style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <Briefcase size={14} /> {profile.title}
-                             </p>
                         </div>
                     </div>
 
@@ -124,7 +139,7 @@ const Profile = () => {
                              ✨ {profile.xp} XP
                          </div>
                          
-                         <button onClick={() => setIsEditing(!isEditing)} className="btn btn-secondary" style={{ padding: '0.5rem' }}>
+                         <button onClick={isEditing ? handleSave : () => setIsEditing(true)} className="btn btn-secondary" style={{ padding: '0.5rem' }}>
                             {isEditing ? <Save size={18} /> : <Edit2 size={18} />}
                          </button>
                     </div>
@@ -145,7 +160,7 @@ const Profile = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                     
                     {/* Cognitive Performance Chart */}
-                    <div className="glass-card" style={{ padding: '2rem' }}>
+                    <div className="glass-card" style={{ padding: '2rem', minHeight: '300px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                             <div>
                                 <h3 className="h3">Cognitive Performance</h3>
@@ -154,38 +169,24 @@ const Profile = () => {
                             <div style={{ color: '#50fa7b', fontWeight: 700, fontSize: '0.9rem' }}>+14.2%</div>
                         </div>
 
-                        {/* Simulated Spline Chart */}
-                        <div style={{ height: '220px', position: 'relative', display: 'flex', alignItems: 'flex-end' }}>
-                             <svg width="100%" height="100%" viewBox="0 0 800 200" preserveAspectRatio="none">
-                                {/* Grid Lines */}
-                                <line x1="0" y1="50" x2="800" y2="50" stroke="var(--border-color)" strokeDasharray="4" />
-                                <line x1="0" y1="100" x2="800" y2="100" stroke="var(--border-color)" strokeDasharray="4" />
-                                <line x1="0" y1="150" x2="800" y2="150" stroke="var(--border-color)" strokeDasharray="4" />
-                                
-                                {/* Path */}
-                                <path 
-                                    d="M0,150 C100,140 150,80 250,90 S400,120 500,60 S650,40 800,80" 
-                                    fill="none" stroke="#7c3aed" strokeWidth="3"
-                                />
-                                {/* Gradient Fill */}
-                                <path 
-                                    d="M0,150 C100,140 150,80 250,90 S400,120 500,60 S650,40 800,80 V200 H0 Z" 
-                                    fill="url(#gradient)" opacity="0.2"
-                                />
-                                <defs>
-                                    <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" stopColor="#7c3aed" />
-                                        <stop offset="100%" stopColor="transparent" />
-                                    </linearGradient>
-                                </defs>
-                             </svg>
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '1rem', padding: '0 1rem' }}>
-                            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                        {/* Recharts Area Chart */}
+                        <div style={{ height: '220px', width: '100%' }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={performanceData}>
+                                    <defs>
+                                        <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.8}/>
+                                            <stop offset="95%" stopColor="#7c3aed" stopOpacity={0}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <Tooltip contentStyle={{ background: '#1e293b', border: 'none', borderRadius: '8px' }} />
+                                    <Area type="monotone" dataKey="score" stroke="#7c3aed" fillOpacity={1} fill="url(#colorScore)" strokeWidth={3} />
+                                </AreaChart>
+                            </ResponsiveContainer>
                         </div>
                     </div>
 
-                     {/* Focus Areas */}
+                     {/* Focus Areas (Editable) */}
                      <div className="glass-card" style={{ padding: '2rem' }}>
                         <h3 className="h3" style={{ marginBottom: '1.5rem' }}>Focus Areas</h3>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
@@ -193,11 +194,19 @@ const Profile = () => {
                                 <span key={tag} style={{ 
                                     padding: '6px 14px', background: 'var(--bg-elevated)', 
                                     borderRadius: '20px', border: '1px solid var(--border-color)', 
-                                    fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 500
+                                    fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 500,
+                                    cursor: isEditing ? 'pointer' : 'default'
                                 }}>
-                                    {tag}
+                                    {tag} {isEditing && <X size={12} style={{ marginLeft: 4 }} />}
                                 </span>
                             ))}
+                            {isEditing && (
+                                <button style={{ 
+                                    padding: '6px 14px', background: 'transparent', 
+                                    borderRadius: '20px', border: '1px dashed var(--text-secondary)', 
+                                    fontSize: '0.85rem', color: 'var(--text-secondary)'
+                                }}>+ Add</button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -223,56 +232,29 @@ const Profile = () => {
                         </button>
                     </div>
 
-                    {/* Weekly Report CTA */}
+                    {/* Progress Insights (Replaced Download PDF) */}
                     <div className="glass-card" style={{ 
                         padding: '2rem', 
                         background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)', 
-                        border: 'none', color: 'white', textAlign: 'center' 
+                        border: 'none', color: 'white'
                     }}>
-                        <h3 className="h3" style={{ color: 'white', marginBottom: '0.5rem' }}>Catalyst Weekly Report</h3>
+                        <h3 className="h3" style={{ color: 'white', marginBottom: '0.5rem', fontSize: '1.2rem' }}>Progress Insights</h3>
                         <p style={{ fontSize: '0.9rem', opacity: 0.9, lineHeight: 1.5, marginBottom: '1.5rem' }}>
-                            Your weekly summary is ready. You've completed 85% more coding challenges than last month.
+                            You're in the top 5% of learners this week. Your consistency score is up by 15%.
                         </p>
-                        <button 
-                            onClick={handleGenerateReport}
-                            style={{ 
-                                width: '100%', padding: '0.75rem', background: 'white', 
-                                color: '#4f46e5', border: 'none', borderRadius: '8px', 
-                                fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' 
-                            }}
-                        >
-                            Download PDF Report
-                        </button>
+                        <div style={{ display: 'flex', gap: '1rem' }}>
+                            <div style={{ flex: 1, padding: '0.75rem', background: 'rgba(255,255,255,0.1)', borderRadius: '8px', textAlign: 'center' }}>
+                                <div style={{ fontWeight: 800, fontSize: '1.2rem' }}>Top 5%</div>
+                                <div style={{ fontSize: '0.7rem', opacity: 0.8 }}>Rank</div>
+                            </div>
+                            <div style={{ flex: 1, padding: '0.75rem', background: 'rgba(255,255,255,0.1)', borderRadius: '8px', textAlign: 'center' }}>
+                                <div style={{ fontWeight: 800, fontSize: '1.2rem' }}>+15%</div>
+                                <div style={{ fontSize: '0.7rem', opacity: 0.8 }}>Consistency</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            {/* Weekly Report Modal (Reused Logic) */}
-            <AnimatePresence>
-                {showReport && reportData && (
-                     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(5px)' }} onClick={() => setShowReport(false)}>
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass-card" style={{ width: '500px', padding: '2.5rem', position: 'relative', border: '1px solid var(--accent-color)' }} onClick={e => e.stopPropagation()}>
-                            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                                <h2 style={{ fontSize: '1.5rem', color: 'var(--accent-color)', fontWeight: 800 }}>Weekly Pulse Report</h2>
-                                <p style={{ opacity: 0.7 }}>{reportData.date}</p>
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
-                                <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', textAlign: 'center' }}>
-                                    <div style={{ fontSize: '1.5rem', fontWeight: 800 }}>{reportData.focusHours}</div>
-                                    <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>Focus Hours</div>
-                                </div>
-                                <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', textAlign: 'center' }}>
-                                    <div style={{ fontSize: '1.5rem', fontWeight: 800 }}>{reportData.codeRuns}</div>
-                                    <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>Code Executions</div>
-                                </div>
-                            </div>
-                            <button style={{ width: '100%', padding: '1rem', background: 'var(--accent-color)', border: 'none', borderRadius: '20px', color: 'white', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                <Download size={18} /> Download Full PDF
-                            </button>
-                        </motion.div>
-                     </div>
-                )}
-            </AnimatePresence>
         </motion.div>
     );
 };
