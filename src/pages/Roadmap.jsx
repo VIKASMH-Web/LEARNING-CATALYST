@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Bell, AlertCircle, Clock, Zap, Award, Globe, RotateCcw } from 'lucide-react';
+import { Check, Bell, AlertCircle, Clock, Zap, Award, Globe, RotateCcw, ChevronDown, ChevronRight } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { getDomains, enDomains } from '../data/domains';
 
@@ -14,12 +14,17 @@ const Roadmaps = () => {
     // Local UI State
     const [currentLang, setCurrentLang] = useState('en');
     const [showNotif, setShowNotif] = useState(false);
+    const [expandedDomains, setExpandedDomains] = useState({});
+
+    const toggleDomain = (index) => {
+        setExpandedDomains(prev => ({ ...prev, [index]: !prev[index] }));
+    };
 
     const languages = [
         { code: 'en', label: 'English' },
         { code: 'kn', label: 'ಕನ್ನಡ' },
         { code: 'ta', label: 'தமிழ்' },
-        { code: 'ml', label: 'മലയാളം' },
+        { code: 'ml', label: 'മലయാളം' },
         { code: 'hi', label: 'हिंदी' },
         { code: 'te', label: 'తెలుగు' },
         { code: 'mr', label: 'मराठी' }
@@ -281,91 +286,150 @@ const Roadmaps = () => {
                 </div>
             </header>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {domains.map((domain, i) => {
                     const stats = getDomainStats(domain.title, domain.steps);
+                    const isExpanded = expandedDomains[i] || false;
+                    const completionPercent = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0;
                     
                     return (
-                        <section key={i} className="glass-card" style={{ padding: '2.5rem' }}>
-                            <div style={{ marginBottom: '2rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
-                                <div>
-                                    <h2 style={{ fontSize: '1.8rem', color: 'var(--accent-color)', marginBottom: '0.25rem' }}>{domain.title}</h2>
-                                    <p style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Path: {domain.path}</p>
+                        <section key={i} className="glass-card" style={{ padding: 0, overflow: 'hidden' }}>
+                            {/* Collapsible Domain Header — Click to Toggle */}
+                            <div 
+                                onClick={() => toggleDomain(i)}
+                                style={{ 
+                                    padding: '1.25rem 2rem', display: 'flex', justifyContent: 'space-between', 
+                                    alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s',
+                                    background: isExpanded ? 'rgba(124, 58, 237, 0.06)' : 'transparent',
+                                    borderBottom: isExpanded ? '1px solid var(--border-color)' : 'none'
+                                }}
+                            >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
+                                    <div style={{ 
+                                        width: 40, height: 40, borderRadius: '12px', 
+                                        background: completionPercent === 100 ? 'rgba(80, 250, 123, 0.15)' : 'var(--bg-elevated)', 
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                        fontSize: '1rem', flexShrink: 0,
+                                        border: completionPercent === 100 ? '1px solid rgba(80, 250, 123, 0.3)' : '1px solid var(--border-color)'
+                                    }}>
+                                        {completionPercent === 100 ? '✅' : '📘'}
+                                    </div>
+                                    <div>
+                                        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '2px' }}>{domain.title}</h3>
+                                        <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>{domain.path} • {domain.steps.length} stages</p>
+                                    </div>
                                 </div>
-                                <div style={{ textAlign: 'right', fontSize: '0.85rem', opacity: 0.8, display: 'flex', gap: '1rem' }}>
-                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><div style={{width: 6, height: 6, borderRadius: '50%', background: '#50fa7b'}}/> {stats.completed} Done</span>
-                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><div style={{width: 6, height: 6, borderRadius: '50%', background: '#ffb86c'}}/> {stats.near} Near</span>
-                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><div style={{width: 6, height: 6, borderRadius: '50%', background: '#6272a4'}}/> {stats.incomplete} To Do</span>
+
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                    {/* Stats Badges */}
+                                    <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.75rem' }}>
+                                        {stats.completed > 0 && (
+                                            <span style={{ padding: '2px 8px', borderRadius: '10px', background: 'rgba(80, 250, 123, 0.15)', color: '#50fa7b', fontWeight: 600 }}>
+                                                {stats.completed} ✓
+                                            </span>
+                                        )}
+                                        {stats.near > 0 && (
+                                            <span style={{ padding: '2px 8px', borderRadius: '10px', background: 'rgba(255, 184, 108, 0.15)', color: '#ffb86c', fontWeight: 600 }}>
+                                                {stats.near} near
+                                            </span>
+                                        )}
+                                        <span style={{ padding: '2px 8px', borderRadius: '10px', background: 'rgba(139, 233, 253, 0.1)', color: '#8be9fd', fontWeight: 600 }}>
+                                            {completionPercent}%
+                                        </span>
+                                    </div>
+
+                                    {/* Progress Bar (mini) */}
+                                    <div style={{ width: 60, height: 4, background: 'var(--bg-elevated)', borderRadius: 2, overflow: 'hidden' }}>
+                                        <div style={{ width: `${completionPercent}%`, height: '100%', background: completionPercent === 100 ? '#50fa7b' : 'var(--accent-color)', borderRadius: 2, transition: 'width 0.3s' }} />
+                                    </div>
+
+                                    {/* Chevron */}
+                                    <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                                        <ChevronDown size={20} color="var(--text-secondary)" />
+                                    </motion.div>
                                 </div>
                             </div>
-                            
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                                {domain.steps.map((step, idx) => {
-                                    const dIndex = domains.findIndex(d => d.title === domain.title);
-                                    const enTitle = enDomains[dIndex].title;
-                                    const key = `${enTitle}-${idx}`;
-                                    
-                                    const item = roadmapProgress[key] || { progress: 0, completed: false };
-                                    const status = getItemStatus(item);
-                                    
-                                    return (
-                                        <div key={idx} style={{ 
-                                            display: 'flex', gap: '1.5rem', alignItems: 'flex-start',
-                                            background: item.completed ? 'rgba(80, 250, 123, 0.05)' : 'transparent',
-                                            padding: '1rem', borderRadius: '12px', transition: 'all 0.2s',
-                                            border: item.completed ? '1px solid rgba(80, 250, 123, 0.1)' : '1px solid transparent'
-                                        }}>
-                                            <div 
-                                                onClick={() => handleUpdate(domain.title, idx, 'check')}
-                                                style={{ 
-                                                    width: '32px', height: '32px', borderRadius: '50%', 
-                                                    background: item.completed ? '#50fa7b' : 'rgba(255,255,255,0.05)', 
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                                                    fontWeight: 'bold', fontSize: '0.8rem', flexShrink: 0,
-                                                    cursor: 'pointer', border: item.completed ? 'none' : '1px solid var(--border-color)',
-                                                    color: item.completed ? '#000' : 'white', boxShadow: item.completed ? '0 0 10px rgba(80, 250, 123, 0.4)' : 'none',
-                                                    transition: 'all 0.2s'
-                                                }}
-                                            >
-                                                {item.completed ? <Check size={18} strokeWidth={3} /> : idx + 1}
-                                            </div>
 
-                                            <div style={{ flex: 1 }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-                                                    <div style={{ fontSize: '1.1rem', fontWeight: 700, textDecoration: item.completed ? 'line-through' : 'none', color: item.completed ? 'var(--text-secondary)' : 'white', opacity: item.completed ? 0.7 : 1 }}>
-                                                        Stage {idx + 1}: {step}
-                                                    </div>
-                                                    
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(0,0,0,0.2)', padding: '4px 12px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                                        <input 
-                                                            type="range" 
-                                                            min="0" max="100" 
-                                                            value={item.progress}
-                                                            onChange={(e) => handleUpdate(domain.title, idx, 'slider', e.target.value)}
-                                                            disabled={item.completed}
+                            {/* Expanded Steps Content */}
+                            <AnimatePresence>
+                                {isExpanded && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                        style={{ overflow: 'hidden' }}
+                                    >
+                                        <div style={{ padding: '1.5rem 2rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                                            {domain.steps.map((step, idx) => {
+                                                const dIndex = domains.findIndex(d => d.title === domain.title);
+                                                const enTitle = enDomains[dIndex].title;
+                                                const key = `${enTitle}-${idx}`;
+                                                
+                                                const item = roadmapProgress[key] || { progress: 0, completed: false };
+                                                const status = getItemStatus(item);
+                                                
+                                                return (
+                                                    <div key={idx} style={{ 
+                                                        display: 'flex', gap: '1.25rem', alignItems: 'flex-start',
+                                                        background: item.completed ? 'rgba(80, 250, 123, 0.05)' : 'transparent',
+                                                        padding: '1rem', borderRadius: '12px', transition: 'all 0.2s',
+                                                        border: item.completed ? '1px solid rgba(80, 250, 123, 0.1)' : '1px solid transparent'
+                                                    }}>
+                                                        <div 
+                                                            onClick={() => handleUpdate(domain.title, idx, 'check')}
                                                             style={{ 
-                                                                width: '80px', cursor: item.completed ? 'not-allowed' : 'pointer',
-                                                                accentColor: status.color, height: '4px'
-                                                            }} 
-                                                        />
-                                                        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: status.color, textTransform: 'uppercase', minWidth: '90px', textAlign: 'right' }}>
-                                                            {status.label} {item.progress > 0 && !item.completed && ` (${item.progress}%)`}
+                                                                width: '32px', height: '32px', borderRadius: '50%', 
+                                                                background: item.completed ? '#50fa7b' : 'rgba(255,255,255,0.05)', 
+                                                                display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                                                fontWeight: 'bold', fontSize: '0.8rem', flexShrink: 0,
+                                                                cursor: 'pointer', border: item.completed ? 'none' : '1px solid var(--border-color)',
+                                                                color: item.completed ? '#000' : 'white', boxShadow: item.completed ? '0 0 10px rgba(80, 250, 123, 0.4)' : 'none',
+                                                                transition: 'all 0.2s'
+                                                            }}
+                                                        >
+                                                            {item.completed ? <Check size={18} strokeWidth={3} /> : idx + 1}
+                                                        </div>
+
+                                                        <div style={{ flex: 1 }}>
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                                                                <div style={{ fontSize: '1.05rem', fontWeight: 700, textDecoration: item.completed ? 'line-through' : 'none', color: item.completed ? 'var(--text-secondary)' : 'white', opacity: item.completed ? 0.7 : 1 }}>
+                                                                    Stage {idx + 1}: {step}
+                                                                </div>
+                                                                
+                                                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(0,0,0,0.2)', padding: '4px 12px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                                                    <input 
+                                                                        type="range" 
+                                                                        min="0" max="100" 
+                                                                        value={item.progress}
+                                                                        onChange={(e) => handleUpdate(domain.title, idx, 'slider', e.target.value)}
+                                                                        disabled={item.completed}
+                                                                        style={{ 
+                                                                            width: '80px', cursor: item.completed ? 'not-allowed' : 'pointer',
+                                                                            accentColor: status.color, height: '4px'
+                                                                        }} 
+                                                                    />
+                                                                    <div style={{ fontSize: '0.7rem', fontWeight: 700, color: status.color, textTransform: 'uppercase', minWidth: '90px', textAlign: 'right' }}>
+                                                                        {status.label} {item.progress > 0 && !item.completed && ` (${item.progress}%)`}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', opacity: item.completed ? 0.5 : 1 }}>
+                                                                <p style={{ fontSize: '0.9rem' }}>Comprehensive learning objectives including practical implementation and theoretical foundations for this stage.</p>
+                                                                <ul style={{ paddingLeft: '1.2rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                                                                    <li>Month {(idx * 1.5).toFixed(0)}-{(idx * 1.5 + 1.5).toFixed(0)} Intensive study</li>
+                                                                    <li>Project-based practical validation</li>
+                                                                </ul>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                
-                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', opacity: item.completed ? 0.5 : 1 }}>
-                                                    <p style={{ fontSize: '0.9rem' }}>Comprehensive learning objectives including practical implementation and theoretical foundations for this stage.</p>
-                                                    <ul style={{ paddingLeft: '1.2rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                                                        <li>Month {(idx * 1.5).toFixed(0)}-{(idx * 1.5 + 1.5).toFixed(0)} Intensive study</li>
-                                                        <li>Project-based practical validation</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
+                                                );
+                                            })}
                                         </div>
-                                    );
-                                })}
-                            </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </section>
                     );
                 })}

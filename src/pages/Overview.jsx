@@ -5,11 +5,14 @@ import {
   TrendingUp, BarChart2, MoreHorizontal, ArrowRight, Activity
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
+import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 const Overview = () => {
     const { focusMinutes, roadmapProgress, activeDays, getSkillLevel } = useProgress();
+    const { user } = useAuth();
+    const displayName = user?.name || user?.email?.split('@')[0] || 'Learner';
     const [selectedPeriod, setSelectedPeriod] = useState('Last 7 days');
 
     // --- 1. REAL DATA CALCULATION ---
@@ -79,12 +82,9 @@ const Overview = () => {
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
-                    <h1 className="h1" style={{ marginBottom: '0.5rem' }}>Welcome back, John</h1>
+                    <h1 className="h1" style={{ marginBottom: '0.5rem' }}>Welcome back, {displayName}</h1>
                     <p className="body-sm">You've maintained a {activeDays.length} day streak! Keep it up!</p>
                 </div>
-                <button className="btn btn-primary" style={{ borderRadius: '20px', padding: '0.5rem 1.5rem' }}>
-                    + Start New Session
-                </button>
             </div>
 
             {/* Stats Row */}
@@ -209,7 +209,6 @@ const Overview = () => {
                 <div>
                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                          <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>AI Recommendations</h3>
-                         <span style={{ fontSize: '0.75rem', color: 'var(--accent-color)', cursor: 'pointer' }}>Refine AI ✨</span>
                     </div>
                     <div style={{ 
                         background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)', 

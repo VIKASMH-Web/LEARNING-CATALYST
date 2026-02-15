@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Layout, Map, Play, Code, Clock, User, Target, Mic, HelpCircle, X, CheckCircle
+  Layout, Map, Play, Code, Clock, User, Target, Mic, HelpCircle, X, CheckCircle, Crown
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { requestNotificationPermission, notifyProUpgrade } from '../../utils/notifications';
 
 const Sidebar = () => {
   const { logout, user } = useAuth();
@@ -12,6 +13,15 @@ const Sidebar = () => {
   const [utr, setUtr] = useState('');
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
+  const [isPro, setIsPro] = useState(() => localStorage.getItem('lc_pro_unlocked') === 'true');
+
+  useEffect(() => {
+    const check = () => setIsPro(localStorage.getItem('lc_pro_unlocked') === 'true');
+    window.addEventListener('storage', check);
+    // Request notification permission on mount
+    requestNotificationPermission();
+    return () => window.removeEventListener('storage', check);
+  }, []);
 
   const menuItems = [
     { path: '/', name: 'Dashboard', icon: Layout },
@@ -30,6 +40,9 @@ const Sidebar = () => {
       setVerifying(false);
       setVerified(true);
       localStorage.setItem('lc_pro_unlocked', 'true');
+      setIsPro(true);
+      // Send real device notification
+      notifyProUpgrade();
       setTimeout(() => { setShowPayment(false); setVerified(false); setUtr(''); }, 2500);
     }, 2000);
   };
@@ -41,11 +54,16 @@ const Sidebar = () => {
           
           {/* Logo Section */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem', paddingLeft: '0.5rem' }}>
-            <img 
-              src="/lc-logo-icon.png" 
-              alt="LC Logo" 
-              style={{ width: '36px', height: '36px', borderRadius: '10px', objectFit: 'cover' }} 
-            />
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ borderRadius: '10px', flexShrink: 0 }}>
+              <defs>
+                <linearGradient id="logoBg" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#7c3aed"/>
+                  <stop offset="1" stopColor="#4f46e5"/>
+                </linearGradient>
+              </defs>
+              <rect width="36" height="36" rx="10" fill="url(#logoBg)"/>
+              <text x="18" y="24" textAnchor="middle" fill="white" fontFamily="Inter, sans-serif" fontWeight="800" fontSize="16" letterSpacing="-0.5">LC</text>
+            </svg>
             <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
               Catalyst
             </span>
@@ -110,32 +128,64 @@ const Sidebar = () => {
             </NavLink>
 
             {/* Pro Plan Card */}
-            <div style={{ 
-              padding: '1rem', borderRadius: '16px', 
-              background: 'var(--bg-card)', border: '1px solid var(--border-color)',
-              display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '0.75rem'
-            }}>
-              <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-primary)' }}>Pro Plan</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', lineHeight: 1.4 }}>
-                Get unlimited AI mentoring and interview practice.
+            {isPro ? (
+              /* Active Pro Plan Badge */
+              <div style={{ 
+                padding: '1rem', borderRadius: '16px', 
+                background: 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(80,250,123,0.08))',
+                border: '1px solid rgba(124,58,237,0.25)',
+                display: 'flex', alignItems: 'center', gap: '10px', marginTop: '0.75rem'
+              }}>
+                <div style={{
+                  width: 36, height: 36, borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                }}>
+                  <Crown size={18} color="white" />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#a78bfa', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    Pro Plan
+                    <span style={{
+                      padding: '2px 6px', borderRadius: '6px',
+                      background: 'rgba(80,250,123,0.15)', color: '#50fa7b',
+                      fontSize: '0.6rem', fontWeight: 800, textTransform: 'uppercase'
+                    }}>Active</span>
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', marginTop: '2px' }}>
+                    All features unlocked
+                  </div>
+                </div>
               </div>
-              <button 
-                onClick={() => setShowPayment(true)}
-                style={{
-                  padding: '0.5rem', borderRadius: '10px', border: 'none',
-                  background: '#7c3aed', color: 'white', fontSize: '0.8rem',
-                  fontWeight: 700, cursor: 'pointer', marginTop: '4px', transition: 'all 0.2s'
-                }}
-              >
-                Upgrade
-              </button>
-            </div>
+            ) : (
+              /* Upgrade Card */
+              <div style={{ 
+                padding: '1rem', borderRadius: '16px', 
+                background: 'var(--bg-card)', border: '1px solid var(--border-color)',
+                display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '0.75rem'
+              }}>
+                <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-primary)' }}>Pro Plan</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', lineHeight: 1.4 }}>
+                  Get unlimited AI mentoring and interview practice.
+                </div>
+                <button 
+                  onClick={() => setShowPayment(true)}
+                  style={{
+                    padding: '0.5rem', borderRadius: '10px', border: 'none',
+                    background: '#7c3aed', color: 'white', fontSize: '0.8rem',
+                    fontWeight: 700, cursor: 'pointer', marginTop: '4px', transition: 'all 0.2s'
+                  }}
+                >
+                  Upgrade
+                </button>
+              </div>
+            )}
           </div>
 
         </div>
       </nav>
 
-      {/* ====== UPI PAYMENT MODAL (same as Resources) ====== */}
+      {/* ====== UPI PAYMENT MODAL ====== */}
       <AnimatePresence>
         {showPayment && (
           <motion.div

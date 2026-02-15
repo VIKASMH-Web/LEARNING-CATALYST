@@ -227,10 +227,18 @@ const CareerPlanner = () => {
                 </div>
 
                 <motion.button 
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ scale: 1.02, boxShadow: '0 8px 25px rgba(124, 58, 237, 0.4)' }}
                     whileTap={{ scale: 0.98 }}
-                    className="primary-button"
-                    style={{ marginTop: '1rem', width: '100%', justifyContent: 'center' }}
+                    type="submit"
+                    style={{ 
+                        marginTop: '1rem', width: '100%', 
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                        background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
+                        border: 'none', borderRadius: '12px', padding: '14px 24px',
+                        color: 'white', fontWeight: 700, fontSize: '1rem',
+                        cursor: 'pointer', letterSpacing: '-0.01em',
+                        transition: 'all 0.2s ease'
+                    }}
                 >
                     Generate Roadmap <ArrowRight size={18} />
                 </motion.button>
