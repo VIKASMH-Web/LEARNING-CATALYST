@@ -31,13 +31,15 @@ const BADGE_DEFINITIONS = [
         desc: 'Reach 50% in any roadmap', 
         requirement: 50, unit: '%',
         getProgress: (ctx) => {
-            let max = 0;
-            const totals = JSON.parse(localStorage.getItem('lc_domain_totals') || '{}');
-            Object.keys(totals).forEach(domain => {
-                const stats = ctx.getSkillLevel(domain);
-                if (stats.percentage > max) max = stats.percentage;
-            });
-            return max;
+            try {
+                let max = 0;
+                const totals = JSON.parse(localStorage.getItem('lc_domain_totals') || '{}');
+                Object.keys(totals).forEach(domain => {
+                    const stats = ctx.getSkillLevel ? ctx.getSkillLevel(domain) : { percentage: 0 };
+                    if (stats && stats.percentage > max) max = stats.percentage;
+                });
+                return max;
+            } catch { return 0; }
         }
     },
     { 
@@ -45,38 +47,54 @@ const BADGE_DEFINITIONS = [
         desc: 'Reach 70% in any roadmap', 
         requirement: 70, unit: '%',
         getProgress: (ctx) => {
-            let max = 0;
-            const totals = JSON.parse(localStorage.getItem('lc_domain_totals') || '{}');
-            Object.keys(totals).forEach(domain => {
-                const stats = ctx.getSkillLevel(domain);
-                if (stats.percentage > max) max = stats.percentage;
-            });
-            return max;
+            try {
+                let max = 0;
+                const totals = JSON.parse(localStorage.getItem('lc_domain_totals') || '{}');
+                Object.keys(totals).forEach(domain => {
+                    const stats = ctx.getSkillLevel ? ctx.getSkillLevel(domain) : { percentage: 0 };
+                    if (stats && stats.percentage > max) max = stats.percentage;
+                });
+                return max;
+            } catch { return 0; }
         }
     },
 ];
 
 const Profile = () => {
-    const ctx = useProgress();
-    const { activeDays, focusMinutes, codeRuns, badges, getSkillLevel, generateWeeklyReport } = ctx;
+    const ctx = useProgress() || {};
+    const activeDays = ctx.activeDays || [];
+    const focusMinutes = ctx.focusMinutes || 0;
+    const codeRuns = ctx.codeRuns || 0;
+    const badges = ctx.badges || {};
+    const getSkillLevel = ctx.getSkillLevel;
+    const generateWeeklyReport = ctx.generateWeeklyReport;
 
     // --- EDITABLE PROFILE STATE ---
     const [isEditing, setIsEditing] = useState(false);
     const bannerInputRef = useRef(null);
     const avatarInputRef = useRef(null);
 
+    const defaultProfile = {
+        name: 'Your Name',
+        title: 'Your Role / Title',
+        location: 'Your Location',
+        email: 'your.email@example.com',
+        bio: 'Tell us about yourself...',
+        avatarUrl: null,
+        bannerUrl: null,
+        focusAreas: ['Add your first skill'],
+    };
+
     const [profile, setProfile] = useState(() => {
-        const saved = localStorage.getItem('lc_profile');
-        return saved ? JSON.parse(saved) : {
-            name: 'Your Name',
-            title: 'Your Role / Title',
-            location: 'Your Location',
-            email: 'your.email@example.com',
-            bio: 'Tell us about yourself...',
-            avatarUrl: null,   // NULL = LinkedIn-style default
-            bannerUrl: null,   // NULL = default gradient
-            focusAreas: ['Add your first skill'],
-        };
+        try {
+            const saved = localStorage.getItem('lc_profile');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                // Merge with defaults to ensure all fields exist
+                return { ...defaultProfile, ...parsed, focusAreas: Array.isArray(parsed.focusAreas) ? parsed.focusAreas : defaultProfile.focusAreas };
+            }
+        } catch (e) { /* ignore parse errors */ }
+        return defaultProfile;
     });
 
     useEffect(() => {
@@ -99,13 +117,14 @@ const Profile = () => {
     // --- FOCUS AREA MANAGEMENT ---
     const [newFocusArea, setNewFocusArea] = useState('');
     const addFocusArea = () => {
-        if (newFocusArea.trim() && !profile.focusAreas.includes(newFocusArea.trim())) {
-            setProfile(prev => ({ ...prev, focusAreas: [...prev.focusAreas, newFocusArea.trim()] }));
+        const areas = profile.focusAreas || [];
+        if (newFocusArea.trim() && !areas.includes(newFocusArea.trim())) {
+            setProfile(prev => ({ ...prev, focusAreas: [...(prev.focusAreas || []), newFocusArea.trim()] }));
             setNewFocusArea('');
         }
     };
     const removeFocusArea = (tag) => {
-        setProfile(prev => ({ ...prev, focusAreas: prev.focusAreas.filter(t => t !== tag) }));
+        setProfile(prev => ({ ...prev, focusAreas: (prev.focusAreas || []).filter(t => t !== tag) }));
     };
 
     // --- COGNITIVE PERFORMANCE DATA ---
@@ -294,7 +313,7 @@ const Profile = () => {
                     <div className="glass-card" style={{ padding: '2rem' }}>
                         <h3 className="h3" style={{ marginBottom: '1.5rem' }}>Focus Areas</h3>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'center' }}>
-                            {profile.focusAreas.map(tag => (
+                            {(profile.focusAreas || []).map(tag => (
                                 <span key={tag} style={{ 
                                     padding: '6px 14px', background: 'var(--bg-elevated)', 
                                     borderRadius: '20px', border: '1px solid var(--border-color)', 
