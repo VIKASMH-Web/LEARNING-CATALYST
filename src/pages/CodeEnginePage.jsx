@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Code, Loader2, AlertCircle, Hash, GitBranch, TerminalSquare, Languages, BookOpen, Lightbulb, Volume2, Pause, StopCircle } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { analyzeCodeLocally } from '../utils/codeAnalysis';
+import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary';
 
 const CodeEnginePage = () => {
     const { incrementCodeRuns } = useProgress();
@@ -168,6 +169,7 @@ const CodeEnginePage = () => {
 
     // --- RENDER ---
     return (
+      <ErrorBoundary>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', height: '100%' }}>
             {/* Header */}
             <div className="page-header" style={{ marginBottom: '1rem' }}>
@@ -384,6 +386,7 @@ const CodeEnginePage = () => {
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
             `}</style>
         </div>
+      </ErrorBoundary>
     );
 };
 
