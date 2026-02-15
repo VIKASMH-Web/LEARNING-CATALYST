@@ -25,8 +25,12 @@ const Sidebar = () => {
     // Listen for storage changes in other tabs
     const check = () => setIsPro(localStorage.getItem(storageKey) === 'true');
     window.addEventListener('storage', check);
+    window.addEventListener('pro-status-update', check);
     requestNotificationPermission();
-    return () => window.removeEventListener('storage', check);
+    return () => {
+      window.removeEventListener('storage', check);
+      window.removeEventListener('pro-status-update', check);
+    };
   }, [storageKey]);
 
   const menuItems = [
@@ -151,7 +155,7 @@ const Sidebar = () => {
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#a78bfa', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    Pro Plan
+                    Pro Premium Member
                     <span style={{
                       padding: '2px 6px', borderRadius: '6px',
                       background: 'rgba(80,250,123,0.15)', color: '#50fa7b',

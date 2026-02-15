@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Youtube, X, PlayCircle, Clock, User, AlertCircle, FileText, Download, HelpCircle, Lock, Zap, CheckCircle, XCircle, UserMinus } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const resourcesData = {
   "Full Stack Developer": [
@@ -118,9 +119,26 @@ const getTechIcon = (title, category = '') => {
 };
 
 const Resources = () => {
+    const { user } = useAuth();
+    const storageKey = user?.id ? `lc_pro_${user.id}` : 'lc_pro_guest';
+    
     const [selectedVideo, setSelectedVideo] = useState(null);
     const [showRequestModal, setShowRequestModal] = useState(false);
-    const [isPremium, setIsPremium] = useState(false); // DEFAULT FALSE FOR DEMO (To test Payment)
+    
+    // Initialize from localStorage
+    const [isPremium, setIsPremium] = useState(() => localStorage.getItem(storageKey) === 'true');
+    
+    // Listen for changes
+    React.useEffect(() => {
+        const check = () => setIsPremium(localStorage.getItem(storageKey) === 'true');
+        window.addEventListener('storage', check);
+        window.addEventListener('pro-status-update', check);
+        return () => {
+            window.removeEventListener('storage', check);
+            window.removeEventListener('pro-status-update', check);
+        };
+    }, [storageKey]);
+
     const [requestForm, setRequestForm] = useState({ topic: '', domain: 'Full Stack', difficulty: 'Beginner', language: 'English', email: '' });
     const [generatedContent, setGeneratedContent] = useState(null);
     const [isGenerating, setIsGenerating] = useState(false);
@@ -159,7 +177,9 @@ const Resources = () => {
             setIsVerifyingPayment(false);
             if (utrNumber === '123456789012' || utrNumber.length === 12) { // Allow any 12 digit for demo
                 alert("Payment Verified Successfully! You are now a Premium Member. Notes will be sent to your email.");
+                localStorage.setItem(storageKey, 'true');
                 setIsPremium(true);
+                window.dispatchEvent(new Event('pro-status-update'));
                 setShowPaymentModal(false);
                 // Regenerate full text since we are now premium
                 if (generatedContent) {

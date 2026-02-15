@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Clock, Zap, Trophy, Target, 
-  TrendingUp, BarChart2, MoreHorizontal, ArrowRight, Activity
+  TrendingUp, BarChart2, MoreHorizontal, ArrowRight, Activity,
+  Lock, CheckCircle, AlertTriangle, FileText
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
@@ -14,20 +15,29 @@ const Overview = () => {
     const { user } = useAuth();
     const displayName = user?.name || user?.email?.split('@')[0] || 'Learner';
     const [selectedPeriod, setSelectedPeriod] = useState('Last 7 days');
+    const [showReport, setShowReport] = useState(false);
+
+    // Pro Status Check
+    const storageKey = user?.id ? `lc_pro_${user.id}` : 'lc_pro_guest';
+    const [isPro, setIsPro] = useState(() => localStorage.getItem(storageKey) === 'true');
+
+    useEffect(() => {
+        const check = () => setIsPro(localStorage.getItem(storageKey) === 'true');
+        window.addEventListener('storage', check);
+        window.addEventListener('pro-status-update', check);
+        return () => {
+            window.removeEventListener('storage', check);
+            window.removeEventListener('pro-status-update', check);
+        };
+    }, [storageKey]);
 
     // --- 1. REAL DATA CALCULATION ---
     const totalHours = (focusMinutes / 60).toFixed(1);
-    
-    // Count completed STAGES across all roadmaps
     const completedStages = Object.values(roadmapProgress).filter(item => item.completed).length;
-
-    // Avg Score (Mocked for now, but linked to data structure)
     const avgScore = 92; 
-    const rank = "#42"; // Placeholder
+    const rank = "#42"; 
 
-    // --- 2. ACTIVITY CHART DATA (Mocked based on activeDays) ---
-    // In a real app, we would query the backend for daily focus duration.
-    // Here we generate plausible data for the chart.
+    // --- 2. ACTIVITY CHART DATA ---
     const activityData = [
         { day: 'Mon', hours: 2.5 },
         { day: 'Tue', hours: 3.8 },
@@ -38,38 +48,105 @@ const Overview = () => {
         { day: 'Sun', hours: 3.5 },
     ];
 
-    // --- 3. SKILL RADAR DATA ---
-    const skills = [
-        { subject: 'React', A: getSkillLevel('Full Stack Developer').percentage || 60, fullMark: 100 },
-        { subject: 'Node.js', A: getSkillLevel('Backend Developer').percentage || 40, fullMark: 100 },
-        { subject: 'Python', A: getSkillLevel('Python').percentage || 20, fullMark: 100 },
-        { subject: 'System Design', A: 45, fullMark: 100 },
-        { subject: 'Algorithms', A: 55, fullMark: 100 },
-        { subject: 'AI/ML', A: getSkillLevel('AI Engineer').percentage || 10, fullMark: 100 },
+    // --- 3. SKILL INTELLIGENCE 2.0 LOGIC ---
+    
+    // Helper to calculate score
+    const calculateSkillScore = (clusterName, roadmapKey, weights) => {
+        // Mocked inputs where real data represents 1.0 scale
+        const roadmapVal = (getSkillLevel(roadmapKey).percentage || 0) / 100;
+        const codeAccuracy = 0.85; // Mock: 85% correct runs
+        const interviewScore = 0.75; // Mock: 75% interview performance
+        const focusConsistency = Math.min(activeDays.length / 5, 1); // Mock based on streak
+
+        const rawScore = (
+            (weights.roadmap * roadmapVal) +
+            (weights.code * codeAccuracy) +
+            (weights.interview * interviewScore) +
+            (weights.focus * focusConsistency)
+        ) * 100;
+
+        return Math.min(100, Math.round(rawScore));
+    };
+
+    // Helper for momentum
+    const getMomentum = (growth) => {
+        if (growth > 3) return { status: 'Strong Growth', color: '#50fa7b', icon: '🚀' }; // Green
+        if (growth >= -2) return { status: 'Stable', color: '#f1fa8c', icon: '⚖️' }; // Yellow
+        return { status: 'Declining', color: '#ff5555', icon: '🔻' }; // Red
+    };
+
+    const clusters = [
+        { 
+            name: 'Frontend Engineering', 
+            roadmapKey: 'Full Stack Developer',
+            weights: { roadmap: 0.4, code: 0.3, interview: 0.1, focus: 0.2 },
+            weakest: 'State Management',
+            nextAction: 'Build a Redux toolkit project',
+            growth: 4.2 
+        },
+        { 
+            name: 'Backend Engineering', 
+            roadmapKey: 'Backend Developer',
+            weights: { roadmap: 0.4, code: 0.4, interview: 0.1, focus: 0.1 },
+            weakest: 'Database Indexing',
+            nextAction: 'Optimize SQL queries in Code Engine',
+            growth: 1.5 
+        },
+        { 
+            name: 'Problem Solving', 
+            roadmapKey: 'DSA', // Assuming DSA roadmap exists or maps to something
+            weights: { roadmap: 0.2, code: 0.6, interview: 0.1, focus: 0.1 },
+            weakest: 'Dynamic Programming',
+            nextAction: 'Solve 3 DP problems',
+            growth: 5.8 
+        },
+        { 
+            name: 'System Design', 
+            roadmapKey: 'System Design',
+            weights: { roadmap: 0.3, code: 0.1, interview: 0.4, focus: 0.2 },
+            weakest: 'Load Balancing',
+            nextAction: 'Design a scalable chat app',
+            growth: -0.5 
+        },
+        { 
+            name: 'AI / ML', 
+            roadmapKey: 'AI Engineer',
+            weights: { roadmap: 0.5, code: 0.2, interview: 0.1, focus: 0.2 },
+            weakest: 'Neural Networks',
+            nextAction: 'Complete PyTorch basics',
+            growth: 2.1 
+        }
     ];
 
-    // --- 4. BROWSER NOTIFICATIONS ---
-    useEffect(() => {
-        if ('Notification' in window && Notification.permission !== 'granted') {
-            Notification.requestPermission();
-        }
-    }, []);
+    const processedSkills = clusters.map(c => {
+        const score = calculateSkillScore(c.name, c.roadmapKey, c.weights);
+        const momentum = getMomentum(c.growth);
+        return {
+            ...c,
+            score,
+            momentum
+        };
+    });
 
-    // --- 5. CURRENT ROADMAPS (SORTED BY RECENT) ---
-    // Get unique roadmap names from progress
+    // --- 4. WEEKLY GROWTH REPORT DATA ---
+    // Learning Velocity Score
+    const consistencyScore = 85; 
+    const skillImprovement = 4.2; 
+    const difficultyMultiplier = 1.2;
+    const lvs = Math.round((consistencyScore * skillImprovement * difficultyMultiplier) / 10); // Scaled for 0-100 logic roughly
+
+    // --- 5. CURRENT ROADMAPS ---
     const activeRoadmaps = Array.from(new Set(
         Object.keys(roadmapProgress).map(k => k.split('-')[0])
     )).map(title => {
         const stats = getSkillLevel(title);
         return { title, ...stats };
-    }).sort((a,b) => b.percentage - a.percentage).slice(0, 3); // Top 3
+    }).sort((a,b) => b.percentage - a.percentage).slice(0, 3);
 
-    // Fallback if empty
     if (activeRoadmaps.length === 0) {
         activeRoadmaps.push({ title: "Full Stack Developer", percentage: 0, levelColor: "#bd93f9" });
     }
 
-    // --- 6. AI RECOMMENDATION ---
     const recommendedRoadmap = activeRoadmaps.find(r => r.percentage < 100) || activeRoadmaps[0];
 
     return (
@@ -77,7 +154,7 @@ const Overview = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
+            style={{ display: 'flex', flexDirection: 'column', gap: '2rem', paddingBottom: '4rem' }}
         >
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
@@ -85,44 +162,35 @@ const Overview = () => {
                     <h1 className="h1" style={{ marginBottom: '0.5rem' }}>Welcome back, {displayName}</h1>
                     <p className="body-sm">You've maintained a {activeDays.length} day streak! Keep it up!</p>
                 </div>
+                <button 
+                    onClick={() => setShowReport(true)}
+                    style={{
+                        padding: '0.75rem 1.25rem',
+                        background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+                        color: 'white', border: 'none', borderRadius: '12px',
+                        fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', gap: '8px',
+                        boxShadow: '0 4px 12px rgba(124, 58, 237, 0.3)'
+                    }}
+                >
+                    <FileText size={18} />
+                    View Weekly Report
+                    {!isPro && <Lock size={14} style={{ opacity: 0.8 }} />}
+                </button>
             </div>
 
             {/* Stats Row */}
             <div className="grid-cols-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem' }}>
-                <StatsCard 
-                    icon={<Clock size={20} color="#8be9fd" />} 
-                    label="Total Study Time" 
-                    value={`${totalHours}h`} 
-                    trend="+12%" 
-                    trendColor="#50fa7b"
-                />
-                <StatsCard 
-                    icon={<Zap size={20} color="#ffb86c" />} 
-                    label="Stages Completed" 
-                    value={completedStages} 
-                    trend="+2" 
-                    trendColor="#50fa7b"
-                />
-                <StatsCard 
-                    icon={<Target size={20} color="#bd93f9" />} 
-                    label="Avg. Score" 
-                    value={`${avgScore}%`} 
-                    trend="+3%" 
-                    trendColor="#50fa7b"
-                />
-                <StatsCard 
-                    icon={<TrendingUp size={20} color="#ff5555" />} 
-                    label="Global Rank" 
-                    value={rank} 
-                    trend="-2" 
-                    trendColor="#ffb86c" 
-                />
+                <StatsCard icon={<Clock size={20} color="#8be9fd" />} label="Total Study Time" value={`${totalHours}h`} trend="+12%" trendColor="#50fa7b" />
+                <StatsCard icon={<Zap size={20} color="#ffb86c" />} label="Stages Completed" value={completedStages} trend="+2" trendColor="#50fa7b" />
+                <StatsCard icon={<Target size={20} color="#bd93f9" />} label="Avg. Score" value={`${avgScore}%`} trend="+3%" trendColor="#50fa7b" />
+                <StatsCard icon={<TrendingUp size={20} color="#ff5555" />} label="Global Rank" value={rank} trend="-2" trendColor="#ffb86c" />
             </div>
 
             {/* Charts Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1.5rem' }}>
                 {/* Learning Activity Chart */}
-                <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', minHeight: '300px' }}>
+                <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', maxHeight: '500px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                         <div>
                             <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Learning Activity</h3>
@@ -132,8 +200,7 @@ const Overview = () => {
                             {selectedPeriod}
                         </div>
                     </div>
-                    
-                    <div style={{ flex: 1, width: '100%', minHeight: 0 }}>
+                    <div style={{ flex: 1, width: '100%', minHeight: '300px' }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={activityData}>
                                 <defs>
@@ -142,48 +209,73 @@ const Overview = () => {
                                         <stop offset="95%" stopColor="#7c3aed" stopOpacity={0}/>
                                     </linearGradient>
                                 </defs>
-                                <XAxis 
-                                    dataKey="day" 
-                                    tick={{fill: 'var(--text-secondary)', fontSize: 12}} 
-                                    axisLine={false} tickLine={false} 
-                                />
-                                {/* <YAxis hide /> */}
-                                <Tooltip 
-                                    contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: '8px' }}
-                                    itemStyle={{ color: 'white' }}
-                                />
-                                <Area 
-                                    type="monotone" 
-                                    dataKey="hours" 
-                                    stroke="var(--accent-color)" 
-                                    strokeWidth={3}
-                                    fillOpacity={1} 
-                                    fill="url(#colorMeasure)" 
-                                />
+                                <XAxis dataKey="day" tick={{fill: 'var(--text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
+                                <Tooltip contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: '8px' }} itemStyle={{ color: 'white' }} />
+                                <Area type="monotone" dataKey="hours" stroke="var(--accent-color)" strokeWidth={3} fillOpacity={1} fill="url(#colorMeasure)" />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
                 {/* Skill Intelligence Radar */}
-                <div className="glass-card" style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                          <div>
                             <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Skill Intelligence</h3>
-                            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>AI-evaluated proficiency</p>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Live AI Proficiency Tracking</p>
                         </div>
                         <MoreHorizontal size={16} color="var(--text-secondary)" />
                     </div>
                     
-                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                        <RadarChart skills={skills} />
+                    <div style={{ height: '250px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <RadarChart skills={processedSkills} />
+                    </div>
+
+                    {/* D. UI ADDITIONS (Below Radar) */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
+                        {processedSkills.map((skill, i) => (
+                            <div key={i} style={{ 
+                                padding: '1rem', borderRadius: '12px', 
+                                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)'
+                            }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                    <span style={{ fontWeight: 600, fontSize: '0.9rem', color: 'white' }}>{skill.name}</span>
+                                    <span style={{ 
+                                        fontSize: '0.75rem', fontWeight: 700, 
+                                        color: skill.momentum.color, background: 'rgba(0,0,0,0.3)',
+                                        padding: '2px 8px', borderRadius: '8px', display: 'flex', gap: '4px', alignItems: 'center'
+                                    }}>
+                                        {skill.momentum.icon} {skill.momentum.status}
+                                    </span>
+                                </div>
+                                
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.5rem' }}>
+                                    <div>
+                                        <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--accent-color)' }}>{skill.score}%</div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Mastery</div>
+                                    </div>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: skill.growth >= 0 ? '#50fa7b' : '#ff5555' }}>
+                                            {skill.growth > 0 ? '+' : ''}{skill.growth}%
+                                        </div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>This Week</div>
+                                    </div>
+                                </div>
+
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', marginBottom: '4px' }}>
+                                    <strong style={{ color: '#ffb86c' }}>Weakest:</strong> {skill.weakest}
+                                </div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>
+                                    <strong style={{ color: '#8be9fd' }}>Action:</strong> {skill.nextAction}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
 
             {/* Bottom Row */}
             <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1.5rem' }}>
-                {/* Current Roadmaps */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                          <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Current Roadmaps</h3>
@@ -191,21 +283,12 @@ const Overview = () => {
                             View All <ArrowRight size={14} />
                          </Link>
                     </div>
-                    
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         {activeRoadmaps.map((map, i) => (
-                             <RoadmapItem 
-                                key={i}
-                                icon={i === 0 ? "⚛️" : i === 1 ? "🏗️" : "🤖"} 
-                                title={map.title} 
-                                progress={map.percentage} 
-                                color={map.levelColor} 
-                            />
+                             <RoadmapItem key={i} icon={i === 0 ? "⚛️" : i === 1 ? "🏗️" : "🤖"} title={map.title} progress={map.percentage} color={map.levelColor} />
                         ))}
                     </div>
                 </div>
-
-                {/* AI Recommendations */}
                 <div>
                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                          <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>AI Recommendations</h3>
@@ -220,7 +303,7 @@ const Overview = () => {
                             <div style={{ fontSize: '0.75rem', fontWeight: 700, opacity: 0.8, marginBottom: '0.5rem', letterSpacing: '0.5px' }}>NEXT CHALLENGE</div>
                             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.75rem' }}>Mastering {recommendedRoadmap.title}</h3>
                             <p style={{ fontSize: '0.85rem', opacity: 0.9, lineHeight: 1.5, maxWidth: '90%' }}>
-                                Based on your progress ({recommendedRoadmap.percentage}%), continue to the next module to bridge your skill gap.
+                                Based on your progress ({recommendedRoadmap.percentage}%), continue to the next module.
                             </p>
                         </div>
                         <Link to="/roadmaps" style={{ 
@@ -234,6 +317,177 @@ const Overview = () => {
                     </div>
                 </div>
             </div>
+
+            {/* WEEKLY REPORT MODAL */}
+            <AnimatePresence>
+                {showReport && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setShowReport(false)}
+                        style={{
+                            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)',
+                            backdropFilter: 'blur(4px)', zIndex: 1000,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        }}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            onClick={e => e.stopPropagation()}
+                            style={{
+                                width: '90%', maxWidth: '800px', maxHeight: '90vh', overflowY: 'auto',
+                                background: '#18181b', border: '1px solid #27272a', borderRadius: '24px',
+                                padding: '2rem', position: 'relative'
+                            }}
+                        >
+                            <button onClick={() => setShowReport(false)} style={{ position: 'absolute', top: 20, right: 20, border: 'none', background: 'none', color: '#71717a', cursor: 'pointer' }}>
+                                <AlertTriangle size={24} style={{ transform: 'rotate(180deg)', display: 'none' }} /> 
+                                <span style={{fontSize: '1.5rem'}}>×</span>
+                            </button>
+
+                            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                                <div style={{ 
+                                    display: 'inline-flex', alignItems: 'center', gap: '8px',
+                                    background: 'rgba(124, 58, 237, 0.1)', color: '#a78bfa',
+                                    padding: '6px 16px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 600,
+                                    marginBottom: '1rem'
+                                }}>
+                                    <CheckCircle size={16} /> Weekly Growth Report
+                                </div>
+                                <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'white' }}>Your Weekly Intelligence</h2>
+                                <p style={{ color: '#a1a1aa' }}>Feb 12 - Feb 19 • Week 7</p>
+                            </div>
+
+                            {/* Free Tier Content */}
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+                                <div className="glass-card" style={{ padding: '1.5rem', textAlign: 'center' }}>
+                                    <div style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Study Time</div>
+                                    <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'white' }}>12.5h</div>
+                                </div>
+                                <div className="glass-card" style={{ padding: '1.5rem', textAlign: 'center' }}>
+                                    <div style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Sessions</div>
+                                    <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'white' }}>8</div>
+                                </div>
+                                <div className="glass-card" style={{ padding: '1.5rem', textAlign: 'center' }}>
+                                    <div style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Skill Change</div>
+                                    <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#50fa7b' }}>+2.4%</div>
+                                </div>
+                            </div>
+
+                            {/* Premium Section */}
+                            <div style={{ position: 'relative' }}>
+                                {/* Content (Effective content that is blurred if not pro) */}
+                                <div style={{ 
+                                    filter: isPro ? 'none' : 'blur(8px)', 
+                                    opacity: isPro ? 1 : 0.5,
+                                    pointerEvents: isPro ? 'auto' : 'none',
+                                    transition: 'all 0.3s ease'
+                                }}>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+                                        {/* Learning Velocity Score */}
+                                        <div className="glass-card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, rgba(124,58,237,0.1), rgba(0,0,0,0))' }}>
+                                            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem', color: '#a78bfa' }}>Learning Velocity Score (LVS)</h3>
+                                            <div style={{ fontSize: '3rem', fontWeight: 900, lineHeight: 1 }}>{lvs}</div>
+                                            <div style={{ fontSize: '0.9rem', color: '#50fa7b', marginTop: '0.5rem' }}>+12% from last week</div>
+                                            <p style={{ fontSize: '0.8rem', color: '#71717a', marginTop: '1rem', lineHeight: 1.5 }}>
+                                                Your consistently high focus scores and mock interview performance have boosted your LVS significantly.
+                                            </p>
+                                        </div>
+
+                                        {/* 4-Week Projection */}
+                                        <div className="glass-card" style={{ padding: '1.5rem' }}>
+                                            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem', color: '#a78bfa' }}>4-Week Projection</h3>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                                {processedSkills.slice(0, 3).map((s, i) => (
+                                                    <div key={i}>
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '4px' }}>
+                                                            <span>{s.name}</span>
+                                                            <span style={{ color: '#50fa7b' }}>{s.score}% → {Math.min(100, Math.round(s.score + (s.growth * 4)))}%</span>
+                                                        </div>
+                                                        <div style={{ width: '100%', height: '6px', background: '#27272a', borderRadius: '3px' }}>
+                                                            <div style={{ width: `${s.score}%`, height: '100%', background: '#a78bfa', borderRadius: '3px' }} />
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* AI Action Plan */}
+                                    <div className="glass-card" style={{ padding: '1.5rem' }}>
+                                        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem', color: '#a78bfa' }}>AI Action Plan for Next Week</h3>
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+                                            {[
+                                                "Complete 'Advanced Redux' Module",
+                                                "Book 2 Mock Interviews", 
+                                                "Target 15 Focus Hours",
+                                                "Solve 5 'Graph' Medium Problems"
+                                            ].map((action, i) => (
+                                                <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'center', padding: '10px', background: '#27272a', borderRadius: '8px' }}>
+                                                    <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#7c3aed', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 700 }}>{i+1}</div>
+                                                    <span style={{ fontSize: '0.9rem', color: '#f4f4f5' }}>{action}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* GATE OVERLAY */}
+                                {!isPro && (
+                                    <div style={{
+                                        position: 'absolute', inset: 0, 
+                                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                                        zIndex: 10
+                                    }}>
+                                        <div style={{
+                                            background: '#18181b', border: '1px solid #7c3aed', borderRadius: '24px',
+                                            padding: '2rem', textAlign: 'center', maxWidth: '400px',
+                                            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+                                        }}>
+                                            <div style={{ width: 64, height: 64, margin: '0 auto 1.5rem', borderRadius: '50%', background: 'rgba(124, 58, 237, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Lock size={32} color="#a78bfa" />
+                                            </div>
+                                            <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.5rem', color: 'white' }}>Unlock AI Intelligence</h3>
+                                            <p style={{ color: '#a1a1aa', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+                                                Get deep insights into your learning velocity, weakness detection, and AI-personalized weekly plans.
+                                            </p>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                                {['Weakness Detection', 'AI Action Plans', 'Badge Analytics', 'Skill Projections'].map(f => (
+                                                    <div key={f} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', color: '#e4e4e7' }}>
+                                                        <CheckCircle size={16} color="#50fa7b" /> {f}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <button 
+                                                onClick={() => {
+                                                    // This would ideally open the Sidebar payment modal or route to a pro page
+                                                    // For now, we simulate by closing this and showing an alert or similar
+                                                    // The sidebar controls the payment modal state, so we can't trigger it directly easily without context
+                                                    // But we can just show a button that says "Go to Sidebar to Upgrade" or similar
+                                                    alert("Please use the 'Upgrade' button in the sidebar to unlock Premium features!");
+                                                    setShowReport(false);
+                                                }}
+                                                style={{
+                                                    width: '100%', marginTop: '2rem', padding: '14px',
+                                                    background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+                                                    color: 'white', border: 'none', borderRadius: '12px',
+                                                    fontWeight: 700, cursor: 'pointer', fontSize: '1rem',
+                                                    boxShadow: '0 4px 15px rgba(124, 58, 237, 0.4)'
+                                                }}
+                                            >
+                                                Upgrade Now
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </motion.div>
     );
 };
@@ -268,57 +522,67 @@ const RoadmapItem = ({ icon, title, progress, color }) => (
                 <span style={{ fontSize: '0.75rem', fontWeight: 700, opacity: 0.7 }}>{progress}%</span>
             </div>
             <div style={{ width: '100%', height: '6px', background: 'var(--bg-elevated)', borderRadius: '3px', overflow: 'hidden' }}>
-                <motion.div 
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
-                    style={{ height: '100%', background: color, borderRadius: '3px' }}
-                />
+                <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} style={{ height: '100%', background: color, borderRadius: '3px' }} />
             </div>
         </div>
     </div>
 );
 
-// Simplified Radar Chart SVG (Reused for consistent look without heavy libs if Recharts radar is complex to setup quickly)
-// Actually, passing data to this component makes it dynamic
 const RadarChart = ({ skills }) => {
+    // 5 points polygon for 5 clusters
+    // Vertices at angles: -90, -18, 54, 126, 198 (pi/2 starts top)
+    // Indices 0..4
+    const count = 5;
+    const radius = 100;
+    const center = 110; // slightly padded
+    
+    // Helper to get coordinates
+    const getCoords = (value, i) => {
+        const angle = (Math.PI * 2 * i) / count - Math.PI / 2;
+        const r = radius * value;
+        const x = center + r * Math.cos(angle);
+        const y = center + r * Math.sin(angle);
+        return { x, y };
+    };
+
+    const points = skills.map((s, i) => {
+        const { x, y } = getCoords(s.score / 100, i);
+        return `${x},${y}`;
+    }).join(' ');
+
     return (
         <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="200" height="200" viewBox="0 0 200 200">
+            <svg width="220" height="220" viewBox="0 0 220 220">
                 {/* Background Web */}
                 {[0.2, 0.4, 0.6, 0.8, 1].map(r => (
                     <polygon 
                         key={r}
-                        points="100,20 176,65 176,155 100,200 24,155 24,65"
+                        points={[0,1,2,3,4].map(i => {
+                            const { x, y } = getCoords(r, i);
+                            return `${x},${y}`;
+                        }).join(' ')}
                         fill="none"
                         stroke="var(--border-color)"
                         strokeWidth="1"
-                        transform={`scale(${r})`}
-                        style={{ transformOrigin: 'center' }}
+                        style={{ opacity: 0.5 }}
                     />
                 ))}
                 
                 {/* Data Polygon */}
-                <polygon 
-                    points={skills.map((s, i) => {
-                        const angle = (Math.PI / 3) * i - (Math.PI / 2); // Start at top
-                        const value = s.A / 100;
-                        const r = 90 * value; // Radius 90
-                        const x = 100 + r * Math.cos(angle);
-                        const y = 100 + r * Math.sin(angle);
-                        return `${x},${y}`;
-                    }).join(' ')}
-                    fill="rgba(124, 58, 237, 0.2)"
-                    stroke="var(--accent-color)"
-                    strokeWidth="2"
-                />
+                <polygon points={points} fill="rgba(124, 58, 237, 0.2)" stroke="var(--accent-color)" strokeWidth="2" />
                 
-                {/* Labels (Approximate positions) */}
-                <text x="100" y="15" textAnchor="middle" fill="var(--text-secondary)" fontSize="10">{skills[0].subject}</text>
-                <text x="180" y="60" textAnchor="start" fill="var(--text-secondary)" fontSize="10">{skills[1].subject}</text>
-                <text x="180" y="160" textAnchor="start" fill="var(--text-secondary)" fontSize="10">{skills[2].subject}</text>
-                <text x="100" y="210" textAnchor="middle" fill="var(--text-secondary)" fontSize="10">{skills[3].subject}</text>
-                <text x="20" y="160" textAnchor="end" fill="var(--text-secondary)" fontSize="10">{skills[4].subject}</text>
-                <text x="20" y="60" textAnchor="end" fill="var(--text-secondary)" fontSize="10">{skills[5].subject}</text>
+                {/* Labels */}
+                {skills.map((s, i) => {
+                    const { x, y } = getCoords(1.15, i); // Place labels further out
+                    let anchor = 'middle';
+                    if (x < center - 10) anchor = 'end';
+                    if (x > center + 10) anchor = 'start';
+                    return (
+                        <text key={i} x={x} y={y} textAnchor={anchor} fill="var(--text-secondary)" fontSize="10" dominantBaseline="middle">
+                            {s.name}
+                        </text>
+                    );
+                })}
             </svg>
         </div>
     );

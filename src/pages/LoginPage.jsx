@@ -51,8 +51,10 @@ const LoginPage = () => {
         try {
             await loginWithGoogle();
         } catch (err) {
+            console.error("Google Login Error:", err);
             if (err.code !== 'auth/popup-closed-by-user') {
-                setError('Google login failed. Please try again.');
+                // Show the specific error message to help with debugging
+                setError(err.message || 'Google login failed. Please try again.');
             }
         }
         setLoading(false);
