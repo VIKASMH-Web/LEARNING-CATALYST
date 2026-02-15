@@ -10,6 +10,7 @@ import Profile from './pages/Profile';
 import CareerPlanner from './pages/CareerPlanner';
 import MockInterview from './pages/MockInterview';
 import ProgressProvider from './context/ProgressContext';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
 function App() {
   return (
@@ -21,7 +22,11 @@ function App() {
             <Route path="roadmaps" element={<Roadmap />} />
             <Route path="career-planner" element={<CareerPlanner />} />
             <Route path="resources" element={<Resources />} />
-            <Route path="code-engine" element={<CodeEnginePage />} />
+            <Route path="code-engine" element={
+              <ErrorBoundary>
+                <CodeEnginePage />
+              </ErrorBoundary>
+            } />
             <Route path="mock-interview" element={<MockInterview />} />
             <Route path="focus" element={<FocusMode />} />
             <Route path="profile" element={<Profile />} />

@@ -206,23 +206,23 @@ const CodeEnginePage = () => {
                     AMD Ryzen™ AI Ready
                 </div>
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0 1rem', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary, #0f0f12)', padding: '0 1rem', borderRadius: '10px', border: '1px solid var(--border-color, #29292e)' }}>
                         <Languages size={18} opacity={0.5} />
                         <select 
                             value={explanationLanguage}
                             onChange={(e) => setExplanationLanguage(e.target.value)}
-                            style={{ padding: '0.75rem 0', background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none' }}
+                            style={{ padding: '0.75rem 0', background: 'transparent', border: 'none', color: 'var(--text-primary, #e1e1e6)', outline: 'none' }}
                         >
-                            {explanationLanguages.map(l => <option key={l} value={l} style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>{l}</option>)}
+                            {explanationLanguages.map(l => <option key={l} value={l} style={{ background: 'var(--bg-secondary, #0f0f12)', color: 'var(--text-primary, #e1e1e6)' }}>{l}</option>)}
                         </select>
                     </div>
 
                     <select 
                         value={language}
                         onChange={(e) => setLanguage(e.target.value)}
-                        style={{ padding: '0.75rem 1rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '10px', color: 'var(--text-primary)' }}
+                        style={{ padding: '0.75rem 1rem', background: 'var(--bg-secondary, #0f0f12)', border: '1px solid var(--border-color, #29292e)', borderRadius: '10px', color: 'var(--text-primary, #e1e1e6)' }}
                     >
-                        {languages.map(l => <option key={l.id} value={l.id} style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>{l.name}</option>)}
+                        {languages.map(l => <option key={l.id} value={l.id} style={{ background: 'var(--bg-secondary, #0f0f12)', color: 'var(--text-primary, #e1e1e6)' }}>{l.name}</option>)}
                     </select>
 
                     <button 
@@ -230,7 +230,7 @@ const CodeEnginePage = () => {
                         disabled={isAnalyzing}
                         style={{ 
                             padding: '0 1.5rem', display: 'flex', alignItems: 'center', gap: '8px', 
-                            background: 'var(--accent-color)', color: 'white', border: 'none', 
+                            background: 'var(--accent-color, #8257e5)', color: 'white', border: 'none', 
                             borderRadius: '10px', fontWeight: 600, cursor: 'pointer',
                             opacity: isAnalyzing ? 0.7 : 1
                         }}
@@ -248,8 +248,8 @@ const CodeEnginePage = () => {
             <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'minmax(0, 1.15fr) minmax(0, 1fr)', gap: '1.5rem', overflow: 'hidden' }}>
                 {/* LEFT PANEL: Editor */}
                 <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                    <div style={{ padding: '0.75rem 1.25rem', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.02)' }}>
-                        <Code size={16} color="var(--accent-color)" />
+                    <div style={{ padding: '0.75rem 1.25rem', borderBottom: '1px solid var(--border-color, #29292e)', display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.02)' }}>
+                        <Code size={16} color="var(--accent-color, #8257e5)" />
                         <span style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase' }}>Source Editor</span>
                     </div>
                     <textarea 
@@ -257,7 +257,7 @@ const CodeEnginePage = () => {
                         onChange={(e) => setCode(e.target.value)}
                         style={{ 
                             flex: 1, padding: '1.5rem', background: 'transparent', border: 'none', 
-                            color: 'var(--text-primary)', fontFamily: 'monospace', fontSize: '1.1rem', outline: 'none', resize: 'none',
+                            color: 'var(--text-primary, #e1e1e6)', fontFamily: 'monospace', fontSize: '1.1rem', outline: 'none', resize: 'none',
                             lineHeight: 1.6
                         }}
                         spellCheck="false"
@@ -268,7 +268,7 @@ const CodeEnginePage = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', overflow: 'hidden' }}>
                     {/* Logic Breakdown */}
                     <div className="glass-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                        <div style={{ padding: '0.75rem 1.25rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
+                        <div style={{ padding: '0.75rem 1.25rem', borderBottom: '1px solid var(--border-color, #29292e)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <BookOpen size={16} color="#ffb86c" />
                                 <span style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase' }}>Narrative Explanation</span>
@@ -280,8 +280,8 @@ const CodeEnginePage = () => {
                                     title="Auto-read explanation after analysis"
                                     style={{
                                         background: autoVoice ? 'rgba(80, 250, 123, 0.1)' : 'transparent', 
-                                        border: '1px solid var(--border-color)', borderRadius: '6px',
-                                        color: autoVoice ? '#50fa7b' : 'var(--text-secondary)', cursor: 'pointer', padding: '4px 8px',
+                                        border: '1px solid var(--border-color, #29292e)', borderRadius: '6px',
+                                        color: autoVoice ? '#50fa7b' : 'var(--text-secondary, #a8a8b3)', cursor: 'pointer', padding: '4px 8px',
                                         display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', fontWeight: 600, marginRight: '8px'
                                     }}
                                 >
@@ -295,8 +295,8 @@ const CodeEnginePage = () => {
                                     onClick={triggerExplanation}
                                     aria-label={audioState.type === 'explanation' && !audioState.isPaused ? "Pause explanation" : "Listen to explanation (Alt + L)"}
                                     style={{
-                                        background: 'transparent', border: '1px solid var(--border-color)', borderRadius: '6px',
-                                        color: audioState.type === 'explanation' ? 'var(--accent-color)' : 'var(--text-secondary)', cursor: 'pointer', padding: '4px 8px',
+                                        background: 'transparent', border: '1px solid var(--border-color, #29292e)', borderRadius: '6px',
+                                        color: audioState.type === 'explanation' ? 'var(--accent-color, #8257e5)' : 'var(--text-secondary, #a8a8b3)', cursor: 'pointer', padding: '4px 8px',
                                         display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', fontWeight: 600
                                     }}
                                 >
@@ -328,7 +328,7 @@ const CodeEnginePage = () => {
                                     style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
                                 >
                                     {/* 1. Overview */}
-                                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-color, #29292e)' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.75rem', color: '#ffb86c' }}>
                                             <Lightbulb size={18} />
                                             <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>{explanation.titles.overview}</h3>
@@ -338,15 +338,15 @@ const CodeEnginePage = () => {
 
                                     {/* 2. Line-by-Line */}
                                     <section>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem', color: 'var(--accent-color)' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem', color: 'var(--accent-color, #8257e5)' }}>
                                             <Hash size={18} />
                                             <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Line-by-Line Breakdown</h3>
                                         </div>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                                             {explanation.lines && explanation.lines.map((line, i) => (
-                                                <div key={i} style={{ border: '1px solid var(--border-color)', borderRadius: '12px', overflow: 'hidden' }}>
+                                                <div key={i} style={{ border: '1px solid var(--border-color, #29292e)', borderRadius: '12px', overflow: 'hidden' }}>
                                                     {/* Header */}
-                                                    <div style={{ padding: '0.75rem 1rem', background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                    <div style={{ padding: '0.75rem 1rem', background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid var(--border-color, #29292e)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                         <span style={{ fontSize: '0.75rem', fontWeight: 700, opacity: 0.6, textTransform: 'uppercase' }}>
                                                             {explanation.titles.line} {line.line_number}
                                                         </span>
@@ -374,7 +374,7 @@ const CodeEnginePage = () => {
 
                                     {/* 3. Logic Flow & Variables */}
                                     <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '1rem' }}>
-                                        <div style={{ padding: '1.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                                        <div style={{ padding: '1.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid var(--border-color, #29292e)' }}>
                                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem', color: '#bd93f9' }}>
                                                 <TerminalSquare size={18} />
                                                 <h3 style={{ fontSize: '0.9rem', fontWeight: 700 }}>{explanation.titles.variables}</h3>
@@ -386,7 +386,7 @@ const CodeEnginePage = () => {
                                             </div>
                                         </div>
                                         
-                                        <div style={{ padding: '1.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                                        <div style={{ padding: '1.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid var(--border-color, #29292e)' }}>
                                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem', color: '#8be9fd' }}>
                                                 <GitBranch size={18} />
                                                 <h3 style={{ fontSize: '0.9rem', fontWeight: 700 }}>{explanation.titles.logic}</h3>
