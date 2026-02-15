@@ -2,12 +2,12 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDdEMKX7tOiPayyHNPp1W-8G8fRC0nDwto",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "learning-catalyst-lc.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "learning-catalyst-lc",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "learning-catalyst-lc.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "848253529143",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:848253529143:web:8a2e0db14f5d6c4e8b7f2a"
+  apiKey: "AIzaSyB0m6oF-muraWswSHzBquATnlWJmQ6CRlc",
+  authDomain: "learning-catalyst-2c6a7.firebaseapp.com",
+  projectId: "learning-catalyst-2c6a7",
+  storageBucket: "learning-catalyst-2c6a7.firebasestorage.app",
+  messagingSenderId: "1082775945495",
+  appId: "1:1082775945495:web:7fdb7ee562c557b7b4b752"
 };
 
 const app = initializeApp(firebaseConfig);
