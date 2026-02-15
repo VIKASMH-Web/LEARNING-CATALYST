@@ -16,35 +16,7 @@
   --shadow-color: rgba(0, 0, 0, 0.4);
 }
 
-:root[data-theme="light"] {
-  --bg-primary: #f5f7fa;
-  --bg-secondary: #ffffff;
-  --bg-card: #ffffff;
-  --text-primary: #1a1a1a;
-  --text-secondary: #5a6b7c; /* Blue-gray for softer text */
-  --accent-color: #7c4dff; /* Slightly brighter violet */
-  --accent-glow: rgba(124, 77, 255, 0.2);
-  --border-color: #e2e8f0;
-  --card-glass: rgba(255, 255, 255, 0.85); /* Frosty white */
-  --shadow-color: rgba(0, 0, 0, 0.08); /* Soft shadow */
-  --sidebar-width: 260px;
-  --danger: #e53e3e;
-  --success: #38a169;
-  --warning: #d69e2e;
-}
 
-:root[data-theme="dark"] {
-  --bg-primary: #0a0a0c;
-  --bg-secondary: #0f0f12;
-  --bg-card: #16161a;
-  --text-primary: #e1e1e6;
-  --text-secondary: #a8a8b3;
-  --accent-color: #8257e5;
-  --accent-glow: rgba(130, 87, 229, 0.3);
-  --border-color: #29292e;
-  --card-glass: rgba(22, 22, 26, 0.6);
-  --shadow-color: rgba(0, 0, 0, 0.4);
-}
 
 * {
   box-sizing: border-box;
