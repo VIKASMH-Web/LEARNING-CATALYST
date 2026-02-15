@@ -418,7 +418,7 @@ const CodeEnginePage = () => {
 
                     </div>
                 </div>
-            </div>
+
             
             <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', alignItems: 'center', opacity: 0.5, fontSize: '0.8rem', paddingBottom: '0.5rem' }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
