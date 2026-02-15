@@ -83,7 +83,35 @@ export const detectLanguage = (code) => {
     if (codeLower.includes("#include <stdio.h>") || codeLower.includes("printf(")) {
         return "c";
     }
+    if (codeLower.includes("#include <stdio.h>") || codeLower.includes("printf(")) {
+        return "c";
+    }
     return "unknown";
+};
+
+const executeJavaScript = (code) => {
+    let output = "";
+    const log = (msg) => {
+        output += String(msg) + "\n";
+    };
+    
+    try {
+        // Safe-ish execution environment
+        // We override console.log to capture output
+        const safeCode = `
+            const console = { log: log };
+            ${code}
+        `;
+        // Basic loop guard to avoid freezing browser
+        if (code.includes("while(true)") || code.includes("for(;;)")) {
+             throw new Error("Infinite loop detected. Execution stopped for safety.");
+        }
+        
+        new Function('log', safeCode)(log);
+    } catch (e) {
+        output += `\nError: ${e.message}`;
+    }
+    return output || "[No Output]";
 };
 
 export const analyzeCodeLocally = async (code, language, explanationLanguage = "English") => {
@@ -178,29 +206,57 @@ export const analyzeCodeLocally = async (code, language, explanationLanguage = "
         });
     }
 
-    // Output Simulation using Regex (Ported from Python)
+    // Generate Output
     let output = "";
     
-    // Regex matches: print("..."), console.log("..."), printf("..."), cout << "..."
-    // JS Regex: /(?:print|console\.log|printf|cout\s*<<)\s*\(?\s*["']([^"']*)["']/
-    const match = code.match(/(?:print|console\.log|printf|cout\s*<<)\s*\(?\s*["']([^"']*)["']/);
-    
-    if (match && match[1]) {
-        output = match[1].replace(/\\n/g, '\n'); 
-        // Logic to simulate multiple prints in loop? 
-        // The python version only grabbed the first match. We'll stick to that to be "Real" to the original backend.
-        // But we can be smarter.
-    } else {
-        if (code.includes("return")) {
-            output = "[Process finished with exit code 0]";
-        } else {
-            output = "[System Trace: Execution completed. No visible output.]";
+    // 1. Try Real Execution for JavaScript
+    if (detected === "javascript" || language === "javascript" || language === "js") {
+        output = executeJavaScript(code);
+    } 
+    // 2. Transpile-ish Execution for simple Python/C loops (Enhanced Simulation)
+    else if (code.includes("for") && (code.includes("print") || code.includes("printf"))) {
+        // Simple heuristic for "for (int i=65; i<=90; i++)" style C loops
+        // We can try to convert this to JS and run it!
+        try {
+            let virtualCode = code;
+            
+            // C: printf(...) -> console.log(...)
+            virtualCode = virtualCode.replace(/printf\s*\((.*?)\);/g, 'console.log($1);');
+            // Python: print(...) -> console.log(...)
+            virtualCode = virtualCode.replace(/print\s*\((.*?)\)/g, 'console.log($1)');
+            
+            // C: int i -> let i (Naive)
+            virtualCode = virtualCode.replace(/int\s+i/g, 'let i');
+            // C: #include... -> //
+            virtualCode = virtualCode.replace(/#include/g, '// #include');
+            
+            // If it looks runnable now, try it
+             if (virtualCode.includes("console.log")) {
+               output = executeJavaScript(virtualCode);
+            }
+        } catch (e) {
+            // Fallback to regex if conversion fails
         }
     }
-    
-    // Advanced: If loop detected, multiply output?
-    if ((code.includes("for") || code.includes("while")) && output.length > 0 && !output.startsWith("[")) {
-         output = `${output}\n${output}\n${output}\n... (Loop continues)`;
+
+    // 3. Regex Fallback (Original Logic) if still empty
+    if (!output) {
+        // Regex matches: print("..."), console.log("..."), printf("..."), cout << "..."
+        const match = code.match(/(?:print|console\.log|printf|cout\s*<<)\s*\(?\s*["']([^"']*)["']/);
+        
+        if (match && match[1]) {
+            output = match[1].replace(/\\n/g, '\n'); 
+        } else {
+            if (code.includes("return")) {
+                output = "[Process finished with exit code 0]";
+            } else {
+                output = "[System Trace: Execution completed. No visible output.]";
+            }
+        }
+        
+        if ((code.includes("for") || code.includes("while")) && output.length > 0 && !output.startsWith("[")) {
+            output = `${output}\n${output}\n${output}\n... (Loop continues)`;
+        }
     }
 
     return {
