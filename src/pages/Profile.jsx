@@ -38,28 +38,49 @@ const Profile = () => {
         focusAreas: ['C', 'Data Structures', 'React'],
         experiences: [],
         certifications: [],
+        lastSyncedUser: null 
     };
 
-    const [profile, setProfile] = useState(() => {
+    // Scoped storage key
+    const storageKey = authCtx.user?.id ? `lc_profile_${authCtx.user.id}` : 'lc_profile_guest';
+
+    const [profile, setProfile] = useState(defaultProfile);
+
+    // Load profile on mount or user change
+    useEffect(() => {
         try {
-            const saved = localStorage.getItem('lc_profile');
+            const saved = localStorage.getItem(storageKey);
             if (saved) {
                 const parsed = JSON.parse(saved);
-                return {
+                setProfile({
                     ...defaultProfile,
                     ...parsed,
+                    // If switching users, ensure we sync the new user's auth details if not already customized
+                    name: (parsed.name === 'Your Name' || parsed.name === 'Guest Learner') && authCtx.user?.name ? authCtx.user.name : parsed.name,
+                    email: (parsed.email === 'your.email@example.com' || !parsed.email) && authCtx.user?.email ? authCtx.user.email : parsed.email,
                     focusAreas: Array.isArray(parsed.focusAreas) ? parsed.focusAreas : defaultProfile.focusAreas,
                     experiences: Array.isArray(parsed.experiences) ? parsed.experiences : [],
                     certifications: Array.isArray(parsed.certifications) ? parsed.certifications : [],
-                };
+                });
+            } else {
+                // No saved profile for this user, reset to defaults with current auth info
+                setProfile({
+                    ...defaultProfile,
+                    name: authCtx.user?.name || 'Your Name',
+                    email: authCtx.user?.email || 'your.email@example.com',
+                });
             }
-        } catch { /* ignore */ }
-        return defaultProfile;
-    });
+        } catch { 
+            setProfile(defaultProfile);
+        }
+    }, [storageKey, authCtx.user?.name, authCtx.user?.email]);
 
+    // Save profile on change
     useEffect(() => {
-        localStorage.setItem('lc_profile', JSON.stringify(profile));
-    }, [profile]);
+        if (profile.name) { // Simple check to avoid saving empty state
+             localStorage.setItem(storageKey, JSON.stringify(profile));
+        }
+    }, [profile, storageKey]);
 
     const handleSave = () => setIsEditing(false);
 

@@ -13,15 +13,21 @@ const Sidebar = () => {
   const [utr, setUtr] = useState('');
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
-  const [isPro, setIsPro] = useState(() => localStorage.getItem('lc_pro_unlocked') === 'true');
+  
+  const storageKey = user?.id ? `lc_pro_${user.id}` : 'lc_pro_guest';
+  const [isPro, setIsPro] = useState(() => localStorage.getItem(storageKey) === 'true');
 
   useEffect(() => {
-    const check = () => setIsPro(localStorage.getItem('lc_pro_unlocked') === 'true');
+    setIsPro(localStorage.getItem(storageKey) === 'true');
+  }, [user?.id, storageKey]);
+
+  useEffect(() => {
+    // Listen for storage changes in other tabs
+    const check = () => setIsPro(localStorage.getItem(storageKey) === 'true');
     window.addEventListener('storage', check);
-    // Request notification permission on mount
     requestNotificationPermission();
     return () => window.removeEventListener('storage', check);
-  }, []);
+  }, [storageKey]);
 
   const menuItems = [
     { path: '/', name: 'Dashboard', icon: Layout },
@@ -39,7 +45,7 @@ const Sidebar = () => {
     setTimeout(() => {
       setVerifying(false);
       setVerified(true);
-      localStorage.setItem('lc_pro_unlocked', 'true');
+      localStorage.setItem(storageKey, 'true');
       setIsPro(true);
       // Send real device notification
       notifyProUpgrade();
