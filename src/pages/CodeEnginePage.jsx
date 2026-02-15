@@ -170,7 +170,7 @@ const CodeEnginePage = () => {
     // --- RENDER ---
     return (
       <ErrorBoundary>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', height: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', height: 'calc(100vh - 160px)', minHeight: '600px' }}>
             {/* Header */}
             <div className="page-header" style={{ marginBottom: '1rem' }}>
                 <div>
