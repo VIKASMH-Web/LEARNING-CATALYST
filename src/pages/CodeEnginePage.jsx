@@ -160,7 +160,6 @@ const CodeEnginePage = () => {
         setIsAnalyzing(true);
         setError('');
         setExplanation(null);
-        setOutput('');
         setAnnouncement("Analyzing code logic...");
         
         try {
