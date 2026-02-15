@@ -23,15 +23,15 @@ const Sidebar = () => {
         
         {/* Logo Section */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem', paddingLeft: '0.5rem' }}>
-          <div style={{ 
-            width: '32px', height: '32px', 
-            background: 'var(--accent-color)', 
-            borderRadius: 'var(--radius-sm)', 
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 4px 12px var(--accent-glow)'
-          }}>
-            <Cpu size={18} color="white" />
-          </div>
+          <img 
+            src="/lc-logo-icon.png" 
+            alt="LC Logo" 
+            style={{ 
+              width: '36px', height: '36px', 
+              borderRadius: 'var(--radius-sm)',
+              objectFit: 'cover'
+            }} 
+          />
           <h1 style={{ fontSize: '1.25rem', fontWeight: '700', margin: 0, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>LC</h1>
         </div>
 

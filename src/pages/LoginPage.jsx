@@ -59,15 +59,15 @@ const LoginPage = () => {
             >
                 {/* Logo */}
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-                    <div style={{
-                        width: 56, height: 56, borderRadius: '16px',
-                        background: 'linear-gradient(135deg, #7c3aed, #3b82f6)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        margin: '0 auto 1.25rem auto',
-                        boxShadow: '0 8px 24px rgba(124, 58, 237, 0.3)'
-                    }}>
-                        <Zap size={28} color="white" />
-                    </div>
+                    <img 
+                        src="/lc-logo-icon.png" 
+                        alt="Learning Catalyst" 
+                        style={{ 
+                            width: 64, height: 64, borderRadius: '16px',
+                            margin: '0 auto 1.25rem auto', display: 'block',
+                            boxShadow: '0 8px 24px rgba(124, 58, 237, 0.3)'
+                        }}
+                    />
                     <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f4f4f5', marginBottom: '0.5rem' }}>
                         Learning Catalyst
                     </h1>
