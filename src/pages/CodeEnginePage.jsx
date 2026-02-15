@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Code, Loader2, AlertCircle, Hash, GitBranch, TerminalSquare, Languages, BookOpen, Lightbulb, Volume2, Pause, StopCircle } from 'lucide-react';
+import { Play, Code, Loader2, AlertCircle, Hash, GitBranch, TerminalSquare, Languages, BookOpen, Lightbulb, Volume2, Pause, StopCircle, Cpu } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { analyzeCodeLocally } from '../utils/codeAnalysis';
 import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary';
