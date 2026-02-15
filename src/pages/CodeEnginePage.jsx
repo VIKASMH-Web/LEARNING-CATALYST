@@ -12,7 +12,6 @@ const CodeEnginePage = () => {
     const [explanationLanguage, setExplanationLanguage] = useState('English');
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [explanation, setExplanation] = useState(null);
-    const [output, setOutput] = useState('');
     const [error, setError] = useState('');
 
     const languages = [
@@ -34,14 +33,10 @@ const CodeEnginePage = () => {
 
     // Keyboard Shortcuts
     const explanationRef = React.useRef(explanation);
-    const outputRef = React.useRef(output);
-    const audioStateRef = React.useRef(audioState);
-
     useEffect(() => {
         explanationRef.current = explanation;
-        outputRef.current = output;
         audioStateRef.current = audioState;
-    }, [explanation, output, audioState]);
+    }, [explanation, audioState]);
 
     useEffect(() => {
         setIsMac(navigator.platform.toUpperCase().indexOf('MAC') >= 0);
@@ -59,11 +54,6 @@ const CodeEnginePage = () => {
                     triggerExplanation();
                 }
                 
-                // LISTEN OUTPUT (Alt+O)
-                else if (code === 'KeyO' || key === 'ø' || (key === 'o' && isCtrl)) {
-                    e.preventDefault();
-                    triggerOutput();
-                }
                 
                 // STOP (Alt+S)
                 else if (code === 'KeyS' || key === 'ß' || (key === 's' && isCtrl)) {
@@ -102,17 +92,7 @@ const CodeEnginePage = () => {
          speakText(fullText, 'explanation');
     };
 
-    const triggerOutput = () => {
-        const currentAudio = audioStateRef.current;
-        if (currentAudio.type === 'output') {
-           pauseSpeaking();
-           return;
-       }
 
-       const textToRead = outputRef.current || "No output to read.";
-       const prefix = "Program Output. "; 
-       speakText(prefix + textToRead, 'output');
-    };
 
     const speakText = (text, type) => {
         console.log("Attempting to speak:", text.substring(0, 20) + "...");
@@ -172,7 +152,6 @@ const CodeEnginePage = () => {
     };
 
     const handleListenExplanation = () => triggerExplanation();
-    const handleListenOutput = () => triggerOutput();
 
     const handleRun = async () => {
         incrementCodeRuns(); // Track run for progress
@@ -191,24 +170,21 @@ const CodeEnginePage = () => {
             if (data.error) {
                 setError(data.error);
                 setExplanation(null);
-                setOutput('');
             } else {
                 setExplanation(data.explanation || null);
-                setOutput(data.output || "");
                 setError('');
                 
                 if (autoVoice) {
                     setTimeout(() => handleListenExplanation(), 500);
                 }
                 
-                setAnnouncement("Analysis complete. Press Alt plus L to listen to explanation, or Alt plus O for output.");
+                setAnnouncement("Analysis complete. Press Alt plus L to listen to explanation.");
             }
         } catch (e) {
             console.error(e);
             const errorMsg = "Analysis engine encountered an unexpected error.";
             setError(errorMsg);
             setExplanation(null);
-            setOutput('');
             setAnnouncement("Analysis failed.");
         }
         setIsAnalyzing(false);
@@ -290,8 +266,8 @@ const CodeEnginePage = () => {
 
                 {/* RIGHT PANELS */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', overflow: 'hidden' }}>
-                    {/* TOP: Logic Breakdown */}
-                    <div className="glass-card" style={{ flex: 1.6, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                    {/* Logic Breakdown */}
+                    <div className="glass-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                         <div style={{ padding: '0.75rem 1.25rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <BookOpen size={16} color="#ffb86c" />
@@ -440,44 +416,6 @@ const CodeEnginePage = () => {
                         </div>
                     </div>
 
-                    {/* BOTTOM: Console */}
-                    <div className="glass-card" style={{ flex: 0.5, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: '#000' }}>
-                        <div style={{ padding: '0.75rem 1.25rem', borderBottom: '1px solid #222', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <Terminal size={16} color="#50fa7b" />
-                                <span style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase' }}>Execution Output</span>
-                            </div>
-                             <div style={{ display: 'flex', gap: '8px' }}>
-                                {audioState.type === 'output' && (
-                                    <button onClick={stopSpeaking} style={{ background: 'transparent', border: 'none', color: '#ff5555', cursor: 'pointer' }} aria-label="Stop output (Alt + S)"><StopCircle size={16} /></button>
-                                )}
-                                <button
-                                    onClick={triggerOutput}
-                                    aria-label={audioState.type === 'output' && !audioState.isPaused ? "Pause output" : "Listen output (Alt + O)"}
-                                    style={{
-                                        background: 'transparent', border: '1px solid #333', borderRadius: '6px',
-                                        color: audioState.type === 'output' ? '#50fa7b' : '#888', cursor: 'pointer', padding: '4px 8px',
-                                        display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', fontWeight: 600
-                                    }}
-                                >
-                                    {audioState.type === 'output' && !audioState.isPaused ? <Pause size={14} fill="currentColor" /> : <Volume2 size={14} />}
-                                    {audioState.type === 'output' ? (audioState.isPaused ? "Resume" : "Pause") : "Listen Output"}
-                                </button>
-                            </div>
-                        </div>
-                        <div style={{ flex: 1, padding: '1.25rem', overflowY: 'auto' }}>
-                             {output ? (
-                                <pre style={{ color: '#50fa7b', fontFamily: 'monospace', fontSize: '1rem', whiteSpace: 'pre-wrap' }}>
-                                    {output}
-                                </pre>
-                             ) : error ? (
-                                <pre style={{ color: '#ff5555', fontFamily: 'monospace', fontSize: '0.9rem', opacity: 0.8 }}>
-                                    {`[Trace terminated with non-zero exit code]`}
-                                </pre>
-                             ) : (
-                                <span style={{ opacity: 0.4, fontStyle: 'italic', fontSize: '0.8rem' }}>// Waiting for logical trace signals...</span>
-                             )}
-                        </div>
                     </div>
                 </div>
             </div>
@@ -487,10 +425,7 @@ const CodeEnginePage = () => {
                     <Volume2 size={12} /> 
                     <span>{isMac ? 'Option' : 'Alt'} + L : Explain</span>
                 </span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Terminal size={12} /> 
-                    <span>{isMac ? 'Option' : 'Alt'} + O : Output</span>
-                </span>
+
                 <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <StopCircle size={12} /> 
                     <span>{isMac ? 'Option' : 'Alt'} + S : Stop</span>

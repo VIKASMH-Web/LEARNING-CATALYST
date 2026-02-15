@@ -1,4 +1,5 @@
 :root {
+  /* Default Dark Theme (Fallback) */
   --bg-primary: #0a0a0c;
   --bg-secondary: #0f0f12;
   --bg-card: #16161a;
@@ -11,6 +12,38 @@
   --danger: #ff5555;
   --success: #50fa7b;
   --warning: #f1fa8c;
+  --card-glass: rgba(22, 22, 26, 0.6);
+  --shadow-color: rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme="light"] {
+  --bg-primary: #f5f7fa;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #1a1a1a;
+  --text-secondary: #5a6b7c; /* Blue-gray for softer text */
+  --accent-color: #7c4dff; /* Slightly brighter violet */
+  --accent-glow: rgba(124, 77, 255, 0.2);
+  --border-color: #e2e8f0;
+  --card-glass: rgba(255, 255, 255, 0.85); /* Frosty white */
+  --shadow-color: rgba(0, 0, 0, 0.08); /* Soft shadow */
+  --sidebar-width: 260px;
+  --danger: #e53e3e;
+  --success: #38a169;
+  --warning: #d69e2e;
+}
+
+:root[data-theme="dark"] {
+  --bg-primary: #0a0a0c;
+  --bg-secondary: #0f0f12;
+  --bg-card: #16161a;
+  --text-primary: #e1e1e6;
+  --text-secondary: #a8a8b3;
+  --accent-color: #8257e5;
+  --accent-glow: rgba(130, 87, 229, 0.3);
+  --border-color: #29292e;
+  --card-glass: rgba(22, 22, 26, 0.6);
+  --shadow-color: rgba(0, 0, 0, 0.4);
 }
 
 * {
@@ -49,15 +82,16 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   padding: 2.5rem;
-  background: radial-gradient(circle at 50% 0%, #1a1a2e 0%, var(--bg-primary) 100%);
+  background: radial-gradient(circle at 50% 0%, var(--bg-secondary) 0%, var(--bg-primary) 100%);
 }
 
 .glass-card {
-  background: rgba(22, 22, 26, 0.6);
+  background: var(--card-glass);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 32px var(--shadow-color);
 }
 
 .glow-text {
@@ -96,7 +130,7 @@ p { color: var(--text-secondary); line-height: 1.6; }
 /* Shared Components for New Features */
 .primary-button {
   background: var(--accent-color);
-  color: white;
+  color: white; /* Always white on primary button */
   border: none;
   border-radius: 10px;
   padding: 0.75rem 1.5rem;
@@ -106,21 +140,13 @@ p { color: var(--text-secondary); line-height: 1.6; }
   align-items: center;
   gap: 8px;
   transition: all 0.2s;
-}
-
-.primary-button:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-}
-
-.primary-button:active {
-  transform: translateY(1px);
+  box-shadow: 0 4px 12px var(--accent-glow);
 }
 
 .secondary-button {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-card); /* Use card bg for contrast */
   color: var(--text-primary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 0.75rem 1.5rem;
   font-weight: 500;
@@ -131,17 +157,8 @@ p { color: var(--text-secondary); line-height: 1.6; }
 }
 
 .secondary-button:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.page-container {
-  width: 100%;
-  animation: fadeIn 0.4s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  background: var(--bg-secondary);
+  border-color: var(--accent-color);
 }
 
 /* Mock Interview Specific */
