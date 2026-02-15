@@ -8,11 +8,30 @@ const MainLayout = () => {
     <div className="app-container">
       <Sidebar />
       <main className="main-content">
-        <div style={{ maxWidth: '1400px', margin: '0 auto', width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '1rem', gap: '1rem' }}>
-          <VoiceControl />
-        </div>
-        <div style={{ maxWidth: '1400px', margin: '0 auto', width: '100%' }}>
-          <Outlet />
+        <div style={{ 
+          maxWidth: '1600px', 
+          margin: '0 auto', 
+          width: '100%', 
+          padding: '2rem', // Generous padding
+          minHeight: '100vh',
+          display: 'flex', 
+          flexDirection: 'column'
+        }}>
+          {/* Top Bar with Voice Control */}
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'flex-end', 
+            alignItems: 'center', 
+            marginBottom: '2rem', 
+            height: '40px' // Fixed height for alignment
+          }}>
+            <VoiceControl />
+          </div>
+          
+          {/* Content Area */}
+          <div style={{ flex: 1, width: '100%' }}>
+            <Outlet />
+          </div>
         </div>
       </main>
     </div>
