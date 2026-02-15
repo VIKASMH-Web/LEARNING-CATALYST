@@ -33,6 +33,7 @@ const CodeEnginePage = () => {
 
     // Keyboard Shortcuts
     const explanationRef = React.useRef(explanation);
+    const audioStateRef = React.useRef(audioState);
     useEffect(() => {
         explanationRef.current = explanation;
         audioStateRef.current = audioState;
