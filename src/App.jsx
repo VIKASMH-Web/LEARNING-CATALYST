@@ -9,6 +9,7 @@ import FocusMode from './pages/FocusMode';
 import Profile from './pages/Profile';
 import CareerPlanner from './pages/CareerPlanner';
 import MockInterview from './pages/MockInterview';
+import HelpCenter from './pages/HelpCenter';
 import LoginPage from './pages/LoginPage';
 import ProgressProvider from './context/ProgressContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -57,6 +58,7 @@ function App() {
                                 <Route path="mock-interview" element={<MockInterview />} />
                                 <Route path="focus" element={<FocusMode />} />
                                 <Route path="profile" element={<Profile />} />
+                                <Route path="help" element={<HelpCenter />} />
                                 <Route path="*" element={<Navigate to="/" replace />} />
                             </Route>
                         </Routes>
