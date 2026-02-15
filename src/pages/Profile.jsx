@@ -74,6 +74,19 @@ const Profile = () => {
 
     const removeAvatar = () => setProfile(prev => ({ ...prev, avatarUrl: null }));
 
+    // --- FOCUS AREA / SKILLS MANAGEMENT ---
+    const [newFocusArea, setNewFocusArea] = useState('');
+    const addFocusArea = () => {
+        const areas = profile.focusAreas || [];
+        if (newFocusArea.trim() && !areas.includes(newFocusArea.trim())) {
+            setProfile(prev => ({ ...prev, focusAreas: [...(prev.focusAreas || []), newFocusArea.trim()] }));
+            setNewFocusArea('');
+        }
+    };
+    const removeFocusArea = (tag) => {
+        setProfile(prev => ({ ...prev, focusAreas: (prev.focusAreas || []).filter(t => t !== tag) }));
+    };
+
     // --- EXPERIENCE MANAGEMENT ---
     const [showExpForm, setShowExpForm] = useState(false);
     const [newExp, setNewExp] = useState({ title: '', company: '', duration: '', description: '' });
@@ -400,20 +413,47 @@ const Profile = () => {
                         )}
                     </div>
 
-                    {/* Focus Areas (Read-Only) */}
+                    {/* Skills (Editable) */}
                     <div className="glass-card" style={{ padding: '2rem' }}>
                         <h3 className="h3" style={{ marginBottom: '1.5rem' }}>Skills</h3>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'center' }}>
                             {(profile.focusAreas || []).map(tag => (
                                 <span key={tag} style={{
                                     padding: '6px 14px', background: 'var(--bg-elevated)',
                                     borderRadius: '20px', border: '1px solid var(--border-color)',
-                                    fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 500
+                                    fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 500,
+                                    display: 'flex', alignItems: 'center', gap: '8px'
                                 }}>
                                     {tag}
+                                    {isEditing && (
+                                        <button onClick={() => removeFocusArea(tag)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', display: 'flex', padding: 0 }}>
+                                            <X size={14} />
+                                        </button>
+                                    )}
                                 </span>
                             ))}
-                            {(profile.focusAreas || []).length === 0 && (
+                            {isEditing && (
+                                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                                    <input
+                                        value={newFocusArea}
+                                        onChange={(e) => setNewFocusArea(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && addFocusArea()}
+                                        placeholder="Add skill..."
+                                        style={{
+                                            padding: '6px 14px', background: 'transparent',
+                                            borderRadius: '20px', border: '1px dashed var(--text-secondary)',
+                                            fontSize: '0.85rem', color: 'var(--text-primary)', outline: 'none', width: '140px'
+                                        }}
+                                    />
+                                    <button onClick={addFocusArea} style={{
+                                        width: 28, height: 28, borderRadius: '50%', background: 'var(--accent-color)',
+                                        border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', flexShrink: 0
+                                    }}>
+                                        <Plus size={14} />
+                                    </button>
+                                </div>
+                            )}
+                            {(profile.focusAreas || []).length === 0 && !isEditing && (
                                 <span style={{ color: 'var(--text-tertiary)', fontSize: '0.85rem' }}>No skills added yet</span>
                             )}
                         </div>
