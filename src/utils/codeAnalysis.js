@@ -213,26 +213,46 @@ export const analyzeCodeLocally = async (code, language, explanationLanguage = "
     if (detected === "javascript" || language === "javascript" || language === "js") {
         output = executeJavaScript(code);
     } 
-    // 2. Transpile-ish Execution for simple Python/C loops (Enhanced Simulation)
-    else if (code.includes("for") && (code.includes("print") || code.includes("printf"))) {
-        // Simple heuristic for "for (int i=65; i<=90; i++)" style C loops
-        // We can try to convert this to JS and run it!
+    // 2. Transpile-ish Execution for C/C++/Python Logic (Enhanced Simulation)
+    else {
+        // Broad attempt to convert simple logic (variables, if/else, print) to JS
         try {
             let virtualCode = code;
             
-            // C: printf(...) -> console.log(...)
-            virtualCode = virtualCode.replace(/printf\s*\((.*?)\);/g, 'console.log($1);');
-            // Python: print(...) -> console.log(...)
-            virtualCode = virtualCode.replace(/print\s*\((.*?)\)/g, 'console.log($1)');
+            // Remove headers
+            virtualCode = virtualCode.replace(/#include.*?\n/g, '\n');
+            virtualCode = virtualCode.replace(/using namespace std;/g, '');
+            virtualCode = virtualCode.replace(/int main\s*\(\)\s*{/g, ''); // Remove main wrapper start
+            virtualCode = virtualCode.replace(/return 0;\s*}/g, ''); // Remove main wrapper end logic (simple)
             
-            // C: int i -> let i (Naive)
-            virtualCode = virtualCode.replace(/int\s+i/g, 'let i');
-            // C: #include... -> //
-            virtualCode = virtualCode.replace(/#include/g, '// #include');
+            // C: printf("Format: %d", var) -> console.log(`Format: ${var}`) 
+            // Handle complex printf like printf("%d is largest", a)
+            virtualCode = virtualCode.replace(/printf\s*\(\s*"([^"]*)"\s*,\s*([^)]+)\s*\);/g, (match, str, vars) => {
+                 // Replace %d with ${var}
+                 let varList = vars.split(',').map(v => v.trim());
+                 let i = 0;
+                 let newStr = str.replace(/%[difs]/g, () => {
+                     return "${" + (varList[i++] || "") + "}";
+                 });
+                 return `console.log(\`${newStr}\`);`;
+            });
             
-            // If it looks runnable now, try it
-             if (virtualCode.includes("console.log")) {
-               output = executeJavaScript(virtualCode);
+            // C: printf("Just text")
+            virtualCode = virtualCode.replace(/printf\s*\(\s*"(.*?)"\s*\);/g, 'console.log("$1");');
+
+            // C Variables: int a = 10 -> let a = 10
+            virtualCode = virtualCode.replace(/\bint\s+/g, 'let ');
+            virtualCode = virtualCode.replace(/\bfloat\s+/g, 'let ');
+            virtualCode = virtualCode.replace(/\bdouble\s+/g, 'let ');
+            virtualCode = virtualCode.replace(/\bchar\s+/g, 'let ');
+            
+            // If it looks runnable now (has logic or print), try it
+            // We wrap it in a block to isolate scope if needed, but new Function handles that.
+            if (virtualCode.includes("console.log") || virtualCode.includes("if") || virtualCode.includes("let")) {
+               const result = executeJavaScript(virtualCode);
+               if (result && result !== "[No Output]") {
+                   output = result;
+               }
             }
         } catch (e) {
             // Fallback to regex if conversion fails
