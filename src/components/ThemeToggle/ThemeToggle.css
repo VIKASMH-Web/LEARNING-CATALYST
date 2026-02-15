@@ -4,12 +4,14 @@
     border: 1px solid var(--border-color);
     border-radius: 20px;
     padding: 0;
-    width: 52px;
-    height: 28px;
+    width: 60px; /* Slightly wider for better touch */
+    height: 32px; /* Standardize height */
     cursor: pointer;
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
+    display: flex; /* Ensure flex behavior */
+    align-items: center;
 }
 
 .theme-toggle:hover {
@@ -25,23 +27,25 @@
 }
 
 .toggle-thumb {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: var(--text-primary);
     color: var(--bg-primary);
     position: absolute;
-    left: 3px;
+    left: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .toggle-thumb.light {
-    transform: translateX(24px);
-    background: #FFD700; /* Sun Gold */
+    transform: translateX(28px);
+    background: #ffdb4d; /* Brighter Sun */
     color: #333;
+    border: 1px solid rgba(0,0,0,0.1);
 }
 
 .toggle-thumb.dark {

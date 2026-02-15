@@ -103,6 +103,14 @@ const VoiceControl = () => {
       }
   }, [isListening]);
 
+  const speak = (text) => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel(); // Cancel any current speech
+      const utterance = new SpeechSynthesisUtterance(text);
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
   const handleCommand = (cmd) => {
     const lowerCmd = cmd.toLowerCase().trim();
     console.log('Voice Command:', lowerCmd);
@@ -112,22 +120,24 @@ const VoiceControl = () => {
         'dashboard': '/',
         'home': '/',
         'roadmap': '/roadmaps',
-        'roadmaps': '/roadmaps',
         'road map': '/roadmaps',
-        'road maps': '/roadmaps',
         'resources': '/resources',
         'code': '/code-engine',
         'engine': '/code-engine',
         'focus': '/focus',
         'profile': '/profile',
-        'account': '/profile'
+        'account': '/profile',
+        'career': '/career-planner',
+        'planner': '/career-planner',
+        'interview': '/mock-interview',
+        'mock': '/mock-interview'
     };
 
     let targetPath = null;
     let targetLabel = '';
 
     // Check if spoken text contains any key
-    // We sort keys by length descending to match specific phrases first if overlaps exist (e.g. "code engine" vs "code")
+    // We sort keys by length descending to match specific phrases first if overlaps exist
     const keys = Object.keys(commandMap).sort((a, b) => b.length - a.length);
     
     for (const key of keys) {
@@ -141,17 +151,19 @@ const VoiceControl = () => {
     if (targetPath) {
         // 1. Stop recognition immediately
         if (recognitionRef.current) {
-            recognitionRef.current.abort();
+            recognitionRef.current.stop();
         }
         
-        // 2. Turn OFF Voice Mode
-        setIsListening(false);
+        // 2. Critical: Update REF immediately so onend doesn't restart
         isListeningRef.current = false;
+        setIsListening(false);
+
+        setStatusMessage(`Open ${targetLabel}`);
         
-        setStatusMessage(`Opening ${targetLabel}...`);
+        // 3. Speak Confirmation
         speak(`Opening ${targetLabel}`);
         
-        // 3. Navigate
+        // 4. Navigate after short delay
         setTimeout(() => {
             navigate(targetPath);
             setTranscript('');
@@ -163,18 +175,11 @@ const VoiceControl = () => {
              setStatusMessage("Sorry, I didn't understand that command.");
              speak("Sorry, I didn't understand that command.");
              
-             // Clear error after 2s
+             // Clear error after 2s but DO NOT restart if we stopped
              setTimeout(() => {
                  if(isListeningRef.current) setStatusMessage('Listening...');
              }, 2000);
         }
-    }
-  };
-
-  const speak = (text) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      window.speechSynthesis.speak(utterance);
     }
   };
 

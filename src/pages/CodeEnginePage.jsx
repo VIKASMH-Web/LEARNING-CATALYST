@@ -211,18 +211,18 @@ const CodeEnginePage = () => {
                         <select 
                             value={explanationLanguage}
                             onChange={(e) => setExplanationLanguage(e.target.value)}
-                            style={{ padding: '0.75rem 0', background: 'transparent', border: 'none', color: 'white', outline: 'none' }}
+                            style={{ padding: '0.75rem 0', background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none' }}
                         >
-                            {explanationLanguages.map(l => <option key={l} value={l} style={{ background: '#1a1a1a', color: 'white' }}>{l}</option>)}
+                            {explanationLanguages.map(l => <option key={l} value={l} style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>{l}</option>)}
                         </select>
                     </div>
 
                     <select 
                         value={language}
                         onChange={(e) => setLanguage(e.target.value)}
-                        style={{ padding: '0.75rem 1rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '10px', color: 'white' }}
+                        style={{ padding: '0.75rem 1rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '10px', color: 'var(--text-primary)' }}
                     >
-                        {languages.map(l => <option key={l.id} value={l.id} style={{ background: '#1a1a1a', color: 'white' }}>{l.name}</option>)}
+                        {languages.map(l => <option key={l.id} value={l.id} style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>{l.name}</option>)}
                     </select>
 
                     <button 
@@ -257,7 +257,7 @@ const CodeEnginePage = () => {
                         onChange={(e) => setCode(e.target.value)}
                         style={{ 
                             flex: 1, padding: '1.5rem', background: 'transparent', border: 'none', 
-                            color: 'white', fontFamily: 'monospace', fontSize: '1.1rem', outline: 'none', resize: 'none',
+                            color: 'var(--text-primary)', fontFamily: 'monospace', fontSize: '1.1rem', outline: 'none', resize: 'none',
                             lineHeight: 1.6
                         }}
                         spellCheck="false"
