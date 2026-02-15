@@ -63,8 +63,14 @@ const FocusMode = () => {
         <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center justify-center h-full relative"
-            style={{ height: 'calc(100vh - 100px)' }}
+            className="relative"
+            style={{ 
+                height: 'calc(100vh - 100px)', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                justifyContent: 'center' 
+            }}
         >
             {/* Background Glow */}
             <div style={{ position: 'absolute', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, rgba(0,0,0,0) 70%)', borderRadius: '50%', zIndex: -1 }} />
