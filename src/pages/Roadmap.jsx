@@ -18,7 +18,9 @@ const Roadmaps = () => {
     const [expandedDomains, setExpandedDomains] = useState({});
     const [searchQuery, setSearchQuery] = useState('');
     const [expandedStageResources, setExpandedStageResources] = useState({});
-    const [activeResourceTab, setActiveResourceTab] = useState('All'); // 'All', 'Documentation', 'Video', 'Course', 'Practice'
+
+    // Store active tab per stage: { 'domainIndex-stageIndex': 'All' }
+    const [stageResourceTabs, setStageResourceTabs] = useState({});
     const [favorites, setFavorites] = useState(() => {
         const saved = localStorage.getItem('lc_favorites');
         return saved ? JSON.parse(saved) : [];
@@ -209,7 +211,7 @@ const Roadmaps = () => {
     };
 
     // Helper: Logic to fetch and process resources for a stage
-    const getCuratedResources = (domainTitle, stageTitle, stageIndex) => {
+    const getCuratedResources = (domainTitle, stageTitle, stageIndex, activeTab = 'All') => {
         // 1. Try Specific Stage Resources
         let resources = [];
         const domainData = roadmapResources[domainTitle];
@@ -222,8 +224,8 @@ const Roadmaps = () => {
         }
 
         // 3. Filter by Tab
-        if (activeResourceTab !== 'All') {
-            resources = resources.filter(r => r.type === activeResourceTab || (activeResourceTab === 'Practice' && r.type === 'Project'));
+        if (activeTab !== 'All') {
+            resources = resources.filter(r => r.type === activeTab || (activeTab === 'Practice' && r.type === 'Project'));
         }
 
         // 4. Smart Sort (Optional - simplified here)
@@ -526,27 +528,31 @@ const Roadmaps = () => {
                                                         >
                                                             {/* Type Filters */}
                                                             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', marginTop: '0.5rem', overflowX: 'auto', paddingBottom: '4px' }}>
-                                                                {['All', 'Documentation', 'Video', 'Course', 'Practice'].map(tab => (
-                                                                    <button
-                                                                        key={tab}
-                                                                        onClick={() => setActiveResourceTab(tab)}
-                                                                        style={{
-                                                                            padding: '4px 10px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 600,
-                                                                            background: activeResourceTab === tab ? 'var(--accent-color)' : 'rgba(255,255,255,0.05)',
-                                                                            color: activeResourceTab === tab ? 'white' : 'var(--text-secondary)',
-                                                                            border: 'none', cursor: 'pointer', whiteSpace: 'nowrap'
-                                                                        }}
-                                                                    >
-                                                                        {tab}
-                                                                    </button>
-                                                                ))}
+                                                                {['All', 'Documentation', 'Video', 'Course', 'Practice'].map(tab => {
+                                                                    const currentTab = stageResourceTabs[`${i}-${idx}`] || 'All';
+                                                                    return (
+                                                                        <button
+                                                                            key={tab}
+                                                                            onClick={() => setStageResourceTabs(prev => ({ ...prev, [`${i}-${idx}`]: tab }))}
+                                                                            style={{
+                                                                                padding: '4px 10px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 600,
+                                                                                background: currentTab === tab ? 'var(--accent-color)' : 'rgba(255,255,255,0.05)',
+                                                                                color: currentTab === tab ? 'white' : 'var(--text-secondary)',
+                                                                                border: 'none', cursor: 'pointer', whiteSpace: 'nowrap'
+                                                                            }}
+                                                                        >
+                                                                            {tab}
+                                                                        </button>
+                                                                    );
+                                                                })}
                                                             </div>
 
                                                             <div style={{ 
                                                                 display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' 
                                                             }}>
                                                                 {(() => {
-                                                                    const resources = getCuratedResources(enTitle, step, idx);
+                                                                    const currentTab = stageResourceTabs[`${i}-${idx}`] || 'All';
+                                                                    const resources = getCuratedResources(enTitle, step, idx, currentTab);
                                                                     
                                                                     return resources.map((res, rIdx) => (
                                                                         <div 
