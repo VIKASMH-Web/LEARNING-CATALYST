@@ -18,6 +18,7 @@ const Roadmaps = () => {
     const [expandedDomains, setExpandedDomains] = useState({});
     const [searchQuery, setSearchQuery] = useState('');
     const [expandedStageResources, setExpandedStageResources] = useState({});
+    const [activeResourceTab, setActiveResourceTab] = useState('All'); // 'All', 'Documentation', 'Video', 'Course', 'Practice'
 
     const toggleStageResources = (domainIndex, stageIndex) => {
         const key = `${domainIndex}-${stageIndex}`;
@@ -175,7 +176,7 @@ const Roadmaps = () => {
     const getDomainStats = (title, steps) => {
         // Map to English Title
         const dIndex = domains.findIndex(d => d.title === title);
-        const enTitle = enDomains[dIndex].title;
+        const enTitle = enDomains[dIndex]?.title || title;
 
         let completed = 0;
         let near = 0;
@@ -189,6 +190,41 @@ const Roadmaps = () => {
         });
 
         return { completed, near, incomplete, total: steps.length };
+    };
+
+    // Helper: Logic to fetch and process resources for a stage
+    const getCuratedResources = (domainTitle, stageTitle, stageIndex) => {
+        // 1. Try Specific Stage Resources
+        let resources = [];
+        const domainData = roadmapResources[domainTitle];
+        
+        if (domainData && domainData[stageTitle]) {
+            resources = [...domainData[stageTitle]];
+        } else {
+            // 2. Fallback to Defaults if empty
+            resources = [...(roadmapResources["_defaults"] || [])];
+        }
+
+        // 3. Filter by Tab
+        if (activeResourceTab !== 'All') {
+            resources = resources.filter(r => r.type === activeResourceTab || (activeResourceTab === 'Practice' && r.type === 'Project'));
+        }
+
+        // 4. Smart Sort (Optional - simplified here)
+        // If stageIndex < 2 (Beginner), prioritize Beginner.
+        // If stageIndex > 4 (Advanced), prioritize Advanced.
+        resources.sort((a, b) => {
+            const diffOrder = { "Beginner": 1, "Intermediate": 2, "Advanced": 3, "All": 0 };
+            const userLevel = stageIndex < 2 ? 1 : stageIndex > 3 ? 3 : 2;
+            
+            // Score: closer to userLevel is better
+            const scoreA = Math.abs((diffOrder[a.difficulty] || 2) - userLevel);
+            const scoreB = Math.abs((diffOrder[b.difficulty] || 2) - userLevel);
+            
+            return scoreA - scoreB;
+        });
+
+        return resources;
     };
 
     return (
@@ -472,36 +508,92 @@ const Roadmaps = () => {
                                                             exit={{ height: 0, opacity: 0 }}
                                                             style={{ overflow: 'hidden', paddingLeft: '3rem' }} // Indent to align with text
                                                         >
+                                                            {/* Type Filters */}
+                                                            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', marginTop: '0.5rem', overflowX: 'auto', paddingBottom: '4px' }}>
+                                                                {['All', 'Documentation', 'Video', 'Course', 'Practice'].map(tab => (
+                                                                    <button
+                                                                        key={tab}
+                                                                        onClick={() => setActiveResourceTab(tab)}
+                                                                        style={{
+                                                                            padding: '4px 10px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 600,
+                                                                            background: activeResourceTab === tab ? 'var(--accent-color)' : 'rgba(255,255,255,0.05)',
+                                                                            color: activeResourceTab === tab ? 'white' : 'var(--text-secondary)',
+                                                                            border: 'none', cursor: 'pointer', whiteSpace: 'nowrap'
+                                                                        }}
+                                                                    >
+                                                                        {tab}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+
                                                             <div style={{ 
-                                                                paddingTop: '0.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.75rem' 
+                                                                display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1rem' 
                                                             }}>
-                                                                {roadmapResources[enTitle] && roadmapResources[enTitle][step] ? (
-                                                                    roadmapResources[enTitle][step].map((res, rIdx) => (
+                                                                {(() => {
+                                                                    const resources = getCuratedResources(enTitle, step, idx);
+                                                                    
+                                                                    return resources.map((res, rIdx) => (
                                                                         <a 
                                                                             key={rIdx} href={res.link} target="_blank" rel="noopener noreferrer"
+                                                                            className="glass-card"
                                                                             style={{ 
-                                                                                display: 'flex', alignItems: 'center', gap: '0.75rem',
-                                                                                padding: '0.75rem', background: 'var(--bg-elevated)', 
-                                                                                borderRadius: '8px', border: '1px solid var(--border-color)',
+                                                                                display: 'flex', flexDirection: 'column', gap: '0.75rem',
+                                                                                padding: '1rem', background: 'var(--bg-elevated)', 
+                                                                                borderRadius: '12px', border: '1px solid var(--border-color)',
                                                                                 textDecoration: 'none', color: 'var(--text-secondary)',
-                                                                                transition: 'all 0.2s', fontSize: '0.85rem'
+                                                                                transition: 'all 0.2s', position: 'relative', minHeight: '120px'
                                                                             }}
-                                                                            onMouseOver={(e) => { e.currentTarget.style.borderColor = 'var(--accent-color)'; e.currentTarget.style.color = 'white'; }}
-                                                                            onMouseOut={(e) => { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+                                                                            onMouseOver={(e) => { 
+                                                                                e.currentTarget.style.borderColor = 'var(--accent-color)'; 
+                                                                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                                                            }}
+                                                                            onMouseOut={(e) => { 
+                                                                                e.currentTarget.style.borderColor = 'var(--border-color)'; 
+                                                                                e.currentTarget.style.transform = 'translateY(0)';
+                                                                            }}
                                                                         >
-                                                                            {res.type === 'Video' ? <Video size={16} color="#f87171" /> :
-                                                                             res.type === 'Course' ? <BookOpen size={16} color="#facc15" /> :
-                                                                             res.type === 'Documentation' ? <FileText size={16} color="#60a5fa" /> :
-                                                                             <Code size={16} color="#4ade80" />}
-                                                                            <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{res.title}</span>
-                                                                            <ExternalLink size={12} style={{ opacity: 0.5 }} />
+                                                                            {/* Header: Icon + Difficulty + External Link */}
+                                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                                                                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                                                                    <div style={{ width: 28, height: 28, borderRadius: '6px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                                                         {res.type === 'Video' ? <Video size={14} color="#f87171" /> :
+                                                                                          res.type === 'Course' ? <BookOpen size={14} color="#facc15" /> :
+                                                                                          res.type === 'Documentation' ? <FileText size={14} color="#60a5fa" /> :
+                                                                                          <Code size={14} color="#4ade80" />}
+                                                                                    </div>
+                                                                                    {res.aiCurated && (
+                                                                                        <span style={{ fontSize: '0.65rem', background: 'rgba(124, 58, 237, 0.2)', color: '#a78bfa', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>AI PICK</span>
+                                                                                    )}
+                                                                                </div>
+                                                                                <ExternalLink size={12} style={{ opacity: 0.5 }} />
+                                                                            </div>
+
+                                                                            {/* Content */}
+                                                                            <div>
+                                                                                <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'white', marginBottom: '4px', lineHeight: 1.3 }}>{res.title}</h4>
+                                                                                <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                                                                    {res.description || 'Comprehensive resource to master this topic.'}
+                                                                                </p>
+                                                                            </div>
+
+                                                                            {/* Footer: Badges */}
+                                                                            <div style={{ marginTop: 'auto', display: 'flex', gap: '0.5rem' }}>
+                                                                                <span style={{ fontSize: '0.7rem', padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>
+                                                                                    {res.type}
+                                                                                </span>
+                                                                                {res.difficulty && (
+                                                                                     <span style={{ 
+                                                                                         fontSize: '0.7rem', padding: '2px 6px', borderRadius: '4px', 
+                                                                                         background: res.difficulty === 'Beginner' ? 'rgba(80, 250, 123, 0.1)' : res.difficulty === 'Advanced' ? 'rgba(255, 85, 85, 0.1)' : 'rgba(255, 184, 108, 0.1)',
+                                                                                         color: res.difficulty === 'Beginner' ? '#50fa7b' : res.difficulty === 'Advanced' ? '#ff5555' : '#ffb86c'
+                                                                                     }}>
+                                                                                        {res.difficulty}
+                                                                                     </span>
+                                                                                )}
+                                                                            </div>
                                                                         </a>
-                                                                    ))
-                                                                ) : (
-                                                                    <div style={{ gridColumn: '1 / -1', fontSize: '0.8rem', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>
-                                                                        No specific resources curated for this stage yet. Check the main Resources page.
-                                                                    </div>
-                                                                )}
+                                                                    ));
+                                                                })()}
                                                             </div>
                                                         </motion.div>
                                                     )}
