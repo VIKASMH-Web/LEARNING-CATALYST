@@ -528,5 +528,240 @@ export const roadmapResources = {
              { title: "Cloudflare Workers", description: "Edge computing.", type: "Documentation", difficulty: "Advanced", link: "https://workers.cloudflare.com/", duration: "Ref", source: "Cloudflare", relevance: 98, aiCurated: true },
              { title: "AWS CloudFront", description: "CDN explained.", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=AT-nHW3_SVI", videoId: "AT-nHW3_SVI", duration: "15m", source: "BeABetterDev", relevance: 92, aiCurated: false }
          ]
+    },
+
+    // =============================================
+    // LANGUAGE-SPECIFIC MINI-ROADMAPS (No YouTube)
+    // =============================================
+
+    // Python
+    "Python": {
+        "Fundamentals & Syntax": [
+            { title: "Python Official Tutorial", description: "The official Python tutorial — best starting point.", type: "Documentation", difficulty: "Beginner", link: "https://docs.python.org/3/tutorial/", duration: "8h", source: "Python.org", relevance: 100, aiCurated: true },
+            { title: "Python Notes (PDF)", description: "Comprehensive Python notes for quick reference.", type: "Documentation", difficulty: "Beginner", link: "#notes-python", duration: "PDF", source: "Notes", relevance: 95, aiCurated: true },
+            { title: "Python Exercises", description: "100+ beginner exercises with solutions.", type: "Practice", difficulty: "Beginner", link: "https://www.w3resource.com/python-exercises/", duration: "Ongoing", source: "W3Resource", relevance: 90, aiCurated: false }
+        ],
+        "Data Structures & Algorithms": [
+            { title: "Python DS Documentation", description: "Built-in data structures in Python.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.python.org/3/tutorial/datastructures.html", duration: "3h", source: "Python.org", relevance: 98, aiCurated: true },
+            { title: "LeetCode Python Track", description: "DSA problems in Python.", type: "Practice", difficulty: "Intermediate", link: "https://leetcode.com/problemset/all/", duration: "Ongoing", source: "LeetCode", relevance: 95, aiCurated: true }
+        ],
+        "OOP & Modules": [
+            { title: "Real Python OOP Guide", description: "Object-Oriented Programming in Python.", type: "Documentation", difficulty: "Intermediate", link: "https://realpython.com/python3-object-oriented-programming/", duration: "4h", source: "Real Python", relevance: 96, aiCurated: true },
+            { title: "Python Packages Guide", description: "Creating and using Python packages.", type: "Documentation", difficulty: "Intermediate", link: "https://packaging.python.org/en/latest/tutorials/packaging-projects/", duration: "2h", source: "PyPA", relevance: 90, aiCurated: false }
+        ],
+        "Projects & Applications": [
+            { title: "Build Python Projects", description: "Real-world Python project ideas.", type: "Project", difficulty: "Intermediate", link: "https://realpython.com/tutorials/projects/", duration: "Ongoing", source: "Real Python", relevance: 95, aiCurated: true },
+            { title: "Python Project Ideas", description: "50+ project ideas with source code.", type: "Practice", difficulty: "Intermediate", link: "https://github.com/karan/Projects", duration: "Ongoing", source: "GitHub", relevance: 92, aiCurated: false }
+        ],
+        "Advanced Concepts": [
+            { title: "Python Concurrency", description: "Threading, multiprocessing, and asyncio.", type: "Documentation", difficulty: "Advanced", link: "https://docs.python.org/3/library/concurrency.html", duration: "5h", source: "Python.org", relevance: 96, aiCurated: true },
+            { title: "Python Design Patterns", description: "Common design patterns in Python.", type: "Documentation", difficulty: "Advanced", link: "https://python-patterns.guide/", duration: "4h", source: "Python Patterns", relevance: 94, aiCurated: true }
+        ],
+        "Testing & Best Practices": [
+            { title: "Pytest Documentation", description: "The pytest framework for testing.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.pytest.org/en/stable/", duration: "3h", source: "Pytest", relevance: 98, aiCurated: true },
+            { title: "Python Best Practices", description: "The Hitchhiker's Guide to Python.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.python-guide.org/", duration: "Book", source: "Python Guide", relevance: 96, aiCurated: true }
+        ]
+    },
+
+    // Java
+    "Java": {
+        "Fundamentals & Syntax": [
+            { title: "Oracle Java Tutorials", description: "Official Java learning path.", type: "Documentation", difficulty: "Beginner", link: "https://docs.oracle.com/javase/tutorial/", duration: "10h", source: "Oracle", relevance: 100, aiCurated: true },
+            { title: "Java Notes (PDF)", description: "Complete Java programming notes.", type: "Documentation", difficulty: "Beginner", link: "#notes-java", duration: "PDF", source: "Notes", relevance: 95, aiCurated: true },
+            { title: "Java Exercises", description: "Beginner to Advanced exercises.", type: "Practice", difficulty: "Beginner", link: "https://www.w3resource.com/java-exercises/", duration: "Ongoing", source: "W3Resource", relevance: 90, aiCurated: false }
+        ],
+        "OOP & Collections": [
+            { title: "Java OOP Guide", description: "Object-Oriented concepts in Java.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.oracle.com/javase/tutorial/java/concepts/", duration: "5h", source: "Oracle", relevance: 98, aiCurated: true },
+            { title: "Java Collections Framework", description: "Lists, Sets, Maps, and more.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.oracle.com/javase/tutorial/collections/", duration: "4h", source: "Oracle", relevance: 96, aiCurated: true }
+        ],
+        "Exception Handling & I/O": [
+            { title: "Java I/O Tutorial", description: "Streams, files, and readers.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.oracle.com/javase/tutorial/essential/io/", duration: "3h", source: "Oracle", relevance: 94, aiCurated: true },
+            { title: "HackerRank Java", description: "Java practice challenges.", type: "Practice", difficulty: "Intermediate", link: "https://www.hackerrank.com/domains/java", duration: "Ongoing", source: "HackerRank", relevance: 92, aiCurated: false }
+        ],
+        "Projects & Applications": [
+            { title: "Java Project Ideas", description: "Build real-world Java apps.", type: "Project", difficulty: "Intermediate", link: "https://github.com/iluwatar/java-design-patterns", duration: "Ongoing", source: "GitHub", relevance: 95, aiCurated: true }
+        ],
+        "Advanced Concepts (Concurrency)": [
+            { title: "Java Concurrency Guide", description: "Threads, executors, and concurrent collections.", type: "Documentation", difficulty: "Advanced", link: "https://docs.oracle.com/javase/tutorial/essential/concurrency/", duration: "6h", source: "Oracle", relevance: 98, aiCurated: true }
+        ],
+        "Testing & Build Tools": [
+            { title: "JUnit 5 User Guide", description: "Modern Java testing framework.", type: "Documentation", difficulty: "Intermediate", link: "https://junit.org/junit5/docs/current/user-guide/", duration: "3h", source: "JUnit", relevance: 96, aiCurated: true },
+            { title: "Maven Getting Started", description: "Build automation with Maven.", type: "Documentation", difficulty: "Intermediate", link: "https://maven.apache.org/guides/getting-started/", duration: "2h", source: "Apache", relevance: 94, aiCurated: true }
+        ]
+    },
+
+    // C / C++
+    "C / C++": {
+        "Fundamentals & Syntax": [
+            { title: "C Programming Reference", description: "Complete C language reference.", type: "Documentation", difficulty: "Beginner", link: "https://en.cppreference.com/w/c", duration: "Ref", source: "cppreference", relevance: 100, aiCurated: true },
+            { title: "C Handbook Notes (PDF)", description: "The Ultimate C Handbook.", type: "Documentation", difficulty: "Beginner", link: "#notes-c", duration: "PDF", source: "Notes", relevance: 96, aiCurated: true },
+            { title: "C++ Notes (PDF)", description: "Comprehensive C++ notes.", type: "Documentation", difficulty: "Beginner", link: "#notes-cpp", duration: "PDF", source: "Notes", relevance: 95, aiCurated: true },
+            { title: "Exercism C Track", description: "Practice C with mentored exercises.", type: "Practice", difficulty: "Beginner", link: "https://exercism.org/tracks/c", duration: "Ongoing", source: "Exercism", relevance: 90, aiCurated: false }
+        ],
+        "Pointers & Memory": [
+            { title: "Pointer Tutorial", description: "Deep dive into pointers and memory.", type: "Documentation", difficulty: "Intermediate", link: "https://www.learn-c.org/en/Pointers", duration: "3h", source: "Learn-C", relevance: 96, aiCurated: true }
+        ],
+        "Data Structures": [
+            { title: "GeeksforGeeks C DS", description: "Data structures implementation in C.", type: "Practice", difficulty: "Intermediate", link: "https://www.geeksforgeeks.org/data-structures/", duration: "Ongoing", source: "GFG", relevance: 95, aiCurated: true }
+        ],
+        "Projects & Applications": [
+            { title: "C/C++ Project Ideas", description: "Build system-level projects.", type: "Project", difficulty: "Intermediate", link: "https://github.com/practical-tutorials/project-based-learning#cc", duration: "Ongoing", source: "GitHub", relevance: 94, aiCurated: true }
+        ],
+        "Advanced Concepts (Templates/STL)": [
+            { title: "C++ STL Reference", description: "Standard Template Library reference.", type: "Documentation", difficulty: "Advanced", link: "https://en.cppreference.com/w/cpp/container", duration: "Ref", source: "cppreference", relevance: 98, aiCurated: true }
+        ],
+        "Systems Programming": [
+            { title: "Linux System Programming", description: "POSIX system calls and low-level C.", type: "Documentation", difficulty: "Advanced", link: "https://man7.org/linux/man-pages/", duration: "Ref", source: "man7.org", relevance: 96, aiCurated: true }
+        ]
+    },
+
+    // JavaScript
+    "JavaScript": {
+        "Fundamentals & ES6+": [
+            { title: "JavaScript.info", description: "The Modern JavaScript Tutorial.", type: "Documentation", difficulty: "Beginner", link: "https://javascript.info/", duration: "20h", source: "JS.info", relevance: 100, aiCurated: true },
+            { title: "JS Notes (PDF)", description: "JavaScript tutorial notes.", type: "Documentation", difficulty: "Beginner", link: "#notes-js", duration: "PDF", source: "Notes", relevance: 95, aiCurated: true },
+            { title: "MDN JavaScript Guide", description: "Mozilla developer JS guide.", type: "Documentation", difficulty: "Beginner", link: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide", duration: "15h", source: "MDN", relevance: 98, aiCurated: true }
+        ],
+        "DOM & Browser APIs": [
+            { title: "MDN DOM Reference", description: "Document Object Model APIs.", type: "Documentation", difficulty: "Intermediate", link: "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model", duration: "5h", source: "MDN", relevance: 96, aiCurated: true }
+        ],
+        "Async Programming": [
+            { title: "Promises & Async/Await", description: "Async JS patterns explained.", type: "Documentation", difficulty: "Intermediate", link: "https://javascript.info/async", duration: "4h", source: "JS.info", relevance: 98, aiCurated: true }
+        ],
+        "Projects & Applications": [
+            { title: "JavaScript 30", description: "30 Day Vanilla JS Coding Challenge.", type: "Practice", difficulty: "Intermediate", link: "https://javascript30.com/", duration: "30 Days", source: "Wes Bos", relevance: 96, aiCurated: true },
+            { title: "Frontend Mentor", description: "Real-world frontend challenges.", type: "Practice", difficulty: "Intermediate", link: "https://www.frontendmentor.io/", duration: "Ongoing", source: "Frontend Mentor", relevance: 94, aiCurated: false }
+        ],
+        "Advanced Patterns": [
+            { title: "Patterns.dev", description: "Modern web app design patterns.", type: "Documentation", difficulty: "Advanced", link: "https://www.patterns.dev/", duration: "Book", source: "Patterns.dev", relevance: 98, aiCurated: true }
+        ],
+        "Node.js & Tooling": [
+            { title: "Node.js Docs", description: "Official Node.js documentation.", type: "Documentation", difficulty: "Intermediate", link: "https://nodejs.org/en/docs/", duration: "Ref", source: "Node.js", relevance: 98, aiCurated: true },
+            { title: "npm Documentation", description: "Package management guide.", type: "Documentation", difficulty: "Beginner", link: "https://docs.npmjs.com/", duration: "Ref", source: "npm", relevance: 90, aiCurated: false }
+        ]
+    },
+
+    // C#
+    "C#": {
+        "Fundamentals & .NET": [
+            { title: "C# Documentation", description: "Official Microsoft C# guide.", type: "Documentation", difficulty: "Beginner", link: "https://learn.microsoft.com/en-us/dotnet/csharp/", duration: "15h", source: "Microsoft", relevance: 100, aiCurated: true },
+            { title: "C# Notes (PDF)", description: "C# tutorial reference notes.", type: "Documentation", difficulty: "Beginner", link: "#notes-csharp", duration: "PDF", source: "Notes", relevance: 95, aiCurated: true }
+        ],
+        "OOP & Collections": [
+            { title: "C# OOP Concepts", description: "Classes, inheritance, interfaces.", type: "Documentation", difficulty: "Intermediate", link: "https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/object-oriented/", duration: "5h", source: "Microsoft", relevance: 98, aiCurated: true }
+        ],
+        "LINQ & Async": [
+            { title: "LINQ Documentation", description: "Language Integrated Query.", type: "Documentation", difficulty: "Intermediate", link: "https://learn.microsoft.com/en-us/dotnet/csharp/linq/", duration: "4h", source: "Microsoft", relevance: 96, aiCurated: true }
+        ],
+        "Projects & Applications": [
+            { title: "C# Project Ideas", description: "Build real-world .NET apps.", type: "Project", difficulty: "Intermediate", link: "https://github.com/practical-tutorials/project-based-learning#c-1", duration: "Ongoing", source: "GitHub", relevance: 94, aiCurated: true }
+        ],
+        "Advanced Concepts": [
+            { title: "C# Advanced Topics", description: "Generics, delegates, events.", type: "Documentation", difficulty: "Advanced", link: "https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/", duration: "6h", source: "Microsoft", relevance: 96, aiCurated: true }
+        ],
+        "Testing & Deployment": [
+            { title: "xUnit Documentation", description: ".NET testing framework.", type: "Documentation", difficulty: "Intermediate", link: "https://xunit.net/docs/getting-started/netcore/cmdline", duration: "2h", source: "xUnit", relevance: 94, aiCurated: true }
+        ]
+    },
+
+    // Swift
+    "Swift": {
+        "Fundamentals & Syntax": [
+            { title: "Swift Language Guide", description: "Official Swift documentation.", type: "Documentation", difficulty: "Beginner", link: "https://docs.swift.org/swift-book/", duration: "15h", source: "Swift.org", relevance: 100, aiCurated: true },
+            { title: "Swift Notes (PDF)", description: "Swift language reference notes.", type: "Documentation", difficulty: "Beginner", link: "#notes-swift", duration: "PDF", source: "Notes", relevance: 95, aiCurated: true }
+        ],
+        "Optionals & Closures": [
+            { title: "Swift Closures Guide", description: "Understanding closures and optionals.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/closures/", duration: "3h", source: "Swift.org", relevance: 96, aiCurated: true }
+        ],
+        "UIKit & SwiftUI": [
+            { title: "SwiftUI Tutorials", description: "Apple's official SwiftUI tutorials.", type: "Documentation", difficulty: "Intermediate", link: "https://developer.apple.com/tutorials/swiftui", duration: "8h", source: "Apple", relevance: 100, aiCurated: true }
+        ],
+        "Projects & Applications": [
+            { title: "Hacking with Swift", description: "100 Days of Swift projects.", type: "Practice", difficulty: "Intermediate", link: "https://www.hackingwithswift.com/100", duration: "100 Days", source: "HWS", relevance: 98, aiCurated: true }
+        ],
+        "Advanced Concepts": [
+            { title: "Swift Concurrency", description: "Async/await & structured concurrency.", type: "Documentation", difficulty: "Advanced", link: "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/", duration: "4h", source: "Swift.org", relevance: 96, aiCurated: true }
+        ],
+        "App Store Publishing": [
+            { title: "App Store Connect", description: "Publishing guide.", type: "Documentation", difficulty: "Intermediate", link: "https://developer.apple.com/app-store-connect/", duration: "Guide", source: "Apple", relevance: 94, aiCurated: true }
+        ]
+    },
+
+    // SQL
+    "SQL": {
+        "Basic Queries (SELECT/WHERE)": [
+            { title: "SQLBolt", description: "Interactive SQL lessons.", type: "Practice", difficulty: "Beginner", link: "https://sqlbolt.com/", duration: "2h", source: "SQLBolt", relevance: 100, aiCurated: true },
+            { title: "SQL Notes (PDF)", description: "SQL reference notes.", type: "Documentation", difficulty: "Beginner", link: "#notes-sql", duration: "PDF", source: "Notes", relevance: 96, aiCurated: true },
+            { title: "W3Schools SQL", description: "SQL tutorial with try-it editor.", type: "Documentation", difficulty: "Beginner", link: "https://www.w3schools.com/sql/", duration: "5h", source: "W3Schools", relevance: 94, aiCurated: false }
+        ],
+        "Joins & Subqueries": [
+            { title: "SQL Joins Visualized", description: "Visual explanation of all JOIN types.", type: "Documentation", difficulty: "Intermediate", link: "https://joins.spathon.com/", duration: "1h", source: "SQL Joins", relevance: 96, aiCurated: true }
+        ],
+        "Aggregation & Grouping": [
+            { title: "HackerRank SQL", description: "SQL practice challenges.", type: "Practice", difficulty: "Intermediate", link: "https://www.hackerrank.com/domains/sql", duration: "Ongoing", source: "HackerRank", relevance: 95, aiCurated: true }
+        ],
+        "Database Design & Normalization": [
+            { title: "Database Normalization Guide", description: "1NF through BCNF explained.", type: "Documentation", difficulty: "Intermediate", link: "https://www.guru99.com/database-normalization.html", duration: "3h", source: "Guru99", relevance: 94, aiCurated: true }
+        ],
+        "Advanced SQL (Window Functions)": [
+            { title: "Window Functions Guide", description: "ROW_NUMBER, RANK, PARTITION BY.", type: "Documentation", difficulty: "Advanced", link: "https://mode.com/sql-tutorial/sql-window-functions/", duration: "3h", source: "Mode", relevance: 96, aiCurated: true }
+        ],
+        "Performance & Indexing": [
+            { title: "Use The Index, Luke", description: "SQL performance tuning guide.", type: "Documentation", difficulty: "Advanced", link: "https://use-the-index-luke.com/", duration: "Book", source: "Use The Index", relevance: 98, aiCurated: true }
+        ]
+    },
+
+    // HTML & CSS
+    "HTML & CSS": {
+        "HTML Basics & Semantics": [
+            { title: "MDN HTML Basics", description: "Getting started with HTML.", type: "Documentation", difficulty: "Beginner", link: "https://developer.mozilla.org/en-US/docs/Learn/HTML", duration: "6h", source: "MDN", relevance: 100, aiCurated: true },
+            { title: "HTML Notes (PDF)", description: "HTML reference notes.", type: "Documentation", difficulty: "Beginner", link: "#notes-html", duration: "PDF", source: "Notes", relevance: 95, aiCurated: true }
+        ],
+        "CSS Selectors & Box Model": [
+            { title: "MDN CSS Guide", description: "CSS fundamentals and box model.", type: "Documentation", difficulty: "Beginner", link: "https://developer.mozilla.org/en-US/docs/Learn/CSS", duration: "8h", source: "MDN", relevance: 98, aiCurated: true },
+            { title: "CSS Notes (PDF)", description: "CSS reference notes.", type: "Documentation", difficulty: "Beginner", link: "#notes-css", duration: "PDF", source: "Notes", relevance: 95, aiCurated: true }
+        ],
+        "Flexbox & Grid": [
+            { title: "CSS Flexbox Guide", description: "Complete guide to Flexbox.", type: "Documentation", difficulty: "Intermediate", link: "https://css-tricks.com/snippets/css/a-guide-to-flexbox/", duration: "2h", source: "CSS-Tricks", relevance: 98, aiCurated: true },
+            { title: "CSS Grid Guide", description: "Complete guide to CSS Grid.", type: "Documentation", difficulty: "Intermediate", link: "https://css-tricks.com/snippets/css/complete-guide-grid/", duration: "2h", source: "CSS-Tricks", relevance: 98, aiCurated: true },
+            { title: "Flexbox Froggy", description: "Learn Flexbox with a game.", type: "Practice", difficulty: "Beginner", link: "https://flexboxfroggy.com/", duration: "30m", source: "Flexbox Froggy", relevance: 96, aiCurated: true }
+        ],
+        "Responsive Design": [
+            { title: "Responsive Web Design", description: "Media queries and responsive patterns.", type: "Documentation", difficulty: "Intermediate", link: "https://web.dev/responsive-web-design-basics/", duration: "3h", source: "web.dev", relevance: 96, aiCurated: true }
+        ],
+        "Animations & Transitions": [
+            { title: "CSS Animations Guide", description: "Keyframes, transitions, transforms.", type: "Documentation", difficulty: "Intermediate", link: "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations", duration: "3h", source: "MDN", relevance: 94, aiCurated: true }
+        ],
+        "Accessibility & Best Practices": [
+            { title: "WCAG Guidelines", description: "Web Content Accessibility Guidelines.", type: "Documentation", difficulty: "Intermediate", link: "https://www.w3.org/WAI/standards-guidelines/wcag/", duration: "Ref", source: "W3C", relevance: 98, aiCurated: true }
+        ]
+    },
+
+    // Git & GitHub
+    "Git & GitHub": {
+        "Git Basics (init, add, commit)": [
+            { title: "Git Official Docs", description: "Pro Git book — free and comprehensive.", type: "Documentation", difficulty: "Beginner", link: "https://git-scm.com/book/en/v2", duration: "Book", source: "Git", relevance: 100, aiCurated: true },
+            { title: "Git Cheat Sheet (PDF)", description: "Git commands quick reference.", type: "Documentation", difficulty: "Beginner", link: "#notes-git-cheatsheet", duration: "PDF", source: "Notes", relevance: 96, aiCurated: true },
+            { title: "GitHub Tutorial (PDF)", description: "GitHub usage tutorial notes.", type: "Documentation", difficulty: "Beginner", link: "#notes-git-tutorial", duration: "PDF", source: "Notes", relevance: 95, aiCurated: true },
+            { title: "Learn Git Branching", description: "Interactive visual Git tutorial.", type: "Practice", difficulty: "Beginner", link: "https://learngitbranching.js.org/", duration: "2h", source: "LGBI", relevance: 98, aiCurated: true }
+        ],
+        "Branching & Merging": [
+            { title: "Git Branching Guide", description: "Branches, merging, and conflicts.", type: "Documentation", difficulty: "Intermediate", link: "https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging", duration: "3h", source: "Git", relevance: 96, aiCurated: true }
+        ],
+        "Remote Repos & GitHub": [
+            { title: "GitHub Docs", description: "GitHub official documentation.", type: "Documentation", difficulty: "Beginner", link: "https://docs.github.com/en", duration: "Ref", source: "GitHub", relevance: 100, aiCurated: true },
+            { title: "GitHub Skills", description: "Interactive GitHub learning paths.", type: "Practice", difficulty: "Beginner", link: "https://skills.github.com/", duration: "Ongoing", source: "GitHub", relevance: 96, aiCurated: true }
+        ],
+        "Collaboration (PRs, Issues)": [
+            { title: "Contributing to Open Source", description: "How to make your first PR.", type: "Documentation", difficulty: "Intermediate", link: "https://opensource.guide/how-to-contribute/", duration: "2h", source: "OSS Guide", relevance: 94, aiCurated: true },
+            { title: "First Contributions", description: "Practice making your first open source contribution.", type: "Practice", difficulty: "Beginner", link: "https://github.com/firstcontributions/first-contributions", duration: "1h", source: "GitHub", relevance: 96, aiCurated: true }
+        ],
+        "Advanced Git (Rebase, Stash)": [
+            { title: "Git Rebase Guide", description: "Interactive rebase and advanced workflows.", type: "Documentation", difficulty: "Advanced", link: "https://git-scm.com/book/en/v2/Git-Branching-Rebasing", duration: "3h", source: "Git", relevance: 96, aiCurated: true }
+        ],
+        "CI/CD Integration": [
+            { title: "GitHub Actions Docs", description: "Automate workflows with GitHub Actions.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.github.com/en/actions", duration: "5h", source: "GitHub", relevance: 98, aiCurated: true },
+            { title: "GitHub Actions Starter Workflows", description: "Pre-built CI/CD templates.", type: "Practice", difficulty: "Intermediate", link: "https://github.com/actions/starter-workflows", duration: "Ongoing", source: "GitHub", relevance: 94, aiCurated: false }
+        ]
     }
 };
