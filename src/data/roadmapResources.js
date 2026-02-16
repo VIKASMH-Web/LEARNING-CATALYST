@@ -57,8 +57,8 @@ export const roadmapResources = {
                 description: "Complete beginner course by SuperSimpleDev.", 
                 type: "Video", 
                 difficulty: "Beginner", 
-                link: "https://www.youtube.com/watch?v=G3e-cpL7ofc",
-                videoId: "G3e-cpL7ofc",
+                link: "https://www.youtube.com/watch?v=Ke90Tje7VS0",
+                videoId: "Ke90Tje7VS0",
                 duration: "6h 30m",
                 source: "YouTube",
                 relevance: 95,
@@ -83,7 +83,7 @@ export const roadmapResources = {
         ],
         "Frontend Frameworks (React)": [
             { title: "React.dev", description: "The library for web and native user interfaces.", type: "Documentation", difficulty: "Intermediate", link: "https://react.dev/", duration: "15h", source: "React", relevance: 100, aiCurated: true },
-            { title: "React JS - Full Course", description: "Build a Netflix Clone with React.", type: "Video", difficulty: "Beginner", link: "https://www.youtube.com/watch?v=3hX0MVvQpMI", videoId: "3hX0MVvQpMI", duration: "10h", source: "YouTube", relevance: 94, aiCurated: true },
+            { title: "React JS - Full Course", description: "Build a Netflix Clone with React.", type: "Video", difficulty: "Beginner", link: "https://www.youtube.com/watch?v=SqcY0GlETPk", videoId: "SqcY0GlETPk", duration: "10h", source: "YouTube", relevance: 94, aiCurated: true },
             { title: "Build Your Own React", description: "Rewrite React from scratch to understand it.", type: "Project", difficulty: "Advanced", link: "https://pomb.us/build-your-own-react/", duration: "4h", source: "Rodrigo Pombo", relevance: 96, aiCurated: true }
         ],
         "Backend (Node/Python/Go)": [
@@ -93,7 +93,7 @@ export const roadmapResources = {
         ],
         "DB & Architecture": [
             { title: "PostgreSQL Docs", description: "The world's most advanced open source database.", type: "Documentation", difficulty: "Intermediate", link: "https://www.postgresql.org/docs/", duration: "Ref", source: "Postgres", relevance: 98, aiCurated: true },
-            { title: "Database Systems Course", description: "CMU Database Systems course.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=S212F2d2spE", videoId: "S212F2d2spE", duration: "20h", source: "CMU/YouTube", relevance: 92, aiCurated: true },
+            { title: "Database Systems Course", description: "CMU Database Systems course.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=uikbtpVZS2s", videoId: "uikbtpVZS2s", duration: "20h", source: "CMU/YouTube", relevance: 92, aiCurated: true },
             { title: "SQLBolt", description: "Learn SQL with simple, interactive exercises.", type: "Practice", difficulty: "Beginner", link: "https://sqlbolt.com/", duration: "2h", source: "SQLBolt", relevance: 90, aiCurated: false }
         ],
         "DevOps & Deployment": [
@@ -122,7 +122,7 @@ export const roadmapResources = {
          ],
          "Optimizing for Edge (ONNX)": [
              { title: "ONNX Runtime", description: "Optimize and deploy models.", type: "Documentation", difficulty: "Advanced", link: "https://onnxruntime.ai/", duration: "Ref", source: "Microsoft", relevance: 90, aiCurated: true },
-             { title: "TinyML", description: "Machine Learning on Embedded Systems.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=B9_xZ9zJ4kI", videoId: "B9_xZ9zJ4kI", duration: "1h", source: "YouTube", relevance: 88, aiCurated: false },
+             { title: "TinyML", description: "Machine Learning on Embedded Systems.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=TgekTwrftcg", videoId: "TgekTwrftcg", duration: "1h", source: "YouTube", relevance: 88, aiCurated: false },
              { title: "Edge Impulse", description: "Build data-driven solutions for Edge.", type: "Practice", difficulty: "Intermediate", link: "https://www.edgeimpulse.com/", duration: "Tool", source: "EdgeImpulse", relevance: 91, aiCurated: true }
          ],
          "NPU Acceleration": [
@@ -162,12 +162,12 @@ export const roadmapResources = {
         "State Management": [
              { title: "Redux Fundamentals", description: "Core concepts of Redux.", type: "Documentation", difficulty: "Advanced", link: "https://redux.js.org/tutorials/fundamentals/part-1-overview", duration: "4h", source: "Redux", relevance: 90, aiCurated: true },
              { title: "Zustand Bear", description: "Small, fast state management.", type: "Practice", difficulty: "Intermediate", link: "https://github.com/pmndrs/zustand", duration: "Repo", source: "GitHub", relevance: 95, aiCurated: true },
-             { title: "State Machines", description: "XState for robust logic.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=M9I49_tSKxE", videoId: "M9I49_tSKxE", duration: "1h", source: "YouTube", relevance: 88, aiCurated: false }
+             { title: "State Machines", description: "XState for robust logic.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=s0h34OkEVUE", videoId: "s0h34OkEVUE", duration: "1h", source: "YouTube", relevance: 88, aiCurated: false }
         ],
         "Performance Optimization": [
              { title: "Web Vitals", description: "Optimize for UX and SEO.", type: "Documentation", difficulty: "Advanced", link: "https://web.dev/vitals/", duration: "3h", source: "Google", relevance: 97, aiCurated: true },
              { title: "Lighthouse", description: "Audit your web apps.", type: "Practice", difficulty: "Intermediate", link: "https://developers.google.com/web/tools/lighthouse", duration: "Tool", source: "Google", relevance: 95, aiCurated: false },
-             { title: "React Profiler", description: "Optimizing Performance in React.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=7W5tXv0vGjM", videoId: "7W5tXv0vGjM", duration: "20m", source: "Ben Awad", relevance: 92, aiCurated: true }
+             { title: "React Profiler", description: "Optimizing Performance in React.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=CaShN6mCJB0", videoId: "CaShN6mCJB0", duration: "20m", source: "Ben Awad", relevance: 92, aiCurated: true }
         ]
     },
 
@@ -200,7 +200,7 @@ export const roadmapResources = {
         ],
         "Advanced Concurrency": [
              { title: "AsyncIO Docs", description: "Asynchronous I/O.", type: "Documentation", difficulty: "Advanced", link: "https://docs.python.org/3/library/asyncio.html", duration: "Ref", source: "Python", relevance: 92, aiCurated: true },
-             { title: "Python Concurrency", description: "Threading vs Multiprocessing vs Async.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=Qb9s3OLMWMk", videoId: "Qb9s3OLMWMk", duration: "45m", source: "mCoding", relevance: 95, aiCurated: true },
+             { title: "Python Concurrency", description: "Threading vs Multiprocessing vs Async.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=GpqAQxH1Afc", videoId: "GpqAQxH1Afc", duration: "45m", source: "mCoding", relevance: 95, aiCurated: true },
              { title: "Concurrent Futures", description: "Easy parallelism.", type: "Practice", difficulty: "Intermediate", link: "https://realpython.com/python-concurrency/", duration: "Tutorial", source: "RealPython", relevance: 90, aiCurated: false }
         ]
     },
@@ -229,12 +229,12 @@ export const roadmapResources = {
         ],
         "Microservices (Cloud)": [
              { title: "Spring Cloud", description: "Microservices tools.", type: "Documentation", difficulty: "Advanced", link: "https://spring.io/projects/spring-cloud", duration: "Ref", source: "Spring", relevance: 92, aiCurated: true },
-             { title: "Microservices with Java", description: "Architecture patterns.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=lKAw8Q3u49Y", videoId: "lKAw8Q3u49Y", duration: "1h", source: "TechTalks", relevance: 90, aiCurated: false },
+             { title: "Microservices with Java", description: "Architecture patterns.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=1aWhYEynZQw", videoId: "1aWhYEynZQw", duration: "1h", source: "TechTalks", relevance: 90, aiCurated: false },
              { title: "JHipster", description: "Generate microservices.", type: "Practice", difficulty: "Intermediate", link: "https://www.jhipster.tech/", duration: "Tool", source: "JHipster", relevance: 88, aiCurated: true }
         ],
         "Build Tools (Maven/Gradle)": [
              { title: "Maven in 5 Minutes", description: "Quick start.", type: "Documentation", difficulty: "Beginner", link: "https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html", duration: "5m", source: "Apache", relevance: 85, aiCurated: false },
-             { title: "Gradle vs Maven", description: "Which one to choose?", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=LPzN8AvPs2I", videoId: "LPzN8AvPs2I", duration: "10m", source: "YouTube", relevance: 80, aiCurated: false },
+             { title: "Gradle vs Maven", description: "Which one to choose?", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=n1V8AtPPqZA", videoId: "n1V8AtPPqZA", duration: "10m", source: "YouTube", relevance: 80, aiCurated: false },
              { title: "Building with Gradle", description: "Official training.", type: "Practice", difficulty: "Advanced", link: "https://gradle.org/training/", duration: "Course", source: "Gradle", relevance: 92, aiCurated: true }
         ]
     },
@@ -248,7 +248,7 @@ export const roadmapResources = {
         ],
         "API Design (REST/gRPC)": [
             { title: "Microsoft REST Guidelines", description: "Industry standard for REST APIs.", type: "Documentation", difficulty: "Intermediate", link: "https://github.com/microsoft/api-guidelines", duration: "Ref", source: "Microsoft", relevance: 95, aiCurated: true },
-            { title: "gRPC Crash Course", description: "Learn gRPC with Go.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=_VQUvK_fV1A", videoId: "_VQUvK_fV1A", duration: "45m", source: "YouTube", relevance: 92, aiCurated: true },
+            { title: "gRPC Crash Course", description: "Learn gRPC with Go.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=2Sm_O75I7H0", videoId: "2Sm_O75I7H0", duration: "45m", source: "YouTube", relevance: 92, aiCurated: true },
             { title: "Swagger Editor", description: "Design your API.", type: "Practice", difficulty: "Beginner", link: "https://editor.swagger.io/", duration: "Tool", source: "SmartBear", relevance: 88, aiCurated: false }
         ],
         "Data Persistence (SQL/NoSQL)": [
@@ -287,18 +287,18 @@ export const roadmapResources = {
         ],
         "STL & Templates": [
              { title: "cppreference.com", description: "The definitive C++ reference.", type: "Documentation", difficulty: "Advanced", link: "https://en.cppreference.com/w/", duration: "Ref", source: "CppReference", relevance: 99, aiCurated: true },
-             { title: "Back to Basics: STL", description: "CppCon talk on STL.", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=Hk7S_O6yVdc", videoId: "Hk7S_O6yVdc", duration: "1h", source: "CppCon", relevance: 95, aiCurated: true },
+             { title: "Back to Basics: STL", description: "CppCon talk on STL.", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=RRVYpIET_RU", videoId: "RRVYpIET_RU", duration: "1h", source: "CppCon", relevance: 95, aiCurated: true },
              { title: "HackerRank C++", description: "Solve STL problems.", type: "Practice", difficulty: "Beginner", link: "https://www.hackerrank.com/domains/cpp", duration: "Ongoing", source: "HackerRank", relevance: 90, aiCurated: false }
         ],
         "Concurrency & Threading": [
              { title: "C++ Concurrency", description: "Modern C++ threading.", type: "Documentation", difficulty: "Advanced", link: "https://learning.oreilly.com/library/view/c-concurrency-in/9781617294693/", duration: "Book", source: "Manning", relevance: 92, aiCurated: true },
-             { title: "Multithreading in C++", description: "Video tutorial series.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=TPHGIRbCXzg", videoId: "TPHGIRbCXzg", duration: "Series", source: "TheCherno", relevance: 94, aiCurated: true },
+             { title: "Multithreading in C++", description: "Video tutorial series.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=wXBcwHwIt_I", videoId: "wXBcwHwIt_I", duration: "Series", source: "TheCherno", relevance: 94, aiCurated: true },
              { title: "Deadlock Empire", description: "Game to learn concurrency.", type: "Practice", difficulty: "Advanced", link: "https://deadlockempire.github.io/", duration: "Game", source: "GitHub", relevance: 96, aiCurated: true }
         ],
         "Systems Programming": [
              { title: "OS: Three Easy Pieces", description: "Best free OS book.", type: "Documentation", difficulty: "Advanced", link: "https://pages.cs.wisc.edu/~remzi/OSTEP/", duration: "Book", source: "Wisc.edu", relevance: 98, aiCurated: true },
              { title: "Writing an OS in Rust", description: "Modern take on systems.", type: "Project", difficulty: "Advanced", link: "https://os.phil-opp.com/", duration: "Blog", source: "PhilOpp", relevance: 90, aiCurated: false },
-             { title: "Linux Kernel Dev", description: "Intro to kernel modules.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=F0Zz2YqQ4Yg", videoId: "F0Zz2YqQ4Yg", duration: "Various", source: "YouTube", relevance: 88, aiCurated: true }
+             { title: "Linux Kernel Dev", description: "Intro to kernel modules.", type: "Video", difficulty: "Advanced", link: "https://www.youtube.com/watch?v=WiZ05pnHZqM", videoId: "WiZ05pnHZqM", duration: "Various", source: "YouTube", relevance: 88, aiCurated: true }
         ],
         "Compilers & Optimization": [
              { title: "Compiler Explorer", description: "Interactive assembly viewer.", type: "Practice", difficulty: "Advanced", link: "https://godbolt.org/", duration: "Tool", source: "Godbolt", relevance: 95, aiCurated: true },
@@ -333,7 +333,7 @@ export const roadmapResources = {
          ],
          "Distributed Training": [
              { title: "Ray Documentation", description: "Scale Python apps.", type: "Documentation", difficulty: "Advanced", link: "https://docs.ray.io/en/latest/", duration: "Ref", source: "Ray", relevance: 90, aiCurated: true },
-             { title: "Dask Tutorial", description: "Parallel computing in Python.", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=EdsO19Uj68k", videoId: "EdsO19Uj68k", duration: "30m", source: "YouTube", relevance: 88, aiCurated: false }
+             { title: "Dask Tutorial", description: "Parallel computing in Python.", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=nnndxbr_Xq4", videoId: "nnndxbr_Xq4", duration: "30m", source: "YouTube", relevance: 88, aiCurated: false }
          ]
     },
 
@@ -389,7 +389,7 @@ export const roadmapResources = {
     // 11. Data Analyst (Partial - using patterns)
     "Data Analyst": {
          "Excel/SQL Core": [
-             { title: "Excel for Analysts", description: "Advanced Excel skills.", type: "Video", difficulty: "Beginner", link: "https://www.youtube.com/watch?v=rjpXdZS3hZY", videoId: "rjpXdZS3hZY", duration: "40m", source: "YouTube", relevance: 90, aiCurated: false },
+             { title: "Excel for Analysts", description: "Advanced Excel skills.", type: "Video", difficulty: "Beginner", link: "https://www.youtube.com/watch?v=qrbf9DtR3_c", videoId: "qrbf9DtR3_c", duration: "40m", source: "YouTube", relevance: 90, aiCurated: false },
              { title: "SQLBolt", description: "Interactive SQL.", type: "Practice", difficulty: "Beginner", link: "https://sqlbolt.com/", duration: "2h", source: "SQLBolt", relevance: 95, aiCurated: true }
          ],
          "Data Cleaning": [
@@ -397,7 +397,7 @@ export const roadmapResources = {
          ],
          "BI Tools (Tableau/PowerBI)": [
              { title: "Tableau Public", description: "Learn Tableau.", type: "Documentation", difficulty: "Intermediate", link: "https://public.tableau.com/en-us/s/", duration: "Tool", source: "Tableau", relevance: 94, aiCurated: true },
-             { title: "PowerBI Tutorial", description: "Full course.", type: "Video", difficulty: "Beginner", link: "https://www.youtube.com/watch?v=3u7VBzXXIzg", videoId: "3u7VBzXXIzg", duration: "1h", source: "YouTube", relevance: 90, aiCurated: false }
+             { title: "PowerBI Tutorial", description: "Full course.", type: "Video", difficulty: "Beginner", link: "https://www.youtube.com/watch?v=c7LrqSxjJQQ", videoId: "c7LrqSxjJQQ", duration: "1h", source: "YouTube", relevance: 90, aiCurated: false }
          ]
     },
 
@@ -412,7 +412,7 @@ export const roadmapResources = {
          ],
          "GitOps Workflows": [
              { title: "GitOps Principles", description: "OpenGitOps documentation.", type: "Documentation", difficulty: "Intermediate", link: "https://opengitops.dev/", duration: "Ref", source: "OpenGitOps", relevance: 98, aiCurated: true },
-             { title: "What is GitOps?", description: "GitLab explainer.", type: "Video", difficulty: "Beginner", link: "https://www.youtube.com/watch?v=qjcoMBYc8kY", videoId: "qjcoMBYc8kY", duration: "10m", source: "GitLab", relevance: 90, aiCurated: false },
+             { title: "What is GitOps?", description: "GitLab explainer.", type: "Video", difficulty: "Beginner", link: "https://www.youtube.com/watch?v=f5EpcWp0THw", videoId: "f5EpcWp0THw", duration: "10m", source: "GitLab", relevance: 90, aiCurated: false },
              { title: "ArgoCD Tutorial", description: "Hands-on with ArgoCD.", type: "Practice", difficulty: "Advanced", link: "https://argo-cd.readthedocs.io/en/stable/", duration: "Tool", source: "ArgoCD", relevance: 94, aiCurated: true }
          ],
          "CI/CD (Actions/Jenkins)": [
@@ -432,7 +432,7 @@ export const roadmapResources = {
          ],
          "Monitoring & Logging": [
              { title: "Prometheus Docs", description: "Monitoring system.", type: "Documentation", difficulty: "Advanced", link: "https://prometheus.io/docs/introduction/overview/", duration: "Ref", source: "Prometheus", relevance: 94, aiCurated: true },
-             { title: "Grafana Crash Course", description: "Visualize metrics.", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=CxgQm5BV_48", videoId: "CxgQm5BV_48", duration: "1h", source: "YouTube", relevance: 92, aiCurated: false },
+             { title: "Grafana Crash Course", description: "Visualize metrics.", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=lILY8eSspEo", videoId: "lILY8eSspEo", duration: "1h", source: "YouTube", relevance: 92, aiCurated: false },
              { title: "ELK Stack", description: "Elasticsearch Logstash Kibana.", type: "Practice", difficulty: "Advanced", link: "https://www.elastic.co/what-is/elk-stack", duration: "Read", source: "Elastic", relevance: 90, aiCurated: true }
          ]
     },
@@ -478,7 +478,7 @@ export const roadmapResources = {
          ],
          "Swift/Kotlin Mastery": [
              { title: "Swift Docs", description: "The Swift Programming Language.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.swift.org/swift-book/", duration: "Book", source: "Swift.org", relevance: 99, aiCurated: true },
-             { title: "Kotlin for Android", description: "Android specifics.", type: "Video", difficulty: "Beginner", link: "https://www.youtube.com/watch?v=FISZ5WAQmKQ", videoId: "FISZ5WAQmKQ", duration: "13h", source: "FreeCodeCamp", relevance: 95, aiCurated: true },
+             { title: "Kotlin for Android", description: "Android specifics.", type: "Video", difficulty: "Beginner", link: "https://www.youtube.com/watch?v=EExSSotojVI", videoId: "EExSSotojVI", duration: "13h", source: "FreeCodeCamp", relevance: 95, aiCurated: true },
              { title: "Kotlin Koans", description: "Interactive exercises.", type: "Practice", difficulty: "Intermediate", link: "https://kotlinlang.org/docs/koans.html", duration: "Lab", source: "JetBrains", relevance: 96, aiCurated: true }
          ],
          "React Native/Flutter": [
@@ -504,12 +504,12 @@ export const roadmapResources = {
     "Cloud Engineer": {
          "Cloud Fundamentals": [
              { title: "AWS Cloud Practitioner", description: "Official certification prep.", type: "Course", difficulty: "Beginner", link: "https://aws.amazon.com/certification/certified-cloud-practitioner/", duration: "Course", source: "AWS", relevance: 100, aiCurated: true },
-             { title: "Azure Fundamentals", description: "AZ-900 prep.", type: "Video", difficulty: "Beginner", link: "https://www.youtube.com/watch?v=N5wupQPbz2A", videoId: "N5wupQPbz2A", duration: "3h", source: "FreeCodeCamp", relevance: 95, aiCurated: true },
+             { title: "Azure Fundamentals", description: "AZ-900 prep.", type: "Video", difficulty: "Beginner", link: "https://www.youtube.com/watch?v=NKEFWyqJ5XA", videoId: "NKEFWyqJ5XA", duration: "3h", source: "FreeCodeCamp", relevance: 95, aiCurated: true },
              { title: "Qwiklabs", description: "Hands-on labs.", type: "Practice", difficulty: "Beginner", link: "https://www.cloudskillsboost.google/", duration: "Labs", source: "Google", relevance: 92, aiCurated: false }
          ],
          "Networking & IAM": [
              { title: "AWS VPC", description: "Virtual Private Cloud.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.aws.amazon.com/vpc/", duration: "Ref", source: "AWS", relevance: 96, aiCurated: true },
-             { title: "IAM Roles Explained", description: "Security best practices.", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=Yt1JIe8L84I", videoId: "Yt1JIe8L84I", duration: "20m", source: "YouTube", relevance: 92, aiCurated: false }
+             { title: "IAM Roles Explained", description: "Security best practices.", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=B-MwKnNBh5s", videoId: "B-MwKnNBh5s", duration: "20m", source: "YouTube", relevance: 92, aiCurated: false }
          ],
          "Compute & Storage": [
              { title: "EC2 Cheat Sheet", description: "Instance types and pricing.", type: "Documentation", difficulty: "Intermediate", link: "https://tutorialsdojo.com/amazon-ec2/", duration: "Ref", source: "TutorialsDojo", relevance: 94, aiCurated: true },
@@ -517,7 +517,7 @@ export const roadmapResources = {
          ],
          "Serverless Architecture": [
              { title: "Serverless Land", description: "Patterns and examples.", type: "Documentation", difficulty: "Advanced", link: "https://serverlessland.com/", duration: "Ref", source: "AWS", relevance: 98, aiCurated: true },
-             { title: "Lambda Tutorial", description: "Build a serverless API.", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=7kdrF7P3RmM", videoId: "7kdrF7P3RmM", duration: "1h", source: "YouTube", relevance: 94, aiCurated: false },
+             { title: "Lambda Tutorial", description: "Build a serverless API.", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=eOBq__h4OJ4", videoId: "eOBq__h4OJ4", duration: "1h", source: "YouTube", relevance: 94, aiCurated: false },
              { title: "Serverless Stack", description: "Guide to serverless apps.", type: "Practice", difficulty: "Intermediate", link: "https://serverless-stack.com/", duration: "Guide", source: "SST", relevance: 96, aiCurated: true }
          ],
          "Cost Optimization": [
@@ -526,7 +526,7 @@ export const roadmapResources = {
          ],
          "Global Distribution": [
              { title: "Cloudflare Workers", description: "Edge computing.", type: "Documentation", difficulty: "Advanced", link: "https://workers.cloudflare.com/", duration: "Ref", source: "Cloudflare", relevance: 98, aiCurated: true },
-             { title: "AWS CloudFront", description: "CDN explained.", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=ATe-rJNMTgY", videoId: "ATe-rJNMTgY", duration: "15m", source: "BeABetterDev", relevance: 92, aiCurated: false }
+             { title: "AWS CloudFront", description: "CDN explained.", type: "Video", difficulty: "Intermediate", link: "https://www.youtube.com/watch?v=AT-nHW3_SVI", videoId: "AT-nHW3_SVI", duration: "15m", source: "BeABetterDev", relevance: 92, aiCurated: false }
          ]
     }
 };
