@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mic, MicOff } from 'lucide-react';
+import { Mic, MicOff, Command, Keyboard } from 'lucide-react';
 import './VoiceControl.css';
 
 const VoiceControl = () => {
@@ -8,15 +8,44 @@ const VoiceControl = () => {
   const [transcript, setTranscript] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
   const [isSupported, setIsSupported] = useState(true);
+  const [toast, setToast] = useState(null); // { message, type: 'activated' | 'disabled' | 'error' }
   
   const recognitionRef = useRef(null);
   const isListeningRef = useRef(isListening);
+  const toastTimerRef = useRef(null);
   const navigate = useNavigate();
+
+  // Toast helper
+  const showToast = useCallback((message, type = 'info') => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    setToast({ message, type });
+    toastTimerRef.current = setTimeout(() => setToast(null), 2500);
+  }, []);
+
+  // Toggle function (used by both button click and keyboard shortcut)
+  const toggleListening = useCallback(() => {
+    setIsListening(prev => {
+      const newState = !prev;
+      if (newState) {
+        showToast('🎙 Voice Mode Activated', 'activated');
+      } else {
+        showToast('Voice Mode Disabled', 'disabled');
+      }
+      return newState;
+    });
+  }, [showToast]);
 
   // Sync ref with state
   useEffect(() => {
     isListeningRef.current = isListening;
   }, [isListening]);
+
+  // Listen for global toggleVoiceMode event (from Cmd+K / Ctrl+K)
+  useEffect(() => {
+    const handler = () => toggleListening();
+    window.addEventListener('toggleVoiceMode', handler);
+    return () => window.removeEventListener('toggleVoiceMode', handler);
+  }, [toggleListening]);
 
   useEffect(() => {
     // Browser Support Check
@@ -28,7 +57,7 @@ const VoiceControl = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
     
-    // IMPORTANT: Continuous FALSE for single command mode as per User Request
+    // IMPORTANT: Continuous FALSE for single command mode
     // "Speak once -> Navigate -> Disable voice mode"
     recognition.continuous = false; 
     recognition.interimResults = true;
@@ -39,13 +68,10 @@ const VoiceControl = () => {
     };
 
     recognition.onend = () => {
-        // If we processed a command, isListening will be false, so we stop.
-        // If we just stopped speaking without a command, we might want to restart?
-        // User Request: "Never re-trigger."
-        // So we just stop.
         if (isListeningRef.current) {
             setIsListening(false);
             setStatusMessage('');
+            showToast('Voice Mode Disabled', 'disabled');
         }
     };
 
@@ -66,11 +92,12 @@ const VoiceControl = () => {
        if(event.error === 'not-allowed') {
            setIsListening(false);
            setStatusMessage('Microphone access denied');
+           showToast('❌ Microphone access denied', 'error');
        }
-       // If no-speech, just stop.
        if (event.error === 'no-speech') {
            setIsListening(false);
            setStatusMessage('No speech detected');
+           showToast('No speech detected', 'disabled');
        }
     };
 
@@ -112,7 +139,6 @@ const VoiceControl = () => {
     const lowerCmd = cmd.toLowerCase().trim();
     console.log('Voice Command:', lowerCmd);
     
-    // Flexible Command Mapping
     const commandMap = {
         'dashboard': '/',
         'home': '/',
@@ -152,6 +178,7 @@ const VoiceControl = () => {
         setIsListening(false);
 
         setStatusMessage(`Open ${targetLabel}`);
+        showToast(`✅ Navigating to ${targetLabel}`, 'activated');
         
         // 3. One-time feedback
         speak(`Opening ${targetLabel}`);
@@ -163,27 +190,56 @@ const VoiceControl = () => {
         }, 500);
         
     } else {
-         // No match logic
          setIsListening(false); 
          setStatusMessage("Command not recognized");
+         showToast("Command not recognized", 'error');
          speak("Sorry, I didn't catch that.");
     }
   };
 
   if (!isSupported) return null;
 
+  const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+
   return (
-    <div className={`voice-control-container ${isListening ? 'active' : ''}`}>
-       <button 
-        className={`voice-toggle-btn ${isListening ? 'listening' : ''}`}
-        onClick={() => setIsListening(!isListening)}
-        title={isListening ? "Stop Listening" : "Start Voice Navigation"}
-        style={{ width: isListening ? '180px' : '140px' }} // Dynamic width
-      >
-        {isListening ? <Mic size={18} className="pulse-anim" /> : <MicOff size={18} />}
-        <span className="voice-btn-label">{isListening ? (transcript || 'Listening...') : 'Voice Mode'}</span>
-      </button>
-    </div>
+    <>
+      {/* Voice Control Button */}
+      <div className={`voice-control-container ${isListening ? 'active' : ''}`}>
+        <button 
+          className={`voice-toggle-btn ${isListening ? 'listening' : ''}`}
+          onClick={toggleListening}
+          title={isListening ? "Stop Listening (⌘K)" : "Start Voice Navigation (⌘K)"}
+          style={{ width: isListening ? '200px' : '160px' }}
+        >
+          {isListening ? (
+            <Mic size={18} className="pulse-anim" />
+          ) : (
+            <MicOff size={18} />
+          )}
+          <span className="voice-btn-label">
+            {isListening ? (transcript || 'Listening...') : 'Voice Mode'}
+          </span>
+          {/* Keyboard shortcut badge */}
+          {!isListening && (
+            <span className="voice-shortcut-badge">
+              {isMac ? '⌘' : 'Ctrl'} K
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* Toast Notification */}
+      {toast && (
+        <div className={`voice-toast voice-toast-${toast.type}`}>
+          <div className="voice-toast-content">
+            {toast.type === 'activated' && <Mic size={16} className="pulse-anim" />}
+            {toast.type === 'disabled' && <MicOff size={16} />}
+            {toast.type === 'error' && <MicOff size={16} />}
+            <span>{toast.message}</span>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
