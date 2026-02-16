@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Youtube, X, PlayCircle, Clock, User, AlertCircle, FileText, Download, HelpCircle, Lock, Zap, CheckCircle, XCircle, UserMinus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import DomainSearch from '../components/domain/DomainSearch';
+import DomainResults from '../components/domain/DomainResults';
 
 const resourcesData = {
   "Full Stack Developer": [
@@ -123,6 +125,7 @@ const Resources = () => {
     const storageKey = user?.id ? `lc_pro_${user.id}` : 'lc_pro_guest';
     
     const [selectedVideo, setSelectedVideo] = useState(null);
+    const [selectedDomain, setSelectedDomain] = useState(null);
     const [showRequestModal, setShowRequestModal] = useState(false);
     
     // Initialize from localStorage
@@ -289,8 +292,27 @@ const Resources = () => {
                 </div>
             </header>
 
+            <DomainSearch onDomainSelect={setSelectedDomain} />
+
+            {selectedDomain && (
+                <div className="fade-in">
+                    <button 
+                        onClick={() => setSelectedDomain(null)} 
+                        style={{ 
+                            background: 'transparent', border: 'none', color: '#9ca3af', 
+                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem',
+                            marginBottom: '1rem', fontSize: '0.9rem'
+                        }}
+                    >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                        Back to All Resources
+                    </button>
+                    <DomainResults domainData={selectedDomain} isPremium={isPremium} />
+                </div>
+            )}
+
             {/* Notes Section */}
-            {Object.entries(notesData).map(([category, notes]) => (
+            {!selectedDomain && Object.entries(notesData).map(([category, notes]) => (
                 <section key={category}>
                     <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', color: 'var(--accent-color)' }}>
                         <div style={{ width: 4, height: 24, background: 'var(--accent-color)', borderRadius: 2 }}></div>
@@ -359,9 +381,9 @@ const Resources = () => {
                 </section>
             ))}
 
-            <div style={{ width: '100%', height: '1px', background: 'var(--border-color)', margin: '1rem 0', opacity: 0.3 }}></div>
+            {!selectedDomain && <div style={{ width: '100%', height: '1px', background: 'var(--border-color)', margin: '1rem 0', opacity: 0.3 }}></div>}
 
-            {Object.entries(resourcesData).map(([lang, videos]) => (
+            {!selectedDomain && Object.entries(resourcesData).map(([lang, videos]) => (
                 <section key={lang}>
                     <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', color: 'var(--accent-color)' }}>
                         <div style={{ width: 4, height: 24, background: 'var(--accent-color)', borderRadius: 2 }}></div>
