@@ -535,57 +535,81 @@ const Roadmaps = () => {
                                                                     return resources.map((res, rIdx) => (
                                                                         <a 
                                                                             key={rIdx} href={res.link} target="_blank" rel="noopener noreferrer"
-                                                                            className="glass-card"
+                                                                            className="resource-card"
                                                                             style={{ 
                                                                                 display: 'flex', flexDirection: 'column', gap: '0.75rem',
-                                                                                padding: '1rem', background: 'var(--bg-elevated)', 
-                                                                                borderRadius: '12px', border: '1px solid var(--border-color)',
+                                                                                padding: '1.25rem', background: 'rgba(255,255,255,0.03)', 
+                                                                                borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)',
                                                                                 textDecoration: 'none', color: 'var(--text-secondary)',
-                                                                                transition: 'all 0.2s', position: 'relative', minHeight: '120px'
+                                                                                transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)', position: 'relative', minHeight: '130px',
+                                                                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
                                                                             }}
-                                                                            onMouseOver={(e) => { 
+                                                                            onMouseEnter={(e) => { 
                                                                                 e.currentTarget.style.borderColor = 'var(--accent-color)'; 
-                                                                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                                                                e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+                                                                                e.currentTarget.style.transform = 'translateY(-4px)';
+                                                                                e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(124, 58, 237, 0.2), 0 4px 6px -2px rgba(124, 58, 237, 0.1)';
                                                                             }}
-                                                                            onMouseOut={(e) => { 
-                                                                                e.currentTarget.style.borderColor = 'var(--border-color)'; 
+                                                                            onMouseLeave={(e) => { 
+                                                                                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)'; 
+                                                                                e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
                                                                                 e.currentTarget.style.transform = 'translateY(0)';
+                                                                                e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
                                                                             }}
                                                                         >
                                                                             {/* Header: Icon + Difficulty + External Link */}
                                                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                                                                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                                                                                    <div style={{ width: 28, height: 28, borderRadius: '6px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                                                         {res.type === 'Video' ? <Video size={14} color="#f87171" /> :
-                                                                                          res.type === 'Course' ? <BookOpen size={14} color="#facc15" /> :
-                                                                                          res.type === 'Documentation' ? <FileText size={14} color="#60a5fa" /> :
-                                                                                          <Code size={14} color="#4ade80" />}
+                                                                                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                                                                                    <div style={{ 
+                                                                                        width: 36, height: 36, borderRadius: '10px', 
+                                                                                        background: res.type === 'Video' ? 'rgba(248, 113, 113, 0.1)' : 
+                                                                                                    res.type === 'Course' ? 'rgba(250, 204, 21, 0.1)' :
+                                                                                                    res.type === 'Documentation' ? 'rgba(96, 165, 250, 0.1)' : 'rgba(74, 222, 128, 0.1)',
+                                                                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                                        border: `1px solid ${res.type === 'Video' ? 'rgba(248, 113, 113, 0.2)' : res.type === 'Course' ? 'rgba(250, 204, 21, 0.2)' : res.type === 'Documentation' ? 'rgba(96, 165, 250, 0.2)' : 'rgba(74, 222, 128, 0.2)'}`
+                                                                                    }}>
+                                                                                         {res.type === 'Video' ? <Video size={18} color="#f87171" /> :
+                                                                                          res.type === 'Course' ? <BookOpen size={18} color="#facc15" /> :
+                                                                                          res.type === 'Documentation' ? <FileText size={18} color="#60a5fa" /> :
+                                                                                          <Code size={18} color="#4ade80" />}
                                                                                     </div>
                                                                                     {res.aiCurated && (
-                                                                                        <span style={{ fontSize: '0.65rem', background: 'rgba(124, 58, 237, 0.2)', color: '#a78bfa', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>AI PICK</span>
+                                                                                        <span style={{ 
+                                                                                            fontSize: '0.65rem', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', 
+                                                                                            color: 'white', padding: '3px 8px', borderRadius: '12px', fontWeight: 700,
+                                                                                            display: 'flex', alignItems: 'center', gap: '4px', boxShadow: '0 2px 5px rgba(124, 58, 237, 0.4)'
+                                                                                        }}>
+                                                                                            <Zap size={10} fill="white" /> AI PICK
+                                                                                        </span>
                                                                                     )}
                                                                                 </div>
-                                                                                <ExternalLink size={12} style={{ opacity: 0.5 }} />
+                                                                                <ExternalLink size={14} style={{ opacity: 0.4, transition: 'opacity 0.2s' }} />
                                                                             </div>
 
                                                                             {/* Content */}
-                                                                            <div>
-                                                                                <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'white', marginBottom: '4px', lineHeight: 1.3 }}>{res.title}</h4>
-                                                                                <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                                                            <div style={{ flex: 1 }}>
+                                                                                <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white', marginBottom: '6px', lineHeight: 1.4 }}>{res.title}</h4>
+                                                                                <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                                                                                     {res.description || 'Comprehensive resource to master this topic.'}
                                                                                 </p>
                                                                             </div>
 
                                                                             {/* Footer: Badges */}
-                                                                            <div style={{ marginTop: 'auto', display: 'flex', gap: '0.5rem' }}>
-                                                                                <span style={{ fontSize: '0.7rem', padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>
+                                                                            <div style={{ marginTop: 'auto', display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+                                                                                <span style={{ 
+                                                                                    fontSize: '0.7rem', padding: '3px 8px', borderRadius: '6px', 
+                                                                                    background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)', border: '1px solid rgba(255,255,255,0.05)',
+                                                                                    fontWeight: 500
+                                                                                }}>
                                                                                     {res.type}
                                                                                 </span>
                                                                                 {res.difficulty && (
                                                                                      <span style={{ 
-                                                                                         fontSize: '0.7rem', padding: '2px 6px', borderRadius: '4px', 
+                                                                                         fontSize: '0.7rem', padding: '3px 8px', borderRadius: '6px', 
                                                                                          background: res.difficulty === 'Beginner' ? 'rgba(80, 250, 123, 0.1)' : res.difficulty === 'Advanced' ? 'rgba(255, 85, 85, 0.1)' : 'rgba(255, 184, 108, 0.1)',
-                                                                                         color: res.difficulty === 'Beginner' ? '#50fa7b' : res.difficulty === 'Advanced' ? '#ff5555' : '#ffb86c'
+                                                                                         color: res.difficulty === 'Beginner' ? '#50fa7b' : res.difficulty === 'Advanced' ? '#ff5555' : '#ffb86c',
+                                                                                         border: `1px solid ${res.difficulty === 'Beginner' ? 'rgba(80, 250, 123, 0.2)' : res.difficulty === 'Advanced' ? 'rgba(255, 85, 85, 0.2)' : 'rgba(255, 184, 108, 0.2)'}`,
+                                                                                         fontWeight: 600
                                                                                      }}>
                                                                                         {res.difficulty}
                                                                                      </span>
