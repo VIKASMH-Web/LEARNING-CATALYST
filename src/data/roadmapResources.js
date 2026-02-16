@@ -763,5 +763,141 @@ export const roadmapResources = {
             { title: "GitHub Actions Docs", description: "Automate workflows with GitHub Actions.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.github.com/en/actions", duration: "5h", source: "GitHub", relevance: 98, aiCurated: true },
             { title: "GitHub Actions Starter Workflows", description: "Pre-built CI/CD templates.", type: "Practice", difficulty: "Intermediate", link: "https://github.com/actions/starter-workflows", duration: "Ongoing", source: "GitHub", relevance: 94, aiCurated: false }
         ]
+    },
+
+    // Docker
+    "Docker": {
+        "Docker Fundamentals": [
+            { title: "Docker Getting Started", description: "Official Docker tutorial for beginners.", type: "Documentation", difficulty: "Beginner", link: "https://docs.docker.com/get-started/", duration: "3h", source: "Docker", relevance: 100, aiCurated: true },
+            { title: "Docker Curriculum", description: "Step-by-step Docker tutorial with hands-on examples.", type: "Course", difficulty: "Beginner", link: "https://docker-curriculum.com/", duration: "5h", source: "Prakhar", relevance: 96, aiCurated: true },
+            { title: "Play with Docker", description: "Free browser-based Docker playground.", type: "Practice", difficulty: "Beginner", link: "https://labs.play-with-docker.com/", duration: "Ongoing", source: "PWD", relevance: 94, aiCurated: true }
+        ],
+        "Dockerfile & Images": [
+            { title: "Dockerfile Reference", description: "Complete Dockerfile syntax and directives.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.docker.com/reference/dockerfile/", duration: "Ref", source: "Docker", relevance: 98, aiCurated: true },
+            { title: "Best Practices for Dockerfiles", description: "Optimizing image size and build speed.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.docker.com/build/building/best-practices/", duration: "2h", source: "Docker", relevance: 96, aiCurated: true },
+            { title: "Docker Hub Official Images", description: "Browse and use trusted base images.", type: "Practice", difficulty: "Beginner", link: "https://hub.docker.com/search?type=image&image_filter=official", duration: "Ref", source: "Docker Hub", relevance: 90, aiCurated: false }
+        ],
+        "Docker Compose": [
+            { title: "Docker Compose Docs", description: "Define and manage multi-container applications.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.docker.com/compose/", duration: "4h", source: "Docker", relevance: 100, aiCurated: true },
+            { title: "Compose File Reference", description: "Full YAML specification for docker-compose.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.docker.com/reference/compose-file/", duration: "Ref", source: "Docker", relevance: 96, aiCurated: true },
+            { title: "Awesome Compose", description: "Sample Docker Compose projects for learning.", type: "Practice", difficulty: "Intermediate", link: "https://github.com/docker/awesome-compose", duration: "Ongoing", source: "GitHub", relevance: 94, aiCurated: true }
+        ],
+        "Networking & Volumes": [
+            { title: "Docker Networking Overview", description: "Bridge, host, overlay, and custom networks.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.docker.com/engine/network/", duration: "3h", source: "Docker", relevance: 96, aiCurated: true },
+            { title: "Docker Volumes Guide", description: "Persistent data storage across containers.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.docker.com/engine/storage/volumes/", duration: "2h", source: "Docker", relevance: 94, aiCurated: true },
+            { title: "Docker Network Lab", description: "Hands-on networking exercises.", type: "Practice", difficulty: "Intermediate", link: "https://training.play-with-docker.com/docker-networking-hol/", duration: "2h", source: "PWD", relevance: 92, aiCurated: true }
+        ],
+        "Container Orchestration Basics": [
+            { title: "Docker Swarm Tutorial", description: "Introduction to container orchestration with Swarm.", type: "Documentation", difficulty: "Advanced", link: "https://docs.docker.com/engine/swarm/swarm-tutorial/", duration: "4h", source: "Docker", relevance: 90, aiCurated: true },
+            { title: "Kubernetes for Docker Users", description: "From Docker concepts to Kubernetes.", type: "Documentation", difficulty: "Advanced", link: "https://kubernetes.io/docs/reference/kubectl/docker-cli-to-kubectl/", duration: "3h", source: "K8s", relevance: 88, aiCurated: true },
+            { title: "K8s Playground", description: "Try Kubernetes in your browser.", type: "Practice", difficulty: "Advanced", link: "https://labs.play-with-k8s.com/", duration: "Ongoing", source: "PWK", relevance: 86, aiCurated: false }
+        ],
+        "Production Best Practices": [
+            { title: "Docker Security Guide", description: "Container security scanning and hardening.", type: "Documentation", difficulty: "Advanced", link: "https://docs.docker.com/engine/security/", duration: "3h", source: "Docker", relevance: 96, aiCurated: true },
+            { title: "Docker Cheat Sheet", description: "Quick command reference for daily use.", type: "Documentation", difficulty: "All", link: "https://github.com/wsargent/docker-cheat-sheet", duration: "Ref", source: "GitHub", relevance: 94, aiCurated: true },
+            { title: "Container Best Practices", description: "Google's container building best practices.", type: "Documentation", difficulty: "Advanced", link: "https://cloud.google.com/architecture/best-practices-for-building-containers", duration: "2h", source: "Google", relevance: 92, aiCurated: true }
+        ]
+    },
+
+    // Postman
+    "Postman": {
+        "HTTP & API Basics": [
+            { title: "MDN HTTP Guide", description: "Complete HTTP protocol reference.", type: "Documentation", difficulty: "Beginner", link: "https://developer.mozilla.org/en-US/docs/Web/HTTP", duration: "4h", source: "MDN", relevance: 98, aiCurated: true },
+            { title: "RESTful API Design", description: "Best practices for designing REST APIs.", type: "Documentation", difficulty: "Beginner", link: "https://restfulapi.net/", duration: "3h", source: "RESTful API", relevance: 94, aiCurated: true },
+            { title: "Public APIs List", description: "Hundreds of free APIs to practice with.", type: "Practice", difficulty: "Beginner", link: "https://github.com/public-apis/public-apis", duration: "Ref", source: "GitHub", relevance: 92, aiCurated: true }
+        ],
+        "Sending Requests": [
+            { title: "Postman Getting Started", description: "Send your first API request step-by-step.", type: "Course", difficulty: "Beginner", link: "https://learning.postman.com/docs/getting-started/first-steps/sending-the-first-request/", duration: "1h", source: "Postman", relevance: 100, aiCurated: true },
+            { title: "Postman Learning Center", description: "Official Postman tutorials and guides.", type: "Documentation", difficulty: "Beginner", link: "https://learning.postman.com/", duration: "Ongoing", source: "Postman", relevance: 98, aiCurated: true },
+            { title: "JSONPlaceholder", description: "Free fake API for testing HTTP requests.", type: "Practice", difficulty: "Beginner", link: "https://jsonplaceholder.typicode.com/", duration: "Ongoing", source: "Typicode", relevance: 94, aiCurated: true }
+        ],
+        "Environment & Variables": [
+            { title: "Postman Variables Guide", description: "Global, collection, and environment variables.", type: "Documentation", difficulty: "Intermediate", link: "https://learning.postman.com/docs/sending-requests/variables/variables/", duration: "2h", source: "Postman", relevance: 96, aiCurated: true },
+            { title: "Managing Environments", description: "Set up dev/staging/prod API configs.", type: "Documentation", difficulty: "Intermediate", link: "https://learning.postman.com/docs/sending-requests/variables/managing-environments/", duration: "1h", source: "Postman", relevance: 94, aiCurated: true },
+            { title: "Postman API Workspace", description: "Hands-on workspace templates.", type: "Practice", difficulty: "Intermediate", link: "https://www.postman.com/explore", duration: "Ongoing", source: "Postman", relevance: 90, aiCurated: false }
+        ],
+        "Testing & Assertions": [
+            { title: "Writing Tests in Postman", description: "Automate response validation with scripts.", type: "Documentation", difficulty: "Intermediate", link: "https://learning.postman.com/docs/tests-and-scripts/write-scripts/test-scripts/", duration: "3h", source: "Postman", relevance: 98, aiCurated: true },
+            { title: "Postman Scripting Reference", description: "pm.* API reference for test scripts.", type: "Documentation", difficulty: "Intermediate", link: "https://learning.postman.com/docs/tests-and-scripts/write-scripts/postman-sandbox-api-reference/", duration: "Ref", source: "Postman", relevance: 94, aiCurated: true },
+            { title: "15 Days of Postman", description: "Structured challenge to master Postman testing.", type: "Practice", difficulty: "Intermediate", link: "https://www.postman.com/postman/workspace/15-days-of-postman---for-testers/", duration: "15d", source: "Postman", relevance: 96, aiCurated: true }
+        ],
+        "Collections & Automation": [
+            { title: "Postman Collections Guide", description: "Organize and share API request groups.", type: "Documentation", difficulty: "Intermediate", link: "https://learning.postman.com/docs/collections/using-collections/", duration: "2h", source: "Postman", relevance: 96, aiCurated: true },
+            { title: "Collection Runner", description: "Run automated test sequences.", type: "Documentation", difficulty: "Intermediate", link: "https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/", duration: "2h", source: "Postman", relevance: 94, aiCurated: true },
+            { title: "Newman CLI", description: "Run Postman collections from the command line.", type: "Practice", difficulty: "Advanced", link: "https://learning.postman.com/docs/collections/using-newman-cli/command-line-integration-with-newman/", duration: "2h", source: "Postman", relevance: 92, aiCurated: true }
+        ],
+        "Advanced Workflows": [
+            { title: "Postman Mock Servers", description: "Create mock APIs for frontend development.", type: "Documentation", difficulty: "Advanced", link: "https://learning.postman.com/docs/designing-and-developing-your-api/mocking-data/mock-with-api/", duration: "2h", source: "Postman", relevance: 94, aiCurated: true },
+            { title: "Postman Monitors", description: "Schedule and automate API monitoring.", type: "Documentation", difficulty: "Advanced", link: "https://learning.postman.com/docs/monitoring-your-api/intro-monitors/", duration: "2h", source: "Postman", relevance: 90, aiCurated: true },
+            { title: "Postman API Documentation", description: "Auto-generate beautiful API docs.", type: "Practice", difficulty: "Intermediate", link: "https://learning.postman.com/docs/publishing-your-api/api-documentation-overview/", duration: "1h", source: "Postman", relevance: 92, aiCurated: true }
+        ]
+    },
+
+    // VS Code
+    "VS Code": {
+        "Editor Setup & Navigation": [
+            { title: "VS Code Official Docs", description: "Complete VS Code feature documentation.", type: "Documentation", difficulty: "Beginner", link: "https://code.visualstudio.com/docs", duration: "Ref", source: "Microsoft", relevance: 100, aiCurated: true },
+            { title: "VS Code Getting Started", description: "First steps and basic navigation.", type: "Course", difficulty: "Beginner", link: "https://code.visualstudio.com/docs/getstarted/introvideos", duration: "2h", source: "Microsoft", relevance: 98, aiCurated: true },
+            { title: "VS Code Settings Guide", description: "Customize your editor workspace.", type: "Documentation", difficulty: "Beginner", link: "https://code.visualstudio.com/docs/getstarted/settings", duration: "1h", source: "Microsoft", relevance: 94, aiCurated: true }
+        ],
+        "Keyboard Shortcuts & Productivity": [
+            { title: "VS Code Shortcuts (Mac)", description: "Printable keyboard shortcut PDF.", type: "Documentation", difficulty: "Beginner", link: "https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf", duration: "PDF", source: "Microsoft", relevance: 98, aiCurated: true },
+            { title: "VS Code Tips & Tricks", description: "Boost your productivity with hidden features.", type: "Documentation", difficulty: "Intermediate", link: "https://code.visualstudio.com/docs/getstarted/tips-and-tricks", duration: "2h", source: "Microsoft", relevance: 96, aiCurated: true },
+            { title: "VS Code Can Do That?!", description: "Discover features most developers miss.", type: "Course", difficulty: "Intermediate", link: "https://vscodecandothat.com/", duration: "3h", source: "Burke", relevance: 94, aiCurated: true }
+        ],
+        "Extensions & Customization": [
+            { title: "VS Code Marketplace", description: "Browse thousands of extensions.", type: "Documentation", difficulty: "Beginner", link: "https://marketplace.visualstudio.com/vscode", duration: "Ref", source: "Microsoft", relevance: 96, aiCurated: true },
+            { title: "Extension Development Guide", description: "Create your own VS Code extensions.", type: "Documentation", difficulty: "Advanced", link: "https://code.visualstudio.com/api/get-started/your-first-extension", duration: "5h", source: "Microsoft", relevance: 88, aiCurated: true },
+            { title: "VS Code Themes Gallery", description: "Find and install beautiful editor themes.", type: "Practice", difficulty: "Beginner", link: "https://vscodethemes.com/", duration: "Ref", source: "Community", relevance: 90, aiCurated: false }
+        ],
+        "Debugging & Terminal": [
+            { title: "VS Code Debugging Guide", description: "Set breakpoints, watch variables, step through code.", type: "Documentation", difficulty: "Intermediate", link: "https://code.visualstudio.com/docs/editor/debugging", duration: "3h", source: "Microsoft", relevance: 98, aiCurated: true },
+            { title: "Integrated Terminal Docs", description: "Master the built-in terminal.", type: "Documentation", difficulty: "Beginner", link: "https://code.visualstudio.com/docs/terminal/basics", duration: "1h", source: "Microsoft", relevance: 94, aiCurated: true },
+            { title: "Launch Configurations", description: "Create custom debug configurations.", type: "Practice", difficulty: "Intermediate", link: "https://code.visualstudio.com/docs/editor/debugging#_launch-configurations", duration: "2h", source: "Microsoft", relevance: 92, aiCurated: true }
+        ],
+        "Git Integration & Source Control": [
+            { title: "VS Code Git Support", description: "Built-in Git source control features.", type: "Documentation", difficulty: "Intermediate", link: "https://code.visualstudio.com/docs/sourcecontrol/overview", duration: "2h", source: "Microsoft", relevance: 96, aiCurated: true },
+            { title: "GitLens Extension", description: "Supercharge Git inside VS Code.", type: "Documentation", difficulty: "Intermediate", link: "https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens", duration: "1h", source: "Marketplace", relevance: 94, aiCurated: true },
+            { title: "VS Code & GitHub Integration", description: "PRs, issues, and Copilot inside the editor.", type: "Practice", difficulty: "Intermediate", link: "https://code.visualstudio.com/docs/sourcecontrol/github", duration: "2h", source: "Microsoft", relevance: 92, aiCurated: true }
+        ],
+        "Advanced Workflows & Snippets": [
+            { title: "VS Code Snippets Guide", description: "Create custom code snippets.", type: "Documentation", difficulty: "Intermediate", link: "https://code.visualstudio.com/docs/editor/userdefinedsnippets", duration: "2h", source: "Microsoft", relevance: 94, aiCurated: true },
+            { title: "Multi-root Workspaces", description: "Work with multiple project folders.", type: "Documentation", difficulty: "Advanced", link: "https://code.visualstudio.com/docs/editor/multi-root-workspaces", duration: "1h", source: "Microsoft", relevance: 90, aiCurated: true },
+            { title: "VS Code Remote Development", description: "SSH, containers, and WSL workflows.", type: "Course", difficulty: "Advanced", link: "https://code.visualstudio.com/docs/remote/remote-overview", duration: "3h", source: "Microsoft", relevance: 92, aiCurated: true }
+        ]
+    },
+
+    // AWS (Cloud Basics)
+    "AWS (Cloud Basics)": {
+        "Cloud Fundamentals & Console": [
+            { title: "AWS Getting Started", description: "Official AWS resource center for beginners.", type: "Documentation", difficulty: "Beginner", link: "https://aws.amazon.com/getting-started/", duration: "3h", source: "AWS", relevance: 100, aiCurated: true },
+            { title: "Cloud Practitioner Essentials", description: "Free foundational cloud training course.", type: "Course", difficulty: "Beginner", link: "https://explore.skillbuilder.aws/learn/course/external/view/elearning/134/aws-cloud-practitioner-essentials", duration: "6h", source: "AWS", relevance: 98, aiCurated: true },
+            { title: "AWS Free Tier", description: "Practice with free compute, storage, and databases.", type: "Practice", difficulty: "Beginner", link: "https://aws.amazon.com/free/", duration: "Ongoing", source: "AWS", relevance: 96, aiCurated: true }
+        ],
+        "IAM & Security": [
+            { title: "IAM User Guide", description: "Identity and access management deep dive.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html", duration: "4h", source: "AWS", relevance: 98, aiCurated: true },
+            { title: "AWS Security Best Practices", description: "Shared responsibility model and security controls.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html", duration: "3h", source: "AWS", relevance: 96, aiCurated: true },
+            { title: "IAM Policy Simulator", description: "Test and validate IAM policies interactively.", type: "Practice", difficulty: "Intermediate", link: "https://policysim.aws.amazon.com/", duration: "1h", source: "AWS", relevance: 94, aiCurated: true }
+        ],
+        "EC2 & Compute": [
+            { title: "EC2 Getting Started", description: "Launch your first virtual server.", type: "Documentation", difficulty: "Beginner", link: "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html", duration: "2h", source: "AWS", relevance: 98, aiCurated: true },
+            { title: "EC2 Instance Types Guide", description: "Choose the right instance for your workload.", type: "Documentation", difficulty: "Intermediate", link: "https://aws.amazon.com/ec2/instance-types/", duration: "1h", source: "AWS", relevance: 94, aiCurated: true },
+            { title: "AWS Hands-On Tutorials", description: "Guided labs for EC2 and compute services.", type: "Practice", difficulty: "Beginner", link: "https://aws.amazon.com/getting-started/hands-on/", duration: "Ongoing", source: "AWS", relevance: 96, aiCurated: true }
+        ],
+        "S3 & Storage": [
+            { title: "S3 User Guide", description: "Object storage fundamentals and configuration.", type: "Documentation", difficulty: "Beginner", link: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html", duration: "3h", source: "AWS", relevance: 98, aiCurated: true },
+            { title: "Host a Static Website on S3", description: "Step-by-step static website hosting guide.", type: "Course", difficulty: "Beginner", link: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html", duration: "1h", source: "AWS", relevance: 96, aiCurated: true },
+            { title: "S3 Storage Classes", description: "Understand S3 pricing and storage tiers.", type: "Documentation", difficulty: "Intermediate", link: "https://aws.amazon.com/s3/storage-classes/", duration: "1h", source: "AWS", relevance: 92, aiCurated: true }
+        ],
+        "Lambda & Serverless": [
+            { title: "Lambda Getting Started", description: "Build your first serverless function.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html", duration: "2h", source: "AWS", relevance: 98, aiCurated: true },
+            { title: "Serverless Application Model", description: "SAM framework for building serverless apps.", type: "Documentation", difficulty: "Intermediate", link: "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html", duration: "4h", source: "AWS", relevance: 94, aiCurated: true },
+            { title: "Serverless Land", description: "Patterns, examples, and learning resources.", type: "Practice", difficulty: "Intermediate", link: "https://serverlessland.com/", duration: "Ongoing", source: "AWS", relevance: 96, aiCurated: true }
+        ],
+        "Architecture & Best Practices": [
+            { title: "Well-Architected Framework", description: "AWS best practices for cloud architecture.", type: "Documentation", difficulty: "Advanced", link: "https://aws.amazon.com/architecture/well-architected/", duration: "5h", source: "AWS", relevance: 98, aiCurated: true },
+            { title: "AWS Architecture Center", description: "Reference architectures and diagrams.", type: "Documentation", difficulty: "Advanced", link: "https://aws.amazon.com/architecture/", duration: "Ref", source: "AWS", relevance: 96, aiCurated: true },
+            { title: "AWS Skill Builder", description: "Free and premium training courses.", type: "Course", difficulty: "All", link: "https://explore.skillbuilder.aws/", duration: "Ongoing", source: "AWS", relevance: 94, aiCurated: true }
+        ]
     }
 };

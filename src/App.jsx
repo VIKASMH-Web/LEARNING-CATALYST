@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import MainLayout from './components/Layout/MainLayout';
 import Overview from './pages/Overview';
 import Roadmap from './pages/Roadmap';
-import Resources from './pages/Resources';
 import CodeEnginePage from './pages/CodeEnginePage';
 import FocusMode from './pages/FocusMode';
 import Profile from './pages/Profile';
@@ -49,7 +48,6 @@ function App() {
                                 <Route index element={<Overview />} />
                                 <Route path="roadmaps" element={<Roadmap />} />
                                 <Route path="career-planner" element={<CareerPlanner />} />
-                                <Route path="resources" element={<Resources />} />
                                 <Route path="code-engine" element={
                                     <ErrorBoundary>
                                         <CodeEnginePage />

@@ -27,6 +27,10 @@ export const enDomains = [
 
     // === TOOLS ===
     { title: "Git & GitHub", path: "Version Control", category: "tool", steps: ["Git Basics (init, add, commit)", "Branching & Merging", "Remote Repos & GitHub", "Collaboration (PRs, Issues)", "Advanced Git (Rebase, Stash)", "CI/CD Integration"] },
+    { title: "Docker", path: "Containerization", category: "tool", steps: ["Docker Fundamentals", "Dockerfile & Images", "Docker Compose", "Networking & Volumes", "Container Orchestration Basics", "Production Best Practices"] },
+    { title: "Postman", path: "API Testing", category: "tool", steps: ["HTTP & API Basics", "Sending Requests", "Environment & Variables", "Testing & Assertions", "Collections & Automation", "Advanced Workflows"] },
+    { title: "VS Code", path: "Code Editor Mastery", category: "tool", steps: ["Editor Setup & Navigation", "Keyboard Shortcuts & Productivity", "Extensions & Customization", "Debugging & Terminal", "Git Integration & Source Control", "Advanced Workflows & Snippets"] },
+    { title: "AWS (Cloud Basics)", path: "Cloud Computing", category: "tool", steps: ["Cloud Fundamentals & Console", "IAM & Security", "EC2 & Compute", "S3 & Storage", "Lambda & Serverless", "Architecture & Best Practices"] },
 ];
 
 // Placeholder for other languages
