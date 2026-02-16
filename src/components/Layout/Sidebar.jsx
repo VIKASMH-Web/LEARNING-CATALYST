@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Layout, BookOpen, Code, Clock, User, Target, Mic, HelpCircle, X, CheckCircle, Crown
+  Layout, BookOpen, Play, Code, Clock, User, Target, Mic, HelpCircle, X, CheckCircle, Crown
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { requestNotificationPermission, notifyProUpgrade } from '../../utils/notifications';
@@ -37,6 +37,7 @@ const Sidebar = () => {
     { path: '/', name: 'Dashboard', icon: Layout },
     { path: '/roadmaps', name: 'Learning Hub', icon: BookOpen },
     { path: '/career-planner', name: 'Career Planner', icon: Target },
+    { path: '/resources', name: 'Resources', icon: Play },
     { path: '/code-engine', name: 'Code Engine', icon: Code },
     { path: '/mock-interview', name: 'Mock Interview', icon: Mic },
     { path: '/focus', name: 'Focus Mode', icon: Clock },

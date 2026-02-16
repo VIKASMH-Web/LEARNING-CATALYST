@@ -1,9 +1,221 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Youtube, X, PlayCircle, Clock, User, AlertCircle, FileText, Download, HelpCircle, Lock, Zap, CheckCircle, XCircle, UserMinus } from 'lucide-react';
+import { Youtube, X, PlayCircle, Clock, User, AlertCircle, FileText, Download, HelpCircle, Lock, Zap, CheckCircle, XCircle, UserMinus, Code } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import DomainSearch from '../components/domain/DomainSearch';
 import DomainResults from '../components/domain/DomainResults';
+
+const toolsData = [
+    {
+        id: 'git',
+        name: 'Git',
+        description: 'Version control system for tracking code changes.',
+        difficulty: 'Beginner',
+        color: '#f14e32',
+        icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg',
+        iconInvert: false,
+        whatIs: 'Git is a distributed version control system that tracks changes in source code during software development. It allows multiple developers to work on the same codebase simultaneously without conflicts, maintaining a complete history of every change ever made.',
+        whyMatters: 'Every modern development workflow depends on Git. It enables collaboration, code review, rollback to previous versions, and branching strategies. Without Git, managing codebases beyond a few files becomes nearly impossible. It is the foundation of CI/CD pipelines.',
+        coreConcepts: [
+            'Repositories (local & remote)',
+            'Staging area and commits',
+            'Branching and merging strategies',
+            'Resolving merge conflicts',
+            'Git log, diff, and blame',
+            'Rebasing vs merging',
+            '.gitignore and configuration'
+        ],
+        exercises: [
+            'Initialize a new repository and make your first commit',
+            'Create a feature branch, make changes, and merge it back to main',
+            'Simulate and resolve a merge conflict between two branches',
+            'Use git stash to save and restore work in progress',
+            'Practice interactive rebase to squash commits'
+        ],
+        mastery: [
+            'Can initialize and clone repositories',
+            'Understands the staging area workflow',
+            'Can create, switch, and merge branches',
+            'Can resolve merge conflicts confidently',
+            'Knows when to rebase vs merge',
+            'Can use git log and git diff effectively',
+            'Understands .gitignore patterns'
+        ],
+        resources: [
+            { title: 'Pro Git Book', desc: 'The definitive free Git book by Scott Chacon.', type: 'Documentation', source: 'Git', link: 'https://git-scm.com/book/en/v2' },
+            { title: 'Learn Git Branching', desc: 'Interactive visual Git tutorial with challenges.', type: 'Practice', source: 'LGBI', link: 'https://learngitbranching.js.org/' },
+            { title: 'Git Exercises', desc: 'Hands-on exercises to build Git muscle memory.', type: 'Practice', source: 'Exercism', link: 'https://gitexercises.fracz.com/' },
+            { title: 'Atlassian Git Tutorials', desc: 'Beginner to advanced Git workflows.', type: 'Documentation', source: 'Atlassian', link: 'https://www.atlassian.com/git/tutorials' }
+        ]
+    },
+    {
+        id: 'docker',
+        name: 'Docker',
+        description: 'Platform for building and running containerized applications.',
+        difficulty: 'Intermediate',
+        color: '#2496ed',
+        icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original.svg',
+        iconInvert: false,
+        whatIs: 'Docker is a platform that uses OS-level virtualization to package applications and their dependencies into lightweight, portable containers. Containers ensure your app runs the same way in every environment — development, staging, and production.',
+        whyMatters: 'Docker eliminates "it works on my machine" problems. It simplifies deployment, enables microservices architecture, and is the backbone of modern cloud infrastructure. Knowledge of Docker is essential for DevOps, backend, and full-stack roles.',
+        coreConcepts: [
+            'Images and containers',
+            'Dockerfile syntax and best practices',
+            'Docker Compose for multi-container apps',
+            'Volumes and persistent storage',
+            'Networking between containers',
+            'Docker Hub and registries',
+            'Container lifecycle management'
+        ],
+        exercises: [
+            'Build a Docker image for a simple Node.js or Python app',
+            'Write a docker-compose.yml for a web app + database setup',
+            'Create a multi-stage Dockerfile to optimize image size',
+            'Mount a volume and persist data across container restarts',
+            'Push your custom image to Docker Hub'
+        ],
+        mastery: [
+            'Can write a Dockerfile from scratch',
+            'Understands image layers and caching',
+            'Can use Docker Compose for multi-service apps',
+            'Knows how docker networking works',
+            'Can manage volumes for data persistence',
+            'Can push/pull images from registries',
+            'Understands container vs VM differences'
+        ],
+        resources: [
+            { title: 'Docker Official Docs', desc: 'Comprehensive getting started guide.', type: 'Documentation', source: 'Docker', link: 'https://docs.docker.com/get-started/' },
+            { title: 'Docker Curriculum', desc: 'Step-by-step Docker tutorial for beginners.', type: 'Course', source: 'Prakhar', link: 'https://docker-curriculum.com/' },
+            { title: 'Play with Docker', desc: 'Free Docker playground in your browser.', type: 'Practice', source: 'PWD', link: 'https://labs.play-with-docker.com/' },
+            { title: 'Docker Cheat Sheet', desc: 'Quick reference for Docker commands.', type: 'Documentation', source: 'GitHub', link: 'https://github.com/wsargent/docker-cheat-sheet' }
+        ]
+    },
+    {
+        id: 'postman',
+        name: 'Postman',
+        description: 'API development and testing platform for building reliable APIs.',
+        difficulty: 'Beginner',
+        color: '#ff6c37',
+        icon: 'https://www.vectorlogo.zone/logos/getpostman/getpostman-icon.svg',
+        iconInvert: false,
+        whatIs: 'Postman is an API platform for designing, building, testing, and documenting APIs. It provides a user-friendly GUI to send HTTP requests, inspect responses, automate testing workflows, and collaborate with teams on API development.',
+        whyMatters: 'APIs are the backbone of modern software. Postman lets you test endpoints instantly without writing code, debug API issues, create automated test suites, and generate API documentation. It is used by over 30 million developers worldwide.',
+        coreConcepts: [
+            'HTTP methods (GET, POST, PUT, DELETE, PATCH)',
+            'Request headers, body, and parameters',
+            'Environment and global variables',
+            'Collections and folder organization',
+            'Pre-request scripts and test scripts',
+            'Authentication (Bearer, OAuth, API Key)',
+            'Mock servers and monitoring'
+        ],
+        exercises: [
+            'Send GET/POST requests to a public API (e.g., JSONPlaceholder)',
+            'Set up environment variables for dev/staging/production URLs',
+            'Write test scripts to validate response status and body',
+            'Create a collection with 5+ endpoints and share it',
+            'Use Postman Runner to execute automated test sequences'
+        ],
+        mastery: [
+            'Can send all HTTP method types',
+            'Understands request headers and auth tokens',
+            'Can use environment variables effectively',
+            'Can write basic test assertions',
+            'Can organize APIs into collections',
+            'Can export/import collections for team sharing',
+            'Understands mock servers for frontend development'
+        ],
+        resources: [
+            { title: 'Postman Learning Center', desc: 'Official tutorials and guides.', type: 'Documentation', source: 'Postman', link: 'https://learning.postman.com/' },
+            { title: 'Postman Quickstart', desc: 'Send your first API request in minutes.', type: 'Course', source: 'Postman', link: 'https://learning.postman.com/docs/getting-started/first-steps/sending-the-first-request/' },
+            { title: '15 Days of Postman', desc: 'Structured challenge to learn Postman.', type: 'Practice', source: 'Postman', link: 'https://www.postman.com/postman/workspace/15-days-of-postman---for-testers/' }
+        ]
+    },
+    {
+        id: 'vscode',
+        name: 'VS Code',
+        description: 'Lightweight, powerful code editor with rich extension ecosystem.',
+        difficulty: 'Beginner',
+        color: '#007acc',
+        icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/vscode/vscode-original.svg',
+        iconInvert: false,
+        whatIs: 'Visual Studio Code (VS Code) is a free, open-source code editor by Microsoft. It supports syntax highlighting, IntelliSense (code completion), debugging, Git integration, and thousands of extensions for virtually every programming language and framework.',
+        whyMatters: 'VS Code is the most popular code editor in the world. Mastering it directly impacts your coding speed and productivity. Features like multi-cursor editing, integrated terminal, live share, and extension-driven workflows make it indispensable for modern developers.',
+        coreConcepts: [
+            'Editor layout and workspace settings',
+            'Keyboard shortcuts and command palette (Cmd/Ctrl+Shift+P)',
+            'IntelliSense and code completion',
+            'Integrated terminal and debugging',
+            'Extensions marketplace',
+            'Git integration and source control panel',
+            'Settings sync and custom snippets'
+        ],
+        exercises: [
+            'Customize your VS Code theme, font, and key bindings',
+            'Install and configure 5 essential extensions for your stack',
+            'Use multi-cursor editing to refactor a block of code',
+            'Set up a launch.json debug configuration for your project',
+            'Create a custom code snippet for common boilerplate'
+        ],
+        mastery: [
+            'Knows 10+ keyboard shortcuts by heart',
+            'Can use Command Palette for quick actions',
+            'Has a productive extension setup',
+            'Can debug with breakpoints & watch variables',
+            'Uses integrated Git panel effectively',
+            'Can configure workspace settings per project',
+            'Understands multi-cursor and Zen mode'
+        ],
+        resources: [
+            { title: 'VS Code Official Docs', desc: 'Complete feature documentation.', type: 'Documentation', source: 'Microsoft', link: 'https://code.visualstudio.com/docs' },
+            { title: 'VS Code Tips & Tricks', desc: 'Boost your productivity with these tips.', type: 'Documentation', source: 'Microsoft', link: 'https://code.visualstudio.com/docs/getstarted/tips-and-tricks' },
+            { title: 'VS Code Keyboard Shortcuts (PDF)', desc: 'Printable shortcut reference.', type: 'Documentation', source: 'Microsoft', link: 'https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf' },
+            { title: 'VS Code Can Do That?!', desc: 'Hidden features most developers miss.', type: 'Course', source: 'Burke', link: 'https://vscodecandothat.com/' }
+        ]
+    },
+    {
+        id: 'aws',
+        name: 'AWS (Cloud Basics)',
+        description: 'Amazon Web Services — the leading cloud computing platform.',
+        difficulty: 'Intermediate',
+        color: '#ff9900',
+        icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/amazonwebservices/amazonwebservices-original-wordmark.svg',
+        iconInvert: false,
+        whatIs: 'Amazon Web Services (AWS) is the world\'s most widely adopted cloud platform, offering 200+ fully featured services. It provides compute power (EC2), storage (S3), databases (RDS/DynamoDB), serverless (Lambda), networking, machine learning, and much more — all on a pay-as-you-go basis.',
+        whyMatters: 'Cloud computing is the standard for modern applications. AWS holds ~32% of the global cloud market share. Understanding AWS basics (S3, EC2, Lambda, IAM) is essential for deployment, scalability, and passing cloud certification exams required by many employers.',
+        coreConcepts: [
+            'AWS Console and CLI basics',
+            'IAM (Identity & Access Management)',
+            'EC2 instances and security groups',
+            'S3 buckets and static website hosting',
+            'Lambda functions (serverless)',
+            'RDS and DynamoDB (managed databases)',
+            'CloudFront CDN and Route 53 DNS'
+        ],
+        exercises: [
+            'Create a free-tier AWS account and explore the console',
+            'Launch an EC2 instance and SSH into it',
+            'Create an S3 bucket and host a static website',
+            'Write and deploy a simple Lambda function',
+            'Set up IAM users, groups, and policies'
+        ],
+        mastery: [
+            'Can navigate the AWS Console confidently',
+            'Understands IAM roles and permissions',
+            'Can launch and manage EC2 instances',
+            'Can create and configure S3 buckets',
+            'Understands serverless with Lambda',
+            'Knows the difference between RDS and DynamoDB',
+            'Can explain the AWS shared responsibility model'
+        ],
+        resources: [
+            { title: 'AWS Getting Started', desc: 'Official AWS resource center for beginners.', type: 'Documentation', source: 'AWS', link: 'https://aws.amazon.com/getting-started/' },
+            { title: 'AWS Cloud Practitioner Essentials', desc: 'Free foundational cloud training.', type: 'Course', source: 'AWS', link: 'https://explore.skillbuilder.aws/learn/course/external/view/elearning/134/aws-cloud-practitioner-essentials' },
+            { title: 'AWS Free Tier', desc: 'Practice with free compute, storage, and databases.', type: 'Practice', source: 'AWS', link: 'https://aws.amazon.com/free/' },
+            { title: 'AWS Well-Architected Framework', desc: 'Best practices for cloud architecture.', type: 'Documentation', source: 'AWS', link: 'https://aws.amazon.com/architecture/well-architected/' }
+        ]
+    }
+];
 
 const resourcesData = {
   "Full Stack Developer": [
@@ -127,6 +339,7 @@ const Resources = () => {
     const [selectedVideo, setSelectedVideo] = useState(null);
     const [selectedDomain, setSelectedDomain] = useState(null);
     const [showRequestModal, setShowRequestModal] = useState(false);
+    const [expandedTool, setExpandedTool] = useState(null);
     
     // Initialize from localStorage
     const [isPremium, setIsPremium] = useState(() => localStorage.getItem(storageKey) === 'true');
@@ -380,6 +593,190 @@ const Resources = () => {
                     </div>
                 </section>
             ))}
+
+            {/* 🛠 TOOLS SECTION */}
+            {!selectedDomain && (
+                <section>
+                    <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', color: 'var(--accent-color)' }}>
+                        <div style={{ width: 4, height: 24, background: 'var(--accent-color)', borderRadius: 2 }}></div>
+                        🛠 Tools
+                    </h2>
+                    <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1.5rem', marginTop: '-0.75rem' }}>
+                        Master the essential developer tools used across every tech role.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: '1rem' }}>
+                        {toolsData.map((tool) => {
+                            const isExpanded = expandedTool === tool.id;
+                            return (
+                                <motion.div
+                                    key={tool.id}
+                                    layout
+                                    className="glass-card"
+                                    style={{ 
+                                        padding: 0, overflow: 'hidden',
+                                        gridColumn: isExpanded ? '1 / -1' : 'auto',
+                                        transition: 'box-shadow 0.3s',
+                                        boxShadow: isExpanded ? '0 8px 32px rgba(124, 58, 237, 0.12)' : 'none'
+                                    }}
+                                >
+                                    {/* Card Header */}
+                                    <div style={{ padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                        <div style={{ 
+                                            width: 48, height: 48, borderRadius: '12px', 
+                                            background: `${tool.color}12`, 
+                                            border: `1px solid ${tool.color}30`,
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                            flexShrink: 0
+                                        }}>
+                                            <img src={tool.icon} alt={tool.name} style={{ width: 28, height: 28, objectFit: 'contain', filter: tool.iconInvert ? 'invert(1)' : 'none' }} />
+                                        </div>
+                                        <div style={{ flex: 1 }}>
+                                            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '3px', color: 'var(--text-primary)' }}>{tool.name}</h3>
+                                            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{tool.description}</p>
+                                        </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+                                            <span style={{ 
+                                                fontSize: '0.65rem', fontWeight: 700, padding: '3px 10px', borderRadius: '12px',
+                                                background: tool.difficulty === 'Beginner' ? 'rgba(34, 197, 94, 0.1)' : tool.difficulty === 'Intermediate' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                                                color: tool.difficulty === 'Beginner' ? '#4ade80' : tool.difficulty === 'Intermediate' ? '#fbbf24' : '#f87171',
+                                                border: `1px solid ${tool.difficulty === 'Beginner' ? 'rgba(34, 197, 94, 0.2)' : tool.difficulty === 'Intermediate' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`,
+                                                textTransform: 'uppercase', letterSpacing: '0.5px'
+                                            }}>
+                                                {tool.difficulty}
+                                            </span>
+                                            <button
+                                                onClick={() => setExpandedTool(isExpanded ? null : tool.id)}
+                                                style={{
+                                                    padding: '6px 16px', borderRadius: '8px', fontSize: '0.78rem', fontWeight: 600,
+                                                    background: isExpanded ? 'rgba(255,255,255,0.08)' : 'var(--accent-color)',
+                                                    color: 'white', border: 'none', cursor: 'pointer',
+                                                    transition: 'all 0.2s'
+                                                }}
+                                            >
+                                                {isExpanded ? 'Hide Details' : 'View Details'}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Expanded Details Panel */}
+                                    <AnimatePresence>
+                                        {isExpanded && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.3 }}
+                                                style={{ overflow: 'hidden' }}
+                                            >
+                                                <div style={{ padding: '0 1.5rem 1.5rem', borderTop: '1px solid var(--border-color)' }}>
+                                                    {/* Info Grid */}
+                                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginTop: '1.25rem' }}>
+                                                        {/* What is this tool */}
+                                                        <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                                            <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: tool.color, marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                                <HelpCircle size={14} /> What is {tool.name}?
+                                                            </h4>
+                                                            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>{tool.whatIs}</p>
+                                                        </div>
+
+                                                        {/* Why it matters */}
+                                                        <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                                            <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: '#60a5fa', marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                                <Zap size={14} /> Why It Matters
+                                                            </h4>
+                                                            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>{tool.whyMatters}</p>
+                                                        </div>
+
+                                                        {/* Core Concepts */}
+                                                        <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                                            <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: '#34d399', marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                                <FileText size={14} /> Core Concepts
+                                                            </h4>
+                                                            <ul style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.8, paddingLeft: '1.25rem', margin: 0 }}>
+                                                                {tool.coreConcepts.map((concept, ci) => (
+                                                                    <li key={ci}>{concept}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+
+                                                        {/* Practical Exercises */}
+                                                        <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                                            <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fbbf24', marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                                <Code size={14} /> Practical Exercises
+                                                            </h4>
+                                                            <ul style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.8, paddingLeft: '1.25rem', margin: 0 }}>
+                                                                {tool.exercises.map((ex, ei) => (
+                                                                    <li key={ei}>{ex}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Mastery Checklist */}
+                                                    <div style={{ marginTop: '1.25rem', padding: '1rem', background: 'rgba(80, 250, 123, 0.03)', borderRadius: '12px', border: '1px solid rgba(80, 250, 123, 0.08)' }}>
+                                                        <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: '#50fa7b', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                            <CheckCircle size={14} /> Mastery Checklist
+                                                        </h4>
+                                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '0.5rem' }}>
+                                                            {tool.mastery.map((item, mi) => (
+                                                                <label key={mi} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px 0' }}>
+                                                                    <input type="checkbox" style={{ accentColor: '#50fa7b', cursor: 'pointer' }} />
+                                                                    {item}
+                                                                </label>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Curated Resources (3+ per tool) */}
+                                                    <div style={{ marginTop: '1.25rem' }}>
+                                                        <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-color)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                            <Download size={14} /> Curated Resources
+                                                        </h4>
+                                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '0.75rem' }}>
+                                                            {tool.resources.map((res, ri) => (
+                                                                <a
+                                                                    key={ri}
+                                                                    href={res.link}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    style={{
+                                                                        display: 'flex', flexDirection: 'column', gap: '0.4rem',
+                                                                        padding: '0.85rem', borderRadius: '10px',
+                                                                        background: 'rgba(255,255,255,0.02)',
+                                                                        border: '1px solid rgba(255,255,255,0.06)',
+                                                                        textDecoration: 'none', color: 'inherit',
+                                                                        transition: 'all 0.2s'
+                                                                    }}
+                                                                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(124,58,237,0.25)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                                                                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                                                                >
+                                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                                        <span style={{ 
+                                                                            fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase',
+                                                                            color: res.type === 'Documentation' ? '#60a5fa' : res.type === 'Practice' ? '#4ade80' : '#facc15',
+                                                                            background: res.type === 'Documentation' ? 'rgba(96,165,250,0.1)' : res.type === 'Practice' ? 'rgba(74,222,128,0.1)' : 'rgba(250,204,21,0.1)',
+                                                                            padding: '2px 6px', borderRadius: '4px'
+                                                                        }}>
+                                                                            {res.type}
+                                                                        </span>
+                                                                        <span style={{ fontSize: '0.6rem', color: 'var(--text-tertiary)' }}>{res.source}</span>
+                                                                    </div>
+                                                                    <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'white' }}>{res.title}</span>
+                                                                    <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>{res.desc}</span>
+                                                                </a>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                </section>
+            )}
 
             {!selectedDomain && <div style={{ width: '100%', height: '1px', background: 'var(--border-color)', margin: '1rem 0', opacity: 0.3 }}></div>}
 
