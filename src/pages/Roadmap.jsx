@@ -19,6 +19,22 @@ const Roadmaps = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [expandedStageResources, setExpandedStageResources] = useState({});
     const [activeResourceTab, setActiveResourceTab] = useState('All'); // 'All', 'Documentation', 'Video', 'Course', 'Practice'
+    const [favorites, setFavorites] = useState(() => {
+        const saved = localStorage.getItem('lc_favorites');
+        return saved ? JSON.parse(saved) : [];
+    });
+
+    const toggleFavorite = (link) => {
+        setFavorites(prev => {
+            const newFavs = prev.includes(link) 
+                ? prev.filter(l => l !== link)
+                : [...prev, link];
+            localStorage.setItem('lc_favorites', JSON.stringify(newFavs));
+            // Trigger a local custom event for other components if needed
+            window.dispatchEvent(new Event('favoritesUpdated')); 
+            return newFavs;
+        });
+    };
 
     const toggleStageResources = (domainIndex, stageIndex) => {
         const key = `${domainIndex}-${stageIndex}`;
@@ -533,79 +549,95 @@ const Roadmaps = () => {
                                                                     const resources = getCuratedResources(enTitle, step, idx);
                                                                     
                                                                     return resources.map((res, rIdx) => (
-                                                                        <a 
-                                                                            key={rIdx} href={res.link} target="_blank" rel="noopener noreferrer"
+                                                                        <div 
+                                                                            key={rIdx} 
                                                                             className="resource-card"
                                                                             style={{ 
-                                                                                display: 'flex', flexDirection: 'column', gap: '0.75rem',
-                                                                                padding: '1.25rem', background: 'rgba(255,255,255,0.03)', 
+                                                                                display: 'flex', gap: '1rem',
+                                                                                padding: '1rem', background: 'rgba(255,255,255,0.03)', 
                                                                                 borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)',
                                                                                 textDecoration: 'none', color: 'var(--text-secondary)',
-                                                                                transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)', position: 'relative', minHeight: '130px',
-                                                                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                                                                                transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)', position: 'relative',
+                                                                                overflow: 'hidden'
                                                                             }}
                                                                             onMouseEnter={(e) => { 
                                                                                 e.currentTarget.style.borderColor = 'var(--accent-color)'; 
                                                                                 e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-                                                                                e.currentTarget.style.transform = 'translateY(-4px)';
-                                                                                e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(124, 58, 237, 0.2), 0 4px 6px -2px rgba(124, 58, 237, 0.1)';
+                                                                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                                                                e.currentTarget.style.boxShadow = '0 8px 20px -6px rgba(124, 58, 237, 0.3)';
                                                                             }}
                                                                             onMouseLeave={(e) => { 
                                                                                 e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)'; 
                                                                                 e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
                                                                                 e.currentTarget.style.transform = 'translateY(0)';
-                                                                                e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
+                                                                                e.currentTarget.style.boxShadow = 'none';
                                                                             }}
                                                                         >
-                                                                            {/* Header: Icon + Difficulty + External Link */}
-                                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                                                                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                                                                            {/* Left: Thumbnail */}
+                                                                            <div style={{ 
+                                                                                width: '120px', height: '80px', borderRadius: '8px', 
+                                                                                background: '#000', overflow: 'hidden', flexShrink: 0,
+                                                                                position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                                border: '1px solid rgba(255,255,255,0.1)'
+                                                                            }}>
+                                                                                {res.videoId ? (
+                                                                                    <>
+                                                                                        <img 
+                                                                                            src={`https://img.youtube.com/vi/${res.videoId}/mqdefault.jpg`} 
+                                                                                            alt="thumb" 
+                                                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }}
+                                                                                        />
+                                                                                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.3)' }}>
+                                                                                            <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                                                                <Video size={14} color="white" fill="white" />
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </>
+                                                                                ) : (
                                                                                     <div style={{ 
-                                                                                        width: 36, height: 36, borderRadius: '10px', 
-                                                                                        background: res.type === 'Video' ? 'rgba(248, 113, 113, 0.1)' : 
-                                                                                                    res.type === 'Course' ? 'rgba(250, 204, 21, 0.1)' :
-                                                                                                    res.type === 'Documentation' ? 'rgba(96, 165, 250, 0.1)' : 'rgba(74, 222, 128, 0.1)',
-                                                                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                                                        border: `1px solid ${res.type === 'Video' ? 'rgba(248, 113, 113, 0.2)' : res.type === 'Course' ? 'rgba(250, 204, 21, 0.2)' : res.type === 'Documentation' ? 'rgba(96, 165, 250, 0.2)' : 'rgba(74, 222, 128, 0.2)'}`
+                                                                                        width: '100%', height: '100%', 
+                                                                                        background: res.type === 'Documentation' ? 'linear-gradient(135deg, #1e3a8a, #3b82f6)' :
+                                                                                                    res.type === 'Course' ? 'linear-gradient(135deg, #422006, #eab308)' :
+                                                                                                    res.type === 'Practice' ? 'linear-gradient(135deg, #14532d, #22c55e)' : 'linear-gradient(135deg, #3f3f46, #71717a)',
+                                                                                        display: 'flex', alignItems: 'center', justifyContent: 'center'
                                                                                     }}>
-                                                                                         {res.type === 'Video' ? <Video size={18} color="#f87171" /> :
-                                                                                          res.type === 'Course' ? <BookOpen size={18} color="#facc15" /> :
-                                                                                          res.type === 'Documentation' ? <FileText size={18} color="#60a5fa" /> :
-                                                                                          <Code size={18} color="#4ade80" />}
+                                                                                         {res.type === 'Course' ? <BookOpen size={24} color="rgba(255,255,255,0.8)" /> :
+                                                                                          res.type === 'Documentation' ? <FileText size={24} color="rgba(255,255,255,0.8)" /> :
+                                                                                          <Code size={24} color="rgba(255,255,255,0.8)" />}
                                                                                     </div>
-                                                                                    {res.aiCurated && (
+                                                                                )}
+                                                                            </div>
+
+                                                                            {/* Middle: Content */}
+                                                                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+                                                                                     <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                                                                        {res.source || res.type}
+                                                                                     </span>
+                                                                                     <span style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--text-tertiary)' }} />
+                                                                                     <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)' }}>{res.duration || 'Flexible'}</span>
+                                                                                     
+                                                                                     {res.aiCurated && (
                                                                                         <span style={{ 
-                                                                                            fontSize: '0.65rem', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', 
-                                                                                            color: 'white', padding: '3px 8px', borderRadius: '12px', fontWeight: 700,
-                                                                                            display: 'flex', alignItems: 'center', gap: '4px', boxShadow: '0 2px 5px rgba(124, 58, 237, 0.4)'
+                                                                                            marginLeft: 'auto', fontSize: '0.6rem', background: 'linear-gradient(90deg, #7c3aed, #db2777)', 
+                                                                                            color: 'white', padding: '2px 6px', borderRadius: '4px', fontWeight: 700,
+                                                                                            display: 'flex', alignItems: 'center', gap: '3px'
                                                                                         }}>
-                                                                                            <Zap size={10} fill="white" /> AI PICK
+                                                                                            <Zap size={8} fill="white" /> AI MATCH {res.relevance}%
                                                                                         </span>
                                                                                     )}
                                                                                 </div>
-                                                                                <ExternalLink size={14} style={{ opacity: 0.4, transition: 'opacity 0.2s' }} />
-                                                                            </div>
 
-                                                                            {/* Content */}
-                                                                            <div style={{ flex: 1 }}>
-                                                                                <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white', marginBottom: '6px', lineHeight: 1.4 }}>{res.title}</h4>
-                                                                                <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                                                                                    {res.description || 'Comprehensive resource to master this topic.'}
+                                                                                <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white', lineHeight: 1.3 }}>
+                                                                                    {res.title}
+                                                                                </h4>
+                                                                                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                                                                    {res.description}
                                                                                 </p>
-                                                                            </div>
 
-                                                                            {/* Footer: Badges */}
-                                                                            <div style={{ marginTop: 'auto', display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
-                                                                                <span style={{ 
-                                                                                    fontSize: '0.7rem', padding: '3px 8px', borderRadius: '6px', 
-                                                                                    background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)', border: '1px solid rgba(255,255,255,0.05)',
-                                                                                    fontWeight: 500
-                                                                                }}>
-                                                                                    {res.type}
-                                                                                </span>
-                                                                                {res.difficulty && (
+                                                                                <div style={{ marginTop: 'auto', display: 'flex', gap: '8px', alignItems: 'center' }}>
                                                                                      <span style={{ 
-                                                                                         fontSize: '0.7rem', padding: '3px 8px', borderRadius: '6px', 
+                                                                                         fontSize: '0.7rem', padding: '2px 8px', borderRadius: '4px', 
                                                                                          background: res.difficulty === 'Beginner' ? 'rgba(80, 250, 123, 0.1)' : res.difficulty === 'Advanced' ? 'rgba(255, 85, 85, 0.1)' : 'rgba(255, 184, 108, 0.1)',
                                                                                          color: res.difficulty === 'Beginner' ? '#50fa7b' : res.difficulty === 'Advanced' ? '#ff5555' : '#ffb86c',
                                                                                          border: `1px solid ${res.difficulty === 'Beginner' ? 'rgba(80, 250, 123, 0.2)' : res.difficulty === 'Advanced' ? 'rgba(255, 85, 85, 0.2)' : 'rgba(255, 184, 108, 0.2)'}`,
@@ -613,9 +645,59 @@ const Roadmaps = () => {
                                                                                      }}>
                                                                                         {res.difficulty}
                                                                                      </span>
-                                                                                )}
+                                                                                </div>
                                                                             </div>
-                                                                        </a>
+
+                                                                            {/* Right: Actions */}
+                                                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', justifyContent: 'center' }}>
+                                                                                <a 
+                                                                                    href={res.link} 
+                                                                                    target="_blank" 
+                                                                                    rel="noopener noreferrer"
+                                                                                    title="Open Resource"
+                                                                                    style={{ 
+                                                                                        width: 32, height: 32, borderRadius: '8px', background: 'var(--bg-elevated)', 
+                                                                                        display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white',
+                                                                                        border: '1px solid var(--border-color)', transition: 'all 0.2s',
+                                                                                        cursor: 'pointer'
+                                                                                    }}
+                                                                                    onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--accent-color)'; e.currentTarget.style.borderColor = 'var(--accent-color)'; }}
+                                                                                    onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-elevated)'; e.currentTarget.style.borderColor = 'var(--border-color)'; }}
+                                                                                >
+                                                                                    <ExternalLink size={16} />
+                                                                                </a>
+                                                                                <button 
+                                                                                    title={favorites.includes(res.link) ? "Remove from Favorites" : "Save to Favorites"}
+                                                                                    onClick={(e) => {
+                                                                                        e.preventDefault();
+                                                                                        e.stopPropagation();
+                                                                                        toggleFavorite(res.link);
+                                                                                    }}
+                                                                                    style={{ 
+                                                                                        width: 32, height: 32, borderRadius: '8px', background: 'transparent', 
+                                                                                        display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                                                                        color: favorites.includes(res.link) ? '#facc15' : 'var(--text-tertiary)',
+                                                                                        borderColor: favorites.includes(res.link) ? '#facc15' : 'var(--border-color)',
+                                                                                        borderWidth: '1px', borderStyle: 'solid', transition: 'all 0.2s',
+                                                                                        cursor: 'pointer'
+                                                                                    }}
+                                                                                    onMouseEnter={(e) => { 
+                                                                                        if (!favorites.includes(res.link)) {
+                                                                                            e.currentTarget.style.color = '#facc15'; 
+                                                                                            e.currentTarget.style.borderColor = '#facc15'; 
+                                                                                        }
+                                                                                    }}
+                                                                                    onMouseLeave={(e) => { 
+                                                                                        if (!favorites.includes(res.link)) {
+                                                                                            e.currentTarget.style.color = 'var(--text-tertiary)'; 
+                                                                                            e.currentTarget.style.borderColor = 'var(--border-color)'; 
+                                                                                        }
+                                                                                    }}
+                                                                                >
+                                                                                    <Award size={16} fill={favorites.includes(res.link) ? "currentColor" : "none"} /> 
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
                                                                     ));
                                                                 })()}
                                                             </div>
