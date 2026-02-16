@@ -188,9 +188,9 @@ const Overview = () => {
             </div>
 
             {/* Charts Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 {/* Learning Activity Chart */}
-                <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', maxHeight: '500px' }}>
+                <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '400px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                         <div>
                             <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Learning Activity</h3>
@@ -214,62 +214,6 @@ const Overview = () => {
                                 <Area type="monotone" dataKey="hours" stroke="var(--accent-color)" strokeWidth={3} fillOpacity={1} fill="url(#colorMeasure)" />
                             </AreaChart>
                         </ResponsiveContainer>
-                    </div>
-                </div>
-
-                {/* Skill Intelligence Radar */}
-                <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                         <div>
-                            <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Skill Intelligence</h3>
-                            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Live AI Proficiency Tracking</p>
-                        </div>
-                        <MoreHorizontal size={16} color="var(--text-secondary)" />
-                    </div>
-                    
-                    <div style={{ height: '250px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <RadarChart skills={processedSkills} />
-                    </div>
-
-                    {/* D. UI ADDITIONS (Below Radar) */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
-                        {processedSkills.map((skill, i) => (
-                            <div key={i} style={{ 
-                                padding: '1rem', borderRadius: '12px', 
-                                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)'
-                            }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                                    <span style={{ fontWeight: 600, fontSize: '0.9rem', color: 'white' }}>{skill.name}</span>
-                                    <span style={{ 
-                                        fontSize: '0.75rem', fontWeight: 700, 
-                                        color: skill.momentum.color, background: 'rgba(0,0,0,0.3)',
-                                        padding: '2px 8px', borderRadius: '8px', display: 'flex', gap: '4px', alignItems: 'center'
-                                    }}>
-                                        {skill.momentum.icon} {skill.momentum.status}
-                                    </span>
-                                </div>
-                                
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.5rem' }}>
-                                    <div>
-                                        <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--accent-color)' }}>{skill.score}%</div>
-                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Mastery</div>
-                                    </div>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: skill.growth >= 0 ? '#50fa7b' : '#ff5555' }}>
-                                            {skill.growth > 0 ? '+' : ''}{skill.growth}%
-                                        </div>
-                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>This Week</div>
-                                    </div>
-                                </div>
-
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', marginBottom: '4px' }}>
-                                    <strong style={{ color: '#ffb86c' }}>Weakest:</strong> {skill.weakest}
-                                </div>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>
-                                    <strong style={{ color: '#8be9fd' }}>Action:</strong> {skill.nextAction}
-                                </div>
-                            </div>
-                        ))}
                     </div>
                 </div>
             </div>

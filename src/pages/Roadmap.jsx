@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Bell, AlertCircle, Clock, Zap, Award, Globe, RotateCcw, ChevronDown, ChevronRight } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { getDomains, enDomains } from '../data/domains';
+import { roadmapResources } from '../data/roadmapResources';
+import { Search, ExternalLink, BookOpen, Video, Code, FileText } from 'lucide-react';
 
 const Roadmaps = () => {
     // Context
@@ -11,10 +13,16 @@ const Roadmaps = () => {
         notifications, addNotification, clearNotifications 
     } = useProgress();
 
-    // Local UI State
     const [currentLang, setCurrentLang] = useState('en');
     const [showNotif, setShowNotif] = useState(false);
     const [expandedDomains, setExpandedDomains] = useState({});
+    const [searchQuery, setSearchQuery] = useState('');
+    const [expandedStageResources, setExpandedStageResources] = useState({});
+
+    const toggleStageResources = (domainIndex, stageIndex) => {
+        const key = `${domainIndex}-${stageIndex}`;
+        setExpandedStageResources(prev => ({ ...prev, [key]: !prev[key] }));
+    };
 
     const toggleDomain = (index) => {
         setExpandedDomains(prev => ({ ...prev, [index]: !prev[index] }));
@@ -42,7 +50,9 @@ const Roadmaps = () => {
     }, []);
 
     // Get current domains list
-    const domains = getDomains(currentLang);
+    // Get current domains list and filter
+    const allDomains = getDomains(currentLang);
+    const domains = allDomains.filter(d => d.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const handleLangChange = (langCode) => {
         setCurrentLang(langCode);
@@ -286,6 +296,23 @@ const Roadmaps = () => {
                 </div>
             </header>
 
+            {/* 1️⃣ SEARCH BAR */}
+            <div style={{ position: 'relative', marginBottom: '1rem' }}>
+                <Search style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} size={20} />
+                <input 
+                    type="text" 
+                    placeholder="Search for a domain (e.g., Full Stack, AI)..." 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{ 
+                        width: '100%', padding: '1rem 1rem 1rem 3rem', 
+                        borderRadius: '12px', border: '1px solid var(--border-color)', 
+                        background: 'var(--bg-card)', color: 'white', fontSize: '1rem',
+                        outline: 'none'
+                    }} 
+                />
+            </div>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {domains.map((domain, i) => {
                     const stats = getDomainStats(domain.title, domain.steps);
@@ -370,64 +397,120 @@ const Roadmaps = () => {
                                                 const status = getItemStatus(item);
                                                 
                                                 return (
-                                                    <div key={idx} style={{ 
-                                                        display: 'flex', gap: '1.25rem', alignItems: 'flex-start',
-                                                        background: item.completed ? 'rgba(80, 250, 123, 0.05)' : 'transparent',
-                                                        padding: '1rem', borderRadius: '12px', transition: 'all 0.2s',
-                                                        border: item.completed ? '1px solid rgba(80, 250, 123, 0.1)' : '1px solid transparent'
-                                                    }}>
-                                                        <div 
-                                                            onClick={() => handleUpdate(domain.title, idx, 'check')}
-                                                            style={{ 
-                                                                width: '32px', height: '32px', borderRadius: '50%', 
-                                                                background: item.completed ? '#50fa7b' : 'rgba(255,255,255,0.05)', 
-                                                                display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                                                                fontWeight: 'bold', fontSize: '0.8rem', flexShrink: 0,
-                                                                cursor: 'pointer', border: item.completed ? 'none' : '1px solid var(--border-color)',
-                                                                color: item.completed ? '#000' : 'white', boxShadow: item.completed ? '0 0 10px rgba(80, 250, 123, 0.4)' : 'none',
-                                                                transition: 'all 0.2s'
-                                                            }}
-                                                        >
-                                                            {item.completed ? <Check size={18} strokeWidth={3} /> : idx + 1}
-                                                        </div>
+                                            <div key={idx} style={{ 
+                                                display: 'flex', flexDirection: 'column', gap: '1rem',
+                                                background: item.completed ? 'rgba(80, 250, 123, 0.05)' : 'transparent',
+                                                padding: '1rem', borderRadius: '12px', transition: 'all 0.2s',
+                                                border: item.completed ? '1px solid rgba(80, 250, 123, 0.1)' : '1px solid transparent'
+                                            }}>
+                                                <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
+                                                    <div 
+                                                        onClick={() => handleUpdate(domain.title, idx, 'check')}
+                                                        style={{ 
+                                                            width: '32px', height: '32px', borderRadius: '50%', 
+                                                            background: item.completed ? '#50fa7b' : 'rgba(255,255,255,0.05)', 
+                                                            display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                                            fontWeight: 'bold', fontSize: '0.8rem', flexShrink: 0,
+                                                            cursor: 'pointer', border: item.completed ? 'none' : '1px solid var(--border-color)',
+                                                            color: item.completed ? '#000' : 'white', boxShadow: item.completed ? '0 0 10px rgba(80, 250, 123, 0.4)' : 'none',
+                                                            transition: 'all 0.2s'
+                                                        }}
+                                                    >
+                                                        {item.completed ? <Check size={18} strokeWidth={3} /> : idx + 1}
+                                                    </div>
 
-                                                        <div style={{ flex: 1 }}>
-                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-                                                                <div style={{ fontSize: '1.05rem', fontWeight: 700, textDecoration: item.completed ? 'line-through' : 'none', color: item.completed ? 'var(--text-secondary)' : 'white', opacity: item.completed ? 0.7 : 1 }}>
-                                                                    Stage {idx + 1}: {step}
-                                                                </div>
-                                                                
-                                                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(0,0,0,0.2)', padding: '4px 12px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                                                    <input 
-                                                                        type="range" 
-                                                                        min="0" max="100" 
-                                                                        value={item.progress}
-                                                                        onChange={(e) => handleUpdate(domain.title, idx, 'slider', e.target.value)}
-                                                                        disabled={item.completed}
-                                                                        style={{ 
-                                                                            width: '80px', cursor: item.completed ? 'not-allowed' : 'pointer',
-                                                                            accentColor: status.color, height: '4px'
-                                                                        }} 
-                                                                    />
-                                                                    <div style={{ fontSize: '0.7rem', fontWeight: 700, color: status.color, textTransform: 'uppercase', minWidth: '90px', textAlign: 'right' }}>
-                                                                        {status.label} {item.progress > 0 && !item.completed && ` (${item.progress}%)`}
-                                                                    </div>
-                                                                </div>
+                                                    <div style={{ flex: 1 }}>
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                                                            <div style={{ fontSize: '1.05rem', fontWeight: 700, textDecoration: item.completed ? 'line-through' : 'none', color: item.completed ? 'var(--text-secondary)' : 'white', opacity: item.completed ? 0.7 : 1 }}>
+                                                                Stage {idx + 1}: {step}
                                                             </div>
                                                             
-                                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', opacity: item.completed ? 0.5 : 1 }}>
-                                                                <p style={{ fontSize: '0.9rem' }}>Comprehensive learning objectives including practical implementation and theoretical foundations for this stage.</p>
-                                                                <ul style={{ paddingLeft: '1.2rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                                                                    <li>Month {(idx * 1.5).toFixed(0)}-{(idx * 1.5 + 1.5).toFixed(0)} Intensive study</li>
-                                                                    <li>Project-based practical validation</li>
-                                                                </ul>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(0,0,0,0.2)', padding: '4px 12px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                                                <input 
+                                                                    type="range" 
+                                                                    min="0" max="100" 
+                                                                    value={item.progress}
+                                                                    onChange={(e) => handleUpdate(domain.title, idx, 'slider', e.target.value)}
+                                                                    disabled={item.completed}
+                                                                    style={{ 
+                                                                        width: '80px', cursor: item.completed ? 'not-allowed' : 'pointer',
+                                                                        accentColor: status.color, height: '4px'
+                                                                    }} 
+                                                                />
+                                                                <div style={{ fontSize: '0.7rem', fontWeight: 700, color: status.color, textTransform: 'uppercase', minWidth: '90px', textAlign: 'right' }}>
+                                                                    {status.label} {item.progress > 0 && !item.completed && ` (${item.progress}%)`}
+                                                                </div>
                                                             </div>
                                                         </div>
+                                                        
+                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', opacity: item.completed ? 0.5 : 1 }}>
+                                                            <p style={{ fontSize: '0.9rem' }}>Comprehensive learning objectives including practical implementation and theoretical foundations for this stage.</p>
+                                                            
+                                                            {/* Resource Toggle Button */}
+                                                            <button 
+                                                                onClick={() => toggleStageResources(i, idx)}
+                                                                style={{ 
+                                                                    alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: '6px',
+                                                                    fontSize: '0.8rem', color: 'var(--accent-color)', background: 'transparent',
+                                                                    border: 'none', cursor: 'pointer', marginTop: '0.5rem'
+                                                                }}
+                                                            >
+                                                                <BookOpen size={14} />
+                                                                {expandedStageResources[`${i}-${idx}`] ? 'Hide Resources' : 'Recommended Resources'}
+                                                                <ChevronDown size={14} style={{ transform: expandedStageResources[`${i}-${idx}`] ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }} />
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </motion.div>
+                                                </div>
+
+                                                {/* 3️⃣ Recommended Resources Section */}
+                                                <AnimatePresence>
+                                                    {expandedStageResources[`${i}-${idx}`] && (
+                                                        <motion.div
+                                                            initial={{ height: 0, opacity: 0 }}
+                                                            animate={{ height: 'auto', opacity: 1 }}
+                                                            exit={{ height: 0, opacity: 0 }}
+                                                            style={{ overflow: 'hidden', paddingLeft: '3rem' }} // Indent to align with text
+                                                        >
+                                                            <div style={{ 
+                                                                paddingTop: '0.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.75rem' 
+                                                            }}>
+                                                                {roadmapResources[enTitle] && roadmapResources[enTitle][step] ? (
+                                                                    roadmapResources[enTitle][step].map((res, rIdx) => (
+                                                                        <a 
+                                                                            key={rIdx} href={res.link} target="_blank" rel="noopener noreferrer"
+                                                                            style={{ 
+                                                                                display: 'flex', alignItems: 'center', gap: '0.75rem',
+                                                                                padding: '0.75rem', background: 'var(--bg-elevated)', 
+                                                                                borderRadius: '8px', border: '1px solid var(--border-color)',
+                                                                                textDecoration: 'none', color: 'var(--text-secondary)',
+                                                                                transition: 'all 0.2s', fontSize: '0.85rem'
+                                                                            }}
+                                                                            onMouseOver={(e) => { e.currentTarget.style.borderColor = 'var(--accent-color)'; e.currentTarget.style.color = 'white'; }}
+                                                                            onMouseOut={(e) => { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+                                                                        >
+                                                                            {res.type === 'Video' ? <Video size={16} color="#f87171" /> :
+                                                                             res.type === 'Course' ? <BookOpen size={16} color="#facc15" /> :
+                                                                             res.type === 'Documentation' ? <FileText size={16} color="#60a5fa" /> :
+                                                                             <Code size={16} color="#4ade80" />}
+                                                                            <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{res.title}</span>
+                                                                            <ExternalLink size={12} style={{ opacity: 0.5 }} />
+                                                                        </a>
+                                                                    ))
+                                                                ) : (
+                                                                    <div style={{ gridColumn: '1 / -1', fontSize: '0.8rem', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>
+                                                                        No specific resources curated for this stage yet. Check the main Resources page.
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </motion.div>
                                 )}
                             </AnimatePresence>
                         </section>
