@@ -543,7 +543,7 @@ const Roadmaps = () => {
                                                             </div>
 
                                                             <div style={{ 
-                                                                display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1rem' 
+                                                                display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' 
                                                             }}>
                                                                 {(() => {
                                                                     const resources = getCuratedResources(enTitle, step, idx);
@@ -553,149 +553,173 @@ const Roadmaps = () => {
                                                                             key={rIdx} 
                                                                             className="resource-card"
                                                                             style={{ 
-                                                                                display: 'flex', gap: '1rem',
-                                                                                padding: '1rem', background: 'rgba(255,255,255,0.03)', 
-                                                                                borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)',
+                                                                                display: 'flex', gap: '1.25rem',
+                                                                                padding: '1.25rem', background: 'rgba(255,255,255,0.02)', 
+                                                                                borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)',
                                                                                 textDecoration: 'none', color: 'var(--text-secondary)',
                                                                                 transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)', position: 'relative',
-                                                                                overflow: 'hidden'
+                                                                                overflow: 'hidden', minHeight: '140px'
                                                                             }}
                                                                             onMouseEnter={(e) => { 
-                                                                                e.currentTarget.style.borderColor = 'var(--accent-color)'; 
-                                                                                e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-                                                                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                                                                e.currentTarget.style.boxShadow = '0 8px 20px -6px rgba(124, 58, 237, 0.3)';
+                                                                                e.currentTarget.style.borderColor = 'rgba(124, 58, 237, 0.3)'; 
+                                                                                e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+                                                                                e.currentTarget.style.transform = 'translateY(-4px)';
+                                                                                e.currentTarget.style.boxShadow = '0 12px 30px -10px rgba(0, 0, 0, 0.3)';
+                                                                                // Show external link icon on hover
+                                                                                const linkIcon = e.currentTarget.querySelector('.external-link-icon');
+                                                                                if(linkIcon) linkIcon.style.opacity = 1;
                                                                             }}
                                                                             onMouseLeave={(e) => { 
-                                                                                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)'; 
-                                                                                e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+                                                                                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; 
+                                                                                e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
                                                                                 e.currentTarget.style.transform = 'translateY(0)';
                                                                                 e.currentTarget.style.boxShadow = 'none';
+                                                                                const linkIcon = e.currentTarget.querySelector('.external-link-icon');
+                                                                                if(linkIcon) linkIcon.style.opacity = 0;
                                                                             }}
                                                                         >
-                                                                            {/* Left: Thumbnail */}
-                                                                            <div style={{ 
-                                                                                width: '120px', height: '80px', borderRadius: '8px', 
-                                                                                background: '#000', overflow: 'hidden', flexShrink: 0,
-                                                                                position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                                                border: '1px solid rgba(255,255,255,0.1)'
-                                                                            }}>
-                                                                                {res.videoId ? (
-                                                                                    <>
-                                                                                        <img 
-                                                                                            src={`https://img.youtube.com/vi/${res.videoId}/mqdefault.jpg`} 
-                                                                                            alt="thumb" 
-                                                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }}
-                                                                                        />
-                                                                                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.3)' }}>
-                                                                                            <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                                                                <Video size={14} color="white" fill="white" />
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </>
-                                                                                ) : (
-                                                                                    <div style={{ 
-                                                                                        width: '100%', height: '100%', 
-                                                                                        background: res.type === 'Documentation' ? 'linear-gradient(135deg, #1e3a8a, #3b82f6)' :
-                                                                                                    res.type === 'Course' ? 'linear-gradient(135deg, #422006, #eab308)' :
-                                                                                                    res.type === 'Practice' ? 'linear-gradient(135deg, #14532d, #22c55e)' : 'linear-gradient(135deg, #3f3f46, #71717a)',
-                                                                                        display: 'flex', alignItems: 'center', justifyContent: 'center'
-                                                                                    }}>
-                                                                                         {res.type === 'Course' ? <BookOpen size={24} color="rgba(255,255,255,0.8)" /> :
-                                                                                          res.type === 'Documentation' ? <FileText size={24} color="rgba(255,255,255,0.8)" /> :
-                                                                                          <Code size={24} color="rgba(255,255,255,0.8)" />}
-                                                                                    </div>
-                                                                                )}
-                                                                            </div>
+                                                                            {/* Favorite Button (Absolute Top Right) */}
+                                                                            <button 
+                                                                                title={favorites.includes(res.link) ? "Remove from Favorites" : "Save to Favorites"}
+                                                                                onClick={(e) => {
+                                                                                    e.preventDefault();
+                                                                                    e.stopPropagation();
+                                                                                    toggleFavorite(res.link);
+                                                                                }}
+                                                                                style={{ 
+                                                                                    position: 'absolute', top: '12px', right: '12px', zIndex: 20,
+                                                                                    width: 28, height: 28, borderRadius: '50%', background: 'rgba(0,0,0,0.4)', 
+                                                                                    display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                                                                    color: favorites.includes(res.link) ? '#fbbf24' : 'rgba(255,255,255,0.4)',
+                                                                                    border: '1px solid rgba(255,255,255,0.1)', transition: 'all 0.2s',
+                                                                                    cursor: 'pointer', backdropFilter: 'blur(4px)'
+                                                                                }}
+                                                                                onMouseEnter={(e) => { e.currentTarget.style.color = '#fbbf24'; e.currentTarget.style.background = 'rgba(0,0,0,0.6)'; }}
+                                                                                onMouseLeave={(e) => { 
+                                                                                    if (!favorites.includes(res.link)) {
+                                                                                        e.currentTarget.style.color = 'rgba(255,255,255,0.4)'; 
+                                                                                        e.currentTarget.style.background = 'rgba(0,0,0,0.4)';
+                                                                                    }
+                                                                                }}
+                                                                            >
+                                                                                <Award size={14} fill={favorites.includes(res.link) ? "currentColor" : "none"} /> 
+                                                                            </button>
 
-                                                                            {/* Middle: Content */}
-                                                                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
-                                                                                     <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                                                                        {res.source || res.type}
-                                                                                     </span>
-                                                                                     <span style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--text-tertiary)' }} />
-                                                                                     <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)' }}>{res.duration || 'Flexible'}</span>
-                                                                                     
-                                                                                     {res.aiCurated && (
-                                                                                        <span style={{ 
-                                                                                            marginLeft: 'auto', fontSize: '0.6rem', background: 'linear-gradient(90deg, #7c3aed, #db2777)', 
-                                                                                            color: 'white', padding: '2px 6px', borderRadius: '4px', fontWeight: 700,
-                                                                                            display: 'flex', alignItems: 'center', gap: '3px'
+                                                                            {/* Left: Thumbnail */}
+                                                                            <a href={res.link} target="_blank" rel="noopener noreferrer" style={{ display: 'block', flexShrink: 0 }}>
+                                                                                <div style={{ 
+                                                                                    width: '120px', height: '84px', borderRadius: '12px', 
+                                                                                    background: '#0f172a', overflow: 'hidden',
+                                                                                    position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                                    border: '1px solid rgba(255,255,255,0.08)',
+                                                                                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                                                                                }}>
+                                                                                    {/* AI Badge Overlay on Thumbnail */}
+                                                                                    {res.aiCurated && (
+                                                                                        <div style={{ 
+                                                                                            position: 'absolute', top: 0, left: 0, 
+                                                                                            background: 'rgba(124, 58, 237, 0.9)', backdropFilter: 'blur(4px)',
+                                                                                            color: 'white', padding: '2px 6px',
+                                                                                            borderBottomRightRadius: '8px',
+                                                                                            fontSize: '0.6rem', fontWeight: 800,
+                                                                                            display: 'flex', alignItems: 'center', gap: '2px',
+                                                                                            zIndex: 10
                                                                                         }}>
-                                                                                            <Zap size={8} fill="white" /> AI MATCH {res.relevance}%
-                                                                                        </span>
+                                                                                            <Zap size={8} fill="white" /> {res.relevance}%
+                                                                                        </div>
+                                                                                    )}
+
+                                                                                    {res.videoId ? (
+                                                                                        <>
+                                                                                            <img 
+                                                                                                src={`https://img.youtube.com/vi/${res.videoId}/mqdefault.jpg`} 
+                                                                                                alt="thumb" 
+                                                                                                style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9, transition: 'transform 0.5s' }}
+                                                                                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                                                                                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                                                                            />
+                                                                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.2)', pointerEvents: 'none' }}>
+                                                                                                <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.2)' }}>
+                                                                                                    <Video size={12} color="white" fill="white" />
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </>
+                                                                                    ) : (
+                                                                                        <div style={{ 
+                                                                                            width: '100%', height: '100%', 
+                                                                                            background: 'radial-gradient(circle at top right, rgba(255,255,255,0.08), transparent)',
+                                                                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                                            position: 'relative'
+                                                                                        }}>
+                                                                                            {/* Colored Glow */}
+                                                                                            <div style={{ 
+                                                                                                position: 'absolute', width: '60%', height: '60%', borderRadius: '50%', filter: 'blur(15px)', opacity: 0.4,
+                                                                                                background: res.type === 'Documentation' ? '#3b82f6' : 
+                                                                                                            res.type === 'Course' ? '#eab308' : 
+                                                                                                            res.type === 'Practice' ? '#22c55e' : '#a1a1aa'
+                                                                                            }} />
+                                                                                            
+                                                                                            {res.type === 'Course' ? <BookOpen size={28} color="#facc15" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} /> :
+                                                                                             res.type === 'Documentation' ? <FileText size={28} color="#60a5fa" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} /> :
+                                                                                             <Code size={28} color="#4ade80" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />}
+                                                                                        </div>
                                                                                     )}
                                                                                 </div>
+                                                                            </a>
 
-                                                                                <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white', lineHeight: 1.3 }}>
-                                                                                    {res.title}
-                                                                                </h4>
-                                                                                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                                                            {/* Right: Content */}
+                                                                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0 }}>
+                                                                                {/* Header Metas */}
+                                                                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                                                                                    <span style={{ 
+                                                                                        fontSize: '0.65rem', fontWeight: 700, color: 'var(--accent-color)', 
+                                                                                        textTransform: 'uppercase', letterSpacing: '0.5px',
+                                                                                        background: 'rgba(124, 58, 237, 0.1)', padding: '2px 6px', borderRadius: '4px'
+                                                                                    }}>
+                                                                                        {res.source || res.type}
+                                                                                    </span>
+                                                                                    <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)' }}>•</span>
+                                                                                    <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                                                                        <Clock size={10} /> {res.duration || 'Flexible'}
+                                                                                    </span>
+                                                                                </div>
+
+                                                                                {/* Title & External Link */}
+                                                                                <a href={res.link} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', group: 'hover' }}>
+                                                                                    <h4 style={{ 
+                                                                                        fontSize: '0.95rem', fontWeight: 600, color: 'white', lineHeight: 1.4,
+                                                                                        display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                                                                                        transition: 'color 0.2s'
+                                                                                    }}
+                                                                                    onMouseEnter={(e) => e.target.style.color = 'var(--accent-color)'}
+                                                                                    onMouseLeave={(e) => e.target.style.color = 'white'}
+                                                                                    >
+                                                                                        {res.title}
+                                                                                        <ExternalLink size={12} className="external-link-icon" style={{ marginLeft: '6px', opacity: 0, transition: 'opacity 0.2s', display: 'inline-block', verticalAlign: 'middle' }} />
+                                                                                    </h4>
+                                                                                </a>
+
+                                                                                {/* Description */}
+                                                                                <p style={{ 
+                                                                                    fontSize: '0.8rem', color: 'var(--text-tertiary)', lineHeight: 1.5, 
+                                                                                    display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                                                                                    marginBottom: 'auto'
+                                                                                }}>
                                                                                     {res.description}
                                                                                 </p>
 
-                                                                                <div style={{ marginTop: 'auto', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                                                                {/* Footer: Difficulty */}
+                                                                                <div style={{ paddingTop: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                                                                      <span style={{ 
-                                                                                         fontSize: '0.7rem', padding: '2px 8px', borderRadius: '4px', 
-                                                                                         background: res.difficulty === 'Beginner' ? 'rgba(80, 250, 123, 0.1)' : res.difficulty === 'Advanced' ? 'rgba(255, 85, 85, 0.1)' : 'rgba(255, 184, 108, 0.1)',
-                                                                                         color: res.difficulty === 'Beginner' ? '#50fa7b' : res.difficulty === 'Advanced' ? '#ff5555' : '#ffb86c',
-                                                                                         border: `1px solid ${res.difficulty === 'Beginner' ? 'rgba(80, 250, 123, 0.2)' : res.difficulty === 'Advanced' ? 'rgba(255, 85, 85, 0.2)' : 'rgba(255, 184, 108, 0.2)'}`,
-                                                                                         fontWeight: 600
+                                                                                         fontSize: '0.65rem', padding: '2px 8px', borderRadius: '12px', 
+                                                                                         background: res.difficulty === 'Beginner' ? 'rgba(34, 197, 94, 0.1)' : res.difficulty === 'Advanced' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                                                                                         color: res.difficulty === 'Beginner' ? '#4ade80' : res.difficulty === 'Advanced' ? '#f87171' : '#fbbf24',
+                                                                                         border: `1px solid ${res.difficulty === 'Beginner' ? 'rgba(34, 197, 94, 0.2)' : res.difficulty === 'Advanced' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(245, 158, 11, 0.2)'}`,
+                                                                                         fontWeight: 600, letterSpacing: '0.3px'
                                                                                      }}>
                                                                                         {res.difficulty}
                                                                                      </span>
                                                                                 </div>
-                                                                            </div>
-
-                                                                            {/* Right: Actions */}
-                                                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', justifyContent: 'center' }}>
-                                                                                <a 
-                                                                                    href={res.link} 
-                                                                                    target="_blank" 
-                                                                                    rel="noopener noreferrer"
-                                                                                    title="Open Resource"
-                                                                                    style={{ 
-                                                                                        width: 32, height: 32, borderRadius: '8px', background: 'var(--bg-elevated)', 
-                                                                                        display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white',
-                                                                                        border: '1px solid var(--border-color)', transition: 'all 0.2s',
-                                                                                        cursor: 'pointer'
-                                                                                    }}
-                                                                                    onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--accent-color)'; e.currentTarget.style.borderColor = 'var(--accent-color)'; }}
-                                                                                    onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-elevated)'; e.currentTarget.style.borderColor = 'var(--border-color)'; }}
-                                                                                >
-                                                                                    <ExternalLink size={16} />
-                                                                                </a>
-                                                                                <button 
-                                                                                    title={favorites.includes(res.link) ? "Remove from Favorites" : "Save to Favorites"}
-                                                                                    onClick={(e) => {
-                                                                                        e.preventDefault();
-                                                                                        e.stopPropagation();
-                                                                                        toggleFavorite(res.link);
-                                                                                    }}
-                                                                                    style={{ 
-                                                                                        width: 32, height: 32, borderRadius: '8px', background: 'transparent', 
-                                                                                        display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                                                                                        color: favorites.includes(res.link) ? '#facc15' : 'var(--text-tertiary)',
-                                                                                        borderColor: favorites.includes(res.link) ? '#facc15' : 'var(--border-color)',
-                                                                                        borderWidth: '1px', borderStyle: 'solid', transition: 'all 0.2s',
-                                                                                        cursor: 'pointer'
-                                                                                    }}
-                                                                                    onMouseEnter={(e) => { 
-                                                                                        if (!favorites.includes(res.link)) {
-                                                                                            e.currentTarget.style.color = '#facc15'; 
-                                                                                            e.currentTarget.style.borderColor = '#facc15'; 
-                                                                                        }
-                                                                                    }}
-                                                                                    onMouseLeave={(e) => { 
-                                                                                        if (!favorites.includes(res.link)) {
-                                                                                            e.currentTarget.style.color = 'var(--text-tertiary)'; 
-                                                                                            e.currentTarget.style.borderColor = 'var(--border-color)'; 
-                                                                                        }
-                                                                                    }}
-                                                                                >
-                                                                                    <Award size={16} fill={favorites.includes(res.link) ? "currentColor" : "none"} /> 
-                                                                                </button>
                                                                             </div>
                                                                         </div>
                                                                     ));
