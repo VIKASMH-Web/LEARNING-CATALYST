@@ -1,0 +1,194 @@
+{
+  "python": {
+    "label": "Python Developer",
+    "type": "technical",
+    "stages": [
+      { "title": "Python Basics", "topics": ["Variables & Data Types", "Control Flow", "Functions", "String Manipulation"], "duration": "2-3 weeks" },
+      { "title": "OOP & Data Structures", "topics": ["Classes & Objects", "Inheritance", "Lists, Dicts, Sets", "Comprehensions"], "duration": "3-4 weeks" },
+      { "title": "Libraries & Ecosystem", "topics": ["NumPy", "Pandas", "Matplotlib", "Virtual Environments & pip"], "duration": "3-4 weeks" },
+      { "title": "Projects & Applications", "topics": ["Web Scraping (BeautifulSoup)", "REST API (Flask/FastAPI)", "Automation Scripts", "Database Integration"], "duration": "4-6 weeks" },
+      { "title": "Advanced Python", "topics": ["Decorators & Generators", "Concurrency (asyncio)", "Memory Management", "Design Patterns"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Common Python Questions", "Algorithm Challenges", "System Design Basics", "Code Review Practice"], "duration": "2-4 weeks" }
+    ]
+  },
+  "javascript": {
+    "label": "JavaScript Developer",
+    "type": "technical",
+    "stages": [
+      { "title": "JavaScript Fundamentals", "topics": ["Variables (let/const)", "Data Types & Operators", "Functions & Scope", "DOM Manipulation"], "duration": "2-3 weeks" },
+      { "title": "ES6+ & Advanced Concepts", "topics": ["Arrow Functions", "Destructuring & Spread", "Promises & Async/Await", "Modules (Import/Export)"], "duration": "3-4 weeks" },
+      { "title": "Frameworks & Tools", "topics": ["React or Vue.js", "Node.js Basics", "npm/yarn", "Webpack/Vite"], "duration": "4-6 weeks" },
+      { "title": "Projects & Applications", "topics": ["Full Stack App", "REST API Development", "Real-time App (WebSocket)", "Chrome Extension"], "duration": "4-6 weeks" },
+      { "title": "Performance & Optimization", "topics": ["Event Loop & Microtasks", "Memory Leaks", "Lazy Loading", "Service Workers"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Closure & Hoisting Questions", "Algorithm Challenges", "System Design", "Code Review Practice"], "duration": "2-4 weeks" }
+    ]
+  },
+  "java": {
+    "label": "Java Developer",
+    "type": "technical",
+    "stages": [
+      { "title": "Java Basics", "topics": ["JDK Setup & Hello World", "Variables & Data Types", "Control Flow", "Methods & Arrays"], "duration": "2-3 weeks" },
+      { "title": "OOP & Collections", "topics": ["Classes & Objects", "Inheritance & Polymorphism", "Interfaces & Abstract Classes", "Collections Framework"], "duration": "3-4 weeks" },
+      { "title": "Spring & Ecosystem", "topics": ["Spring Boot", "Maven/Gradle", "JPA/Hibernate", "REST APIs"], "duration": "4-6 weeks" },
+      { "title": "Projects & Applications", "topics": ["CRUD Application", "Microservice Architecture", "Message Queues", "Database Integration"], "duration": "4-6 weeks" },
+      { "title": "Advanced Java", "topics": ["Multithreading", "Streams API", "JVM Internals", "Design Patterns"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Core Java Questions", "Spring Boot Questions", "System Design", "Coding Challenges"], "duration": "2-4 weeks" }
+    ]
+  },
+  "react": {
+    "label": "React Developer",
+    "type": "technical",
+    "stages": [
+      { "title": "React Fundamentals", "topics": ["JSX & Components", "Props & State", "Event Handling", "Conditional Rendering"], "duration": "2-3 weeks" },
+      { "title": "Hooks & State Management", "topics": ["useState & useEffect", "useContext & useReducer", "Custom Hooks", "Redux/Zustand"], "duration": "3-4 weeks" },
+      { "title": "Routing & APIs", "topics": ["React Router", "Fetch/Axios", "Error Boundaries", "Suspense & Lazy Loading"], "duration": "3-4 weeks" },
+      { "title": "Projects & Applications", "topics": ["Dashboard App", "E-commerce Store", "Social Media Clone", "Portfolio Website"], "duration": "4-6 weeks" },
+      { "title": "Advanced React", "topics": ["Performance Optimization", "Server Components", "Testing (Jest/RTL)", "Next.js Basics"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["React Lifecycle Questions", "State Management Scenarios", "Component Design", "Code Review"], "duration": "2-4 weeks" }
+    ]
+  },
+  "nodejs": {
+    "label": "Node.js Developer",
+    "type": "technical",
+    "stages": [
+      { "title": "Node.js Basics", "topics": ["Runtime & Modules", "npm & package.json", "File System & Streams", "Event Loop"], "duration": "2-3 weeks" },
+      { "title": "Express & REST APIs", "topics": ["Express Setup", "Routing & Middleware", "Authentication (JWT)", "Error Handling"], "duration": "3-4 weeks" },
+      { "title": "Databases & ORM", "topics": ["MongoDB & Mongoose", "PostgreSQL & Sequelize", "Redis Caching", "Database Design"], "duration": "3-4 weeks" },
+      { "title": "Projects & Applications", "topics": ["REST API Server", "Real-time Chat (Socket.io)", "Job Queue System", "File Upload Service"], "duration": "4-6 weeks" },
+      { "title": "Advanced Concepts", "topics": ["Microservices", "GraphQL", "Docker Integration", "CI/CD Pipelines"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Event Loop Questions", "API Design", "System Design", "Coding Challenges"], "duration": "2-4 weeks" }
+    ]
+  },
+  "data_science": {
+    "label": "Data Scientist",
+    "type": "technical",
+    "stages": [
+      { "title": "Statistics & Math Foundations", "topics": ["Descriptive Statistics", "Probability", "Linear Algebra", "Calculus Basics"], "duration": "3-4 weeks" },
+      { "title": "Python for Data Science", "topics": ["NumPy & Pandas", "Data Cleaning", "Matplotlib & Seaborn", "Jupyter Notebooks"], "duration": "3-4 weeks" },
+      { "title": "Machine Learning", "topics": ["Supervised Learning", "Unsupervised Learning", "Scikit-Learn", "Model Evaluation"], "duration": "4-6 weeks" },
+      { "title": "Projects & Applications", "topics": ["EDA on Real Dataset", "Predictive Modeling", "NLP Project", "Computer Vision Basics"], "duration": "4-6 weeks" },
+      { "title": "Advanced Topics", "topics": ["Deep Learning (TensorFlow)", "Feature Engineering", "A/B Testing", "Big Data (Spark)"], "duration": "4-6 weeks" },
+      { "title": "Interview Preparation", "topics": ["ML Algorithm Questions", "Case Studies", "Statistical Tests", "Coding Challenges"], "duration": "2-4 weeks" }
+    ]
+  },
+  "devops": {
+    "label": "DevOps Engineer",
+    "type": "technical",
+    "stages": [
+      { "title": "Linux & Networking Basics", "topics": ["Linux Commands", "File Permissions", "Networking (TCP/IP, DNS)", "SSH & Security"], "duration": "2-3 weeks" },
+      { "title": "Version Control & CI/CD", "topics": ["Git Advanced", "GitHub Actions", "Jenkins", "Build Pipelines"], "duration": "3-4 weeks" },
+      { "title": "Containers & Orchestration", "topics": ["Docker", "Docker Compose", "Kubernetes Basics", "Helm Charts"], "duration": "4-6 weeks" },
+      { "title": "Cloud Platforms", "topics": ["AWS/GCP/Azure Basics", "EC2 & S3", "IAM & Security", "Serverless (Lambda)"], "duration": "4-6 weeks" },
+      { "title": "Infrastructure as Code", "topics": ["Terraform", "Ansible", "Monitoring (Prometheus)", "Logging (ELK)"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["DevOps Scenarios", "Troubleshooting", "Architecture Design", "Automation Questions"], "duration": "2-4 weeks" }
+    ]
+  },
+  "cloud": {
+    "label": "Cloud Engineer",
+    "type": "technical",
+    "stages": [
+      { "title": "Cloud Fundamentals", "topics": ["Cloud Models (IaaS/PaaS/SaaS)", "AWS/GCP/Azure Overview", "Regions & Availability", "Cost Management"], "duration": "2-3 weeks" },
+      { "title": "Compute & Storage", "topics": ["Virtual Machines", "Object Storage (S3)", "Block Storage", "CDN & Caching"], "duration": "3-4 weeks" },
+      { "title": "Networking & Security", "topics": ["VPC & Subnets", "Load Balancers", "IAM Policies", "Encryption"], "duration": "3-4 weeks" },
+      { "title": "Serverless & Containers", "topics": ["Lambda/Functions", "API Gateway", "ECS/EKS", "Event-driven Architecture"], "duration": "4-6 weeks" },
+      { "title": "DevOps Integration", "topics": ["CI/CD on Cloud", "Infrastructure as Code", "Monitoring", "Auto-scaling"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Architecture Questions", "Cost Optimization", "Security Scenarios", "Certification Prep"], "duration": "2-4 weeks" }
+    ]
+  },
+  "cybersecurity": {
+    "label": "Cybersecurity Engineer",
+    "type": "technical",
+    "stages": [
+      { "title": "Security Fundamentals", "topics": ["CIA Triad", "Threat Landscape", "Security Policies", "Risk Assessment"], "duration": "2-3 weeks" },
+      { "title": "Network Security", "topics": ["Firewalls & IDS", "VPN & Encryption", "Protocol Analysis", "Wireless Security"], "duration": "3-4 weeks" },
+      { "title": "Tools & Techniques", "topics": ["Nmap & Wireshark", "Metasploit", "Burp Suite", "OWASP Top 10"], "duration": "4-6 weeks" },
+      { "title": "Ethical Hacking Projects", "topics": ["CTF Challenges", "Vulnerability Assessment", "Penetration Testing", "Security Audit"], "duration": "4-6 weeks" },
+      { "title": "Advanced Security", "topics": ["Cloud Security", "Incident Response", "Forensics", "Compliance (SOC2/ISO)"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Security Scenarios", "Architecture Questions", "Tool Knowledge", "Certification Prep"], "duration": "2-4 weeks" }
+    ]
+  },
+  "ai_ml": {
+    "label": "AI/ML Engineer",
+    "type": "technical",
+    "stages": [
+      { "title": "Math & Programming Foundations", "topics": ["Linear Algebra", "Calculus & Optimization", "Python for ML", "NumPy & Pandas"], "duration": "3-4 weeks" },
+      { "title": "Core Machine Learning", "topics": ["Regression & Classification", "Decision Trees & SVMs", "Clustering", "Model Evaluation"], "duration": "4-6 weeks" },
+      { "title": "Deep Learning", "topics": ["Neural Networks", "CNNs for Vision", "RNNs & LSTMs", "Transfer Learning"], "duration": "4-6 weeks" },
+      { "title": "Projects & Applications", "topics": ["Image Classification", "NLP Sentiment Analysis", "Recommendation System", "Time Series Forecasting"], "duration": "4-6 weeks" },
+      { "title": "MLOps & Deployment", "topics": ["Model Serving (Flask/FastAPI)", "Docker for ML", "MLflow", "Cloud Deployment"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["ML Theory Questions", "Coding Challenges", "System Design for ML", "Paper Discussion"], "duration": "2-4 weeks" }
+    ]
+  },
+  "backend": {
+    "label": "Backend Developer",
+    "type": "technical",
+    "stages": [
+      { "title": "Server Fundamentals", "topics": ["HTTP Protocol", "REST vs GraphQL", "Server Architecture", "Authentication & Authorization"], "duration": "2-3 weeks" },
+      { "title": "API Design & Development", "topics": ["RESTful Design Principles", "Request/Response Handling", "Middleware Patterns", "API Versioning"], "duration": "3-4 weeks" },
+      { "title": "Databases & Caching", "topics": ["SQL (PostgreSQL/MySQL)", "NoSQL (MongoDB)", "Redis Caching", "ORM/ODM Tools"], "duration": "3-4 weeks" },
+      { "title": "Projects & Applications", "topics": ["Full REST API", "Authentication System", "Real-time Features", "Payment Integration"], "duration": "4-6 weeks" },
+      { "title": "Architecture & Scaling", "topics": ["Microservices", "Message Queues", "Load Balancing", "System Design"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["System Design Questions", "API Design Challenges", "Database Optimization", "Coding Problems"], "duration": "2-4 weeks" }
+    ]
+  },
+  "frontend": {
+    "label": "Frontend Developer",
+    "type": "technical",
+    "stages": [
+      { "title": "HTML, CSS & JS Foundations", "topics": ["Semantic HTML", "CSS Flexbox & Grid", "Responsive Design", "JavaScript Basics"], "duration": "2-3 weeks" },
+      { "title": "Advanced CSS & JS", "topics": ["CSS Animations", "JavaScript ES6+", "DOM Manipulation", "Fetch & Async"], "duration": "3-4 weeks" },
+      { "title": "Frameworks & Libraries", "topics": ["React/Vue/Angular", "State Management", "Routing", "Component Design"], "duration": "4-6 weeks" },
+      { "title": "Projects & Portfolio", "topics": ["Landing Page", "Dashboard App", "E-commerce Frontend", "Personal Portfolio"], "duration": "4-6 weeks" },
+      { "title": "Performance & Testing", "topics": ["Lighthouse Optimization", "Code Splitting", "Unit Testing", "E2E Testing"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["CSS/JS Trivia", "Component Architecture", "Browser Internals", "Live Coding"], "duration": "2-4 weeks" }
+    ]
+  },
+  "fullstack": {
+    "label": "Full Stack Developer",
+    "type": "technical",
+    "stages": [
+      { "title": "Web Fundamentals", "topics": ["HTML/CSS/JS", "HTTP & REST", "Git & Version Control", "Dev Environment Setup"], "duration": "2-3 weeks" },
+      { "title": "Frontend Development", "topics": ["React/Vue Framework", "State Management", "Responsive Design", "API Integration"], "duration": "4-6 weeks" },
+      { "title": "Backend Development", "topics": ["Node.js/Python Server", "Database (SQL + NoSQL)", "Authentication", "File Handling"], "duration": "4-6 weeks" },
+      { "title": "Full Stack Projects", "topics": ["Blog Platform", "Task Manager", "E-commerce App", "Social Platform"], "duration": "4-6 weeks" },
+      { "title": "DevOps & Deployment", "topics": ["Docker Basics", "CI/CD Pipelines", "Cloud Deployment", "Monitoring"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Full Stack Scenarios", "System Design", "Live Coding", "Portfolio Review"], "duration": "2-4 weeks" }
+    ]
+  },
+  "mobile": {
+    "label": "Mobile App Developer",
+    "type": "technical",
+    "stages": [
+      { "title": "Mobile Development Basics", "topics": ["Mobile UI Principles", "Platform Differences", "Dev Environment Setup", "Hello World App"], "duration": "2-3 weeks" },
+      { "title": "Core Concepts", "topics": ["Components & Navigation", "State Management", "API Calls", "Local Storage"], "duration": "3-4 weeks" },
+      { "title": "React Native / Flutter", "topics": ["Framework Setup", "Styling & Layouts", "Native Modules", "Third-party Libraries"], "duration": "4-6 weeks" },
+      { "title": "Projects & Applications", "topics": ["Todo App", "Weather App", "Chat Application", "E-commerce Mobile"], "duration": "4-6 weeks" },
+      { "title": "Advanced Topics", "topics": ["Performance Optimization", "Offline Support", "Push Notifications", "App Store Prep"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Mobile Architecture", "Platform Questions", "UI/UX Scenarios", "Live Coding"], "duration": "2-4 weeks" }
+    ]
+  },
+  "sql": {
+    "label": "SQL / Database",
+    "type": "technical",
+    "stages": [
+      { "title": "SQL Basics", "topics": ["SELECT & WHERE", "INSERT, UPDATE, DELETE", "Data Types", "Filtering & Sorting"], "duration": "1-2 weeks" },
+      { "title": "Joins & Subqueries", "topics": ["INNER/LEFT/RIGHT Joins", "Self Joins", "Subqueries", "UNION & INTERSECT"], "duration": "2-3 weeks" },
+      { "title": "Aggregation & Grouping", "topics": ["GROUP BY & HAVING", "Aggregate Functions", "Window Functions", "CTEs"], "duration": "2-3 weeks" },
+      { "title": "Database Design", "topics": ["Normalization", "ER Diagrams", "Indexes", "Constraints & Keys"], "duration": "3-4 weeks" },
+      { "title": "Advanced SQL", "topics": ["Stored Procedures", "Triggers", "Views", "Query Optimization"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["SQL Coding Challenges", "Schema Design", "Performance Tuning", "Real-world Scenarios"], "duration": "2-4 weeks" }
+    ]
+  },
+  "_default": {
+    "label": "Technical Path",
+    "type": "technical",
+    "stages": [
+      { "title": "Fundamentals", "topics": ["Core Concepts", "Basic Theory", "Environment Setup", "First Projects"], "duration": "2-3 weeks" },
+      { "title": "Core Concepts", "topics": ["Architecture & Design", "Key Technologies", "Best Practices", "Common Patterns"], "duration": "3-4 weeks" },
+      { "title": "Tools & Ecosystem", "topics": ["Essential Tools", "Libraries & Frameworks", "Development Workflow", "Version Control"], "duration": "3-4 weeks" },
+      { "title": "Projects & Applications", "topics": ["Beginner Project", "Intermediate Project", "Real-world Application", "Portfolio Piece"], "duration": "4-6 weeks" },
+      { "title": "Advanced Topics", "topics": ["Performance Optimization", "Security Best Practices", "Architecture Patterns", "Emerging Trends"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Technical Questions", "Coding Challenges", "System Design", "Behavioral Questions"], "duration": "2-4 weeks" }
+    ]
+  }
+}

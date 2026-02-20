@@ -1,0 +1,134 @@
+{
+  "hr_manager": {
+    "label": "HR Manager",
+    "type": "non-technical",
+    "stages": [
+      { "title": "HR Fundamentals", "topics": ["HR Role & Functions", "Recruitment Process", "Employee Lifecycle", "HR Policies & Compliance"], "duration": "2-3 weeks" },
+      { "title": "Industry Knowledge", "topics": ["Labor Laws", "Compensation & Benefits", "Performance Management", "HR Metrics & Analytics"], "duration": "3-4 weeks" },
+      { "title": "Skills & Tools", "topics": ["HRIS Systems", "MS Excel for HR", "Interview Techniques", "Conflict Resolution"], "duration": "3-4 weeks" },
+      { "title": "Real-World Practice", "topics": ["Mock Recruitment", "Policy Drafting", "Employee Onboarding", "Exit Interview Simulation"], "duration": "4-6 weeks" },
+      { "title": "Portfolio & Experience", "topics": ["HR Case Studies", "Certification (SHRM/PHR)", "Networking", "LinkedIn Optimization"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["HR Scenario Questions", "Behavioral Questions", "Situational Judgment", "Salary Negotiation"], "duration": "2-4 weeks" }
+    ]
+  },
+  "digital_marketing": {
+    "label": "Digital Marketing",
+    "type": "non-technical",
+    "stages": [
+      { "title": "Marketing Fundamentals", "topics": ["Marketing Principles", "Digital vs Traditional", "Customer Journey", "Brand Building"], "duration": "2-3 weeks" },
+      { "title": "Industry Knowledge", "topics": ["SEO Basics", "Social Media Marketing", "Content Marketing", "Email Marketing"], "duration": "3-4 weeks" },
+      { "title": "Skills & Tools", "topics": ["Google Analytics", "Google Ads", "Canva & Design Tools", "Marketing Automation"], "duration": "3-4 weeks" },
+      { "title": "Real-World Practice", "topics": ["Run a Social Campaign", "SEO Audit", "Content Calendar", "Ad Campaign Management"], "duration": "4-6 weeks" },
+      { "title": "Portfolio & Experience", "topics": ["Case Studies", "Certifications (Google/HubSpot)", "Personal Brand", "Freelance Projects"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Marketing Strategy Questions", "Analytics Interpretation", "Campaign Planning", "ROI Questions"], "duration": "2-4 weeks" }
+    ]
+  },
+  "product_manager": {
+    "label": "Product Manager",
+    "type": "non-technical",
+    "stages": [
+      { "title": "Product Management Fundamentals", "topics": ["PM Role & Responsibilities", "Product Lifecycle", "Agile & Scrum", "Stakeholder Management"], "duration": "2-3 weeks" },
+      { "title": "Industry Knowledge", "topics": ["Market Research", "Competitive Analysis", "User Personas", "Metrics (KPIs & OKRs)"], "duration": "3-4 weeks" },
+      { "title": "Skills & Tools", "topics": ["Jira & Trello", "Figma Basics", "SQL for PMs", "A/B Testing"], "duration": "3-4 weeks" },
+      { "title": "Real-World Practice", "topics": ["PRD Writing", "Roadmap Planning", "Feature Prioritization", "User Story Creation"], "duration": "4-6 weeks" },
+      { "title": "Portfolio & Experience", "topics": ["PM Case Studies", "Product Teardowns", "Blog Writing", "Networking"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Product Sense Questions", "Estimation Problems", "Strategy Questions", "Behavioral Questions"], "duration": "2-4 weeks" }
+    ]
+  },
+  "ui_ux_design": {
+    "label": "UI/UX Designer",
+    "type": "non-technical",
+    "stages": [
+      { "title": "Design Fundamentals", "topics": ["Design Principles", "Color Theory", "Typography", "Layout & Composition"], "duration": "2-3 weeks" },
+      { "title": "Industry Knowledge", "topics": ["User Research", "Information Architecture", "Interaction Design", "Accessibility Standards"], "duration": "3-4 weeks" },
+      { "title": "Skills & Tools", "topics": ["Figma Mastery", "Adobe XD", "Prototyping", "Design Systems"], "duration": "4-6 weeks" },
+      { "title": "Real-World Practice", "topics": ["Redesign Challenge", "Mobile App Design", "Web Dashboard Design", "Usability Testing"], "duration": "4-6 weeks" },
+      { "title": "Portfolio & Branding", "topics": ["Dribbble/Behance Portfolio", "Case Study Writing", "Design Community", "Freelance Projects"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Design Challenges", "Portfolio Presentation", "Whiteboard Exercises", "Behavioral Questions"], "duration": "2-4 weeks" }
+    ]
+  },
+  "content_writing": {
+    "label": "Content Writer",
+    "type": "non-technical",
+    "stages": [
+      { "title": "Writing Fundamentals", "topics": ["Grammar & Style", "Tone & Voice", "Storytelling", "Research Skills"], "duration": "2-3 weeks" },
+      { "title": "Industry Knowledge", "topics": ["SEO Writing", "Content Types (Blog/Copy/Social)", "Audience Analysis", "Content Strategy"], "duration": "3-4 weeks" },
+      { "title": "Skills & Tools", "topics": ["WordPress", "Grammarly & Hemingway", "Google Trends", "Content Management Systems"], "duration": "3-4 weeks" },
+      { "title": "Real-World Practice", "topics": ["Blog Series", "Social Media Content", "Email Newsletters", "Landing Page Copy"], "duration": "4-6 weeks" },
+      { "title": "Portfolio & Experience", "topics": ["Writing Portfolio", "Guest Posts", "Medium/Substack", "Client Projects"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Writing Samples", "Content Strategy Questions", "SEO Knowledge", "Editing Tests"], "duration": "2-4 weeks" }
+    ]
+  },
+  "business_analyst": {
+    "label": "Business Analyst",
+    "type": "non-technical",
+    "stages": [
+      { "title": "BA Fundamentals", "topics": ["Business Analysis Role", "Requirements Gathering", "Process Mapping", "Stakeholder Analysis"], "duration": "2-3 weeks" },
+      { "title": "Industry Knowledge", "topics": ["Business Models", "Financial Basics", "Market Analysis", "Regulatory Compliance"], "duration": "3-4 weeks" },
+      { "title": "Skills & Tools", "topics": ["Excel Advanced", "Power BI/Tableau", "SQL Basics", "JIRA & Confluence"], "duration": "3-4 weeks" },
+      { "title": "Real-World Practice", "topics": ["BRD Writing", "Use Case Diagrams", "Gap Analysis", "Process Improvement"], "duration": "4-6 weeks" },
+      { "title": "Portfolio & Experience", "topics": ["Case Studies", "Certifications (CBAP)", "Domain Expertise", "Networking"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["BA Scenario Questions", "Requirements Questions", "Analytical Problems", "Behavioral Questions"], "duration": "2-4 weeks" }
+    ]
+  },
+  "project_manager": {
+    "label": "Project Manager",
+    "type": "non-technical",
+    "stages": [
+      { "title": "PM Fundamentals", "topics": ["Project Lifecycle", "Waterfall vs Agile", "Scope Management", "Risk Management"], "duration": "2-3 weeks" },
+      { "title": "Industry Knowledge", "topics": ["PMP Framework", "Scrum & Kanban", "Budget Management", "Quality Assurance"], "duration": "3-4 weeks" },
+      { "title": "Skills & Tools", "topics": ["MS Project/Asana", "Gantt Charts", "Agile Tools (Jira)", "Communication Skills"], "duration": "3-4 weeks" },
+      { "title": "Real-World Practice", "topics": ["Project Plan Creation", "Sprint Planning", "Status Reporting", "Risk Mitigation"], "duration": "4-6 weeks" },
+      { "title": "Certifications & Growth", "topics": ["PMP Certification", "Scrum Master (CSM)", "Leadership Skills", "Stakeholder Management"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["PM Scenarios", "Conflict Resolution", "Estimation Questions", "Behavioral Questions"], "duration": "2-4 weeks" }
+    ]
+  },
+  "upsc": {
+    "label": "UPSC Civil Services",
+    "type": "non-technical",
+    "stages": [
+      { "title": "Exam Fundamentals", "topics": ["UPSC Syllabus Overview", "Exam Pattern", "Study Plan Creation", "NCERT Foundation"], "duration": "4-6 weeks" },
+      { "title": "General Studies", "topics": ["History & Culture", "Geography", "Polity & Governance", "Economy"], "duration": "8-12 weeks" },
+      { "title": "Current Affairs & Skills", "topics": ["Newspaper Reading Habit", "PIB & Yojana", "Essay Writing", "Answer Writing Practice"], "duration": "Ongoing" },
+      { "title": "Practice & Mock Tests", "topics": ["Previous Year Papers", "Mock Test Series", "CSAT Preparation", "Time Management"], "duration": "6-8 weeks" },
+      { "title": "Optional Subject", "topics": ["Subject Selection", "Deep Study", "Answer Practice", "Question Bank"], "duration": "8-12 weeks" },
+      { "title": "Interview Preparation", "topics": ["Personality Test Prep", "DAF Preparation", "Mock Interviews", "Current Issues Discussion"], "duration": "4-6 weeks" }
+    ]
+  },
+  "sales": {
+    "label": "Sales Professional",
+    "type": "non-technical",
+    "stages": [
+      { "title": "Sales Fundamentals", "topics": ["Sales Process", "Customer Psychology", "Value Proposition", "Cold Outreach"], "duration": "2-3 weeks" },
+      { "title": "Industry Knowledge", "topics": ["B2B vs B2C Sales", "Sales Funnels", "CRM Systems", "Lead Qualification"], "duration": "3-4 weeks" },
+      { "title": "Skills & Tools", "topics": ["Salesforce/HubSpot", "Negotiation Skills", "Presentation Skills", "Email & Social Selling"], "duration": "3-4 weeks" },
+      { "title": "Real-World Practice", "topics": ["Cold Call Practice", "Demo Presentations", "Objection Handling", "Deal Closing"], "duration": "4-6 weeks" },
+      { "title": "Portfolio & Growth", "topics": ["Sales Metrics", "Account Management", "Team Leadership", "Revenue Growth"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Sales Pitch Exercise", "Revenue Questions", "Scenario Handling", "Behavioral Questions"], "duration": "2-4 weeks" }
+    ]
+  },
+  "finance": {
+    "label": "Finance Professional",
+    "type": "non-technical",
+    "stages": [
+      { "title": "Finance Fundamentals", "topics": ["Financial Statements", "Accounting Basics", "Time Value of Money", "Financial Ratios"], "duration": "3-4 weeks" },
+      { "title": "Industry Knowledge", "topics": ["Corporate Finance", "Investment Analysis", "Risk Management", "Regulatory Framework"], "duration": "3-4 weeks" },
+      { "title": "Skills & Tools", "topics": ["Excel Financial Modeling", "Bloomberg/Reuters", "Financial Software", "Data Analysis"], "duration": "3-4 weeks" },
+      { "title": "Real-World Practice", "topics": ["Financial Model Building", "Valuation Exercise", "Portfolio Management", "Budget Planning"], "duration": "4-6 weeks" },
+      { "title": "Certifications & Growth", "topics": ["CFA/CPA Prep", "Industry Networking", "Specialization Choice", "Continuous Learning"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Technical Finance Questions", "Case Studies", "Market Knowledge", "Behavioral Questions"], "duration": "2-4 weeks" }
+    ]
+  },
+  "_default": {
+    "label": "Career Path",
+    "type": "non-technical",
+    "stages": [
+      { "title": "Fundamentals", "topics": ["Core Concepts", "Industry Overview", "Basic Terminology", "Getting Started"], "duration": "2-3 weeks" },
+      { "title": "Industry Knowledge", "topics": ["Market Landscape", "Key Players", "Trends & Opportunities", "Regulations"], "duration": "3-4 weeks" },
+      { "title": "Skills & Tools", "topics": ["Essential Software", "Communication Skills", "Analytical Skills", "Domain-specific Tools"], "duration": "3-4 weeks" },
+      { "title": "Real-World Practice", "topics": ["Case Studies", "Simulations", "Hands-on Projects", "Internship/Volunteer"], "duration": "4-6 weeks" },
+      { "title": "Portfolio & Experience", "topics": ["Build Portfolio", "Get Certifications", "Network Building", "Personal Branding"], "duration": "3-4 weeks" },
+      { "title": "Interview Preparation", "topics": ["Domain Questions", "Scenario-based Questions", "Behavioral Questions", "Salary Negotiation"], "duration": "2-4 weeks" }
+    ]
+  }
+}

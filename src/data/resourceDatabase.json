@@ -1,0 +1,95 @@
+{
+  "python": [
+    { "title": "Python Official Documentation", "type": "Documentation", "link": "https://docs.python.org/3/", "source": "Python.org" },
+    { "title": "Automate the Boring Stuff with Python", "type": "Course", "link": "https://automatetheboringstuff.com/", "source": "Al Sweigart" },
+    { "title": "Real Python Tutorials", "type": "Documentation", "link": "https://realpython.com/", "source": "Real Python" },
+    { "title": "LeetCode Python Track", "type": "Practice", "link": "https://leetcode.com/problemset/all/", "source": "LeetCode" },
+    { "title": "Python for Data Science Handbook", "type": "Documentation", "link": "https://jakevdp.github.io/PythonDataScienceHandbook/", "source": "Jake VDP" },
+    { "title": "HackerRank Python Challenges", "type": "Practice", "link": "https://www.hackerrank.com/domains/python", "source": "HackerRank" }
+  ],
+  "javascript": [
+    { "title": "MDN JavaScript Guide", "type": "Documentation", "link": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide", "source": "MDN" },
+    { "title": "JavaScript.info", "type": "Course", "link": "https://javascript.info/", "source": "javascript.info" },
+    { "title": "freeCodeCamp JavaScript", "type": "Practice", "link": "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/", "source": "freeCodeCamp" },
+    { "title": "Eloquent JavaScript", "type": "Documentation", "link": "https://eloquentjavascript.net/", "source": "Marijn Haverbeke" },
+    { "title": "30 Days of JavaScript", "type": "Practice", "link": "https://github.com/Asabeneh/30-Days-Of-JavaScript", "source": "GitHub" },
+    { "title": "JavaScript Algorithms & DS", "type": "Practice", "link": "https://github.com/trekhleb/javascript-algorithms", "source": "GitHub" }
+  ],
+  "react": [
+    { "title": "React Official Documentation", "type": "Documentation", "link": "https://react.dev/", "source": "React" },
+    { "title": "React Tutorial by React.dev", "type": "Course", "link": "https://react.dev/learn", "source": "React" },
+    { "title": "React Patterns", "type": "Documentation", "link": "https://reactpatterns.com/", "source": "Community" },
+    { "title": "React Developer Roadmap", "type": "Documentation", "link": "https://roadmap.sh/react", "source": "roadmap.sh" },
+    { "title": "freeCodeCamp React Course", "type": "Practice", "link": "https://www.freecodecamp.org/learn/front-end-development-libraries/", "source": "freeCodeCamp" }
+  ],
+  "java": [
+    { "title": "Oracle Java Tutorials", "type": "Documentation", "link": "https://docs.oracle.com/javase/tutorial/", "source": "Oracle" },
+    { "title": "Java Design Patterns", "type": "Documentation", "link": "https://java-design-patterns.com/", "source": "Community" },
+    { "title": "Spring Boot Documentation", "type": "Documentation", "link": "https://spring.io/projects/spring-boot", "source": "Spring" },
+    { "title": "HackerRank Java Challenges", "type": "Practice", "link": "https://www.hackerrank.com/domains/java", "source": "HackerRank" },
+    { "title": "Baeldung Java Guides", "type": "Course", "link": "https://www.baeldung.com/", "source": "Baeldung" }
+  ],
+  "data_science": [
+    { "title": "Kaggle Learn", "type": "Course", "link": "https://www.kaggle.com/learn", "source": "Kaggle" },
+    { "title": "Towards Data Science", "type": "Documentation", "link": "https://towardsdatascience.com/", "source": "Medium" },
+    { "title": "Scikit-Learn Documentation", "type": "Documentation", "link": "https://scikit-learn.org/stable/", "source": "Scikit-Learn" },
+    { "title": "Kaggle Competitions", "type": "Practice", "link": "https://www.kaggle.com/competitions", "source": "Kaggle" },
+    { "title": "StatQuest YouTube", "type": "Course", "link": "https://www.youtube.com/c/joshstarmer", "source": "YouTube" },
+    { "title": "Google Data Analytics Certificate", "type": "Course", "link": "https://grow.google/certificates/data-analytics/", "source": "Google" }
+  ],
+  "ai_ml": [
+    { "title": "fast.ai Practical Deep Learning", "type": "Course", "link": "https://course.fast.ai/", "source": "fast.ai" },
+    { "title": "TensorFlow Documentation", "type": "Documentation", "link": "https://www.tensorflow.org/learn", "source": "TensorFlow" },
+    { "title": "PyTorch Tutorials", "type": "Documentation", "link": "https://pytorch.org/tutorials/", "source": "PyTorch" },
+    { "title": "Papers With Code", "type": "Practice", "link": "https://paperswithcode.com/", "source": "Community" },
+    { "title": "Google Machine Learning Crash Course", "type": "Course", "link": "https://developers.google.com/machine-learning/crash-course", "source": "Google" },
+    { "title": "Hugging Face Course", "type": "Course", "link": "https://huggingface.co/learn", "source": "Hugging Face" }
+  ],
+  "devops": [
+    { "title": "Docker Documentation", "type": "Documentation", "link": "https://docs.docker.com/", "source": "Docker" },
+    { "title": "Kubernetes Docs", "type": "Documentation", "link": "https://kubernetes.io/docs/home/", "source": "Kubernetes" },
+    { "title": "Linux Command Line", "type": "Course", "link": "https://linuxcommand.org/", "source": "Community" },
+    { "title": "GitHub Actions Docs", "type": "Documentation", "link": "https://docs.github.com/en/actions", "source": "GitHub" },
+    { "title": "KodeKloud Practice", "type": "Practice", "link": "https://kodekloud.com/", "source": "KodeKloud" }
+  ],
+  "cybersecurity": [
+    { "title": "OWASP Top 10", "type": "Documentation", "link": "https://owasp.org/www-project-top-ten/", "source": "OWASP" },
+    { "title": "Hack The Box", "type": "Practice", "link": "https://www.hackthebox.com/", "source": "HTB" },
+    { "title": "TryHackMe", "type": "Practice", "link": "https://tryhackme.com/", "source": "TryHackMe" },
+    { "title": "Cybrary Free Courses", "type": "Course", "link": "https://www.cybrary.it/", "source": "Cybrary" },
+    { "title": "OverTheWire Wargames", "type": "Practice", "link": "https://overthewire.org/wargames/", "source": "OverTheWire" }
+  ],
+  "digital_marketing": [
+    { "title": "Google Digital Garage", "type": "Course", "link": "https://learndigital.withgoogle.com/digitalgarage", "source": "Google" },
+    { "title": "HubSpot Academy", "type": "Course", "link": "https://academy.hubspot.com/", "source": "HubSpot" },
+    { "title": "Moz SEO Learning Center", "type": "Documentation", "link": "https://moz.com/learn/seo", "source": "Moz" },
+    { "title": "Google Analytics Academy", "type": "Course", "link": "https://analytics.google.com/analytics/academy/", "source": "Google" },
+    { "title": "Canva Design School", "type": "Course", "link": "https://www.canva.com/designschool/", "source": "Canva" }
+  ],
+  "hr_manager": [
+    { "title": "SHRM Learning System", "type": "Course", "link": "https://www.shrm.org/certification/learning/Pages/default.aspx", "source": "SHRM" },
+    { "title": "AIHR Academy", "type": "Course", "link": "https://www.aihr.com/", "source": "AIHR" },
+    { "title": "HR Bartender Blog", "type": "Documentation", "link": "https://www.hrbartender.com/", "source": "Community" },
+    { "title": "Coursera HR Courses", "type": "Course", "link": "https://www.coursera.org/browse/business/human-resource-management", "source": "Coursera" }
+  ],
+  "product_manager": [
+    { "title": "Product School Resources", "type": "Course", "link": "https://productschool.com/resources", "source": "Product School" },
+    { "title": "Mind the Product", "type": "Documentation", "link": "https://www.mindtheproduct.com/", "source": "Community" },
+    { "title": "Strategyzer Tools", "type": "Tools", "link": "https://www.strategyzer.com/", "source": "Strategyzer" },
+    { "title": "Product Manager HQ", "type": "Documentation", "link": "https://www.productmanagerhq.com/", "source": "PMHQ" }
+  ],
+  "ui_ux_design": [
+    { "title": "Figma Learn", "type": "Course", "link": "https://www.figma.com/resources/learn-design/", "source": "Figma" },
+    { "title": "Laws of UX", "type": "Documentation", "link": "https://lawsofux.com/", "source": "Community" },
+    { "title": "Nielsen Norman Group", "type": "Documentation", "link": "https://www.nngroup.com/articles/", "source": "NN/g" },
+    { "title": "Daily UI Challenge", "type": "Practice", "link": "https://www.dailyui.co/", "source": "DailyUI" },
+    { "title": "Google UX Design Certificate", "type": "Course", "link": "https://grow.google/certificates/ux-design/", "source": "Google" }
+  ],
+  "_default": [
+    { "title": "coursera.org", "type": "Course", "link": "https://www.coursera.org/", "source": "Coursera" },
+    { "title": "Khan Academy", "type": "Course", "link": "https://www.khanacademy.org/", "source": "Khan Academy" },
+    { "title": "Wikipedia", "type": "Documentation", "link": "https://www.wikipedia.org/", "source": "Wikipedia" },
+    { "title": "roadmap.sh", "type": "Documentation", "link": "https://roadmap.sh/", "source": "roadmap.sh" },
+    { "title": "freeCodeCamp", "type": "Practice", "link": "https://www.freecodecamp.org/", "source": "freeCodeCamp" }
+  ]
+}

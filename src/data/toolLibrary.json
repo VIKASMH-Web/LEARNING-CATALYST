@@ -1,0 +1,31 @@
+{
+  "development": [
+    { "name": "VS Code", "description": "Free code editor by Microsoft", "link": "https://code.visualstudio.com/", "category": "Editor", "tags": ["python", "javascript", "java", "react", "nodejs", "frontend", "backend", "fullstack"] },
+    { "name": "Git", "description": "Version control system", "link": "https://git-scm.com/", "category": "Version Control", "tags": ["all"] },
+    { "name": "GitHub", "description": "Code hosting and collaboration", "link": "https://github.com/", "category": "Platform", "tags": ["all"] },
+    { "name": "Postman", "description": "API development and testing tool", "link": "https://www.postman.com/", "category": "API", "tags": ["backend", "fullstack", "nodejs", "java"] },
+    { "name": "Docker", "description": "Containerization platform", "link": "https://www.docker.com/", "category": "DevOps", "tags": ["devops", "backend", "cloud", "fullstack"] }
+  ],
+  "data": [
+    { "name": "Jupyter Notebook", "description": "Interactive computing environment", "link": "https://jupyter.org/", "category": "IDE", "tags": ["python", "data_science", "ai_ml"] },
+    { "name": "Kaggle", "description": "Data science competition platform", "link": "https://www.kaggle.com/", "category": "Platform", "tags": ["data_science", "ai_ml"] },
+    { "name": "Google Colab", "description": "Free cloud Jupyter notebooks", "link": "https://colab.research.google.com/", "category": "IDE", "tags": ["python", "data_science", "ai_ml"] },
+    { "name": "Tableau Public", "description": "Free data visualization tool", "link": "https://public.tableau.com/", "category": "Visualization", "tags": ["data_science", "business_analyst"] }
+  ],
+  "design": [
+    { "name": "Figma", "description": "Collaborative design tool", "link": "https://www.figma.com/", "category": "Design", "tags": ["ui_ux_design", "frontend", "product_manager"] },
+    { "name": "Canva", "description": "Graphic design platform", "link": "https://www.canva.com/", "category": "Design", "tags": ["digital_marketing", "content_writing", "ui_ux_design"] },
+    { "name": "Adobe Color", "description": "Color palette generator", "link": "https://color.adobe.com/", "category": "Design", "tags": ["ui_ux_design", "frontend"] }
+  ],
+  "productivity": [
+    { "name": "Notion", "description": "All-in-one workspace", "link": "https://www.notion.so/", "category": "Productivity", "tags": ["all"] },
+    { "name": "Trello", "description": "Kanban-style project management", "link": "https://trello.com/", "category": "Project Management", "tags": ["project_manager", "product_manager"] },
+    { "name": "Google Analytics", "description": "Web analytics service", "link": "https://analytics.google.com/", "category": "Analytics", "tags": ["digital_marketing", "product_manager"] },
+    { "name": "Grammarly", "description": "Writing assistant", "link": "https://www.grammarly.com/", "category": "Writing", "tags": ["content_writing", "hr_manager"] }
+  ],
+  "security": [
+    { "name": "Burp Suite Community", "description": "Web security testing", "link": "https://portswigger.net/burp/communitydownload", "category": "Security", "tags": ["cybersecurity"] },
+    { "name": "Wireshark", "description": "Network protocol analyzer", "link": "https://www.wireshark.org/", "category": "Security", "tags": ["cybersecurity"] },
+    { "name": "Nmap", "description": "Network security scanner", "link": "https://nmap.org/", "category": "Security", "tags": ["cybersecurity"] }
+  ]
+}

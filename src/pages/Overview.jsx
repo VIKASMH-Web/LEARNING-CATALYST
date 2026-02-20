@@ -223,7 +223,7 @@ const Overview = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                          <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Current Roadmaps</h3>
-                         <Link to="/roadmaps" style={{ fontSize: '0.8rem', color: 'var(--accent-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                         <Link to="/learning-hub" style={{ fontSize: '0.8rem', color: 'var(--accent-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
                             View All <ArrowRight size={14} />
                          </Link>
                     </div>
@@ -250,7 +250,7 @@ const Overview = () => {
                                 Based on your progress ({recommendedRoadmap.percentage}%), continue to the next module.
                             </p>
                         </div>
-                        <Link to="/roadmaps" style={{ 
+                        <Link to="/learning-hub" style={{ 
                             alignSelf: 'flex-start', padding: '0.5rem 1rem', 
                             background: 'white', color: '#4f46e5', border: 'none', 
                             borderRadius: '20px', fontWeight: 700, fontSize: '0.85rem',
@@ -408,9 +408,6 @@ const Overview = () => {
                                             <button 
                                                 onClick={() => {
                                                     // This would ideally open the Sidebar payment modal or route to a pro page
-                                                    // For now, we simulate by closing this and showing an alert or similar
-                                                    // The sidebar controls the payment modal state, so we can't trigger it directly easily without context
-                                                    // But we can just show a button that says "Go to Sidebar to Upgrade" or similar
                                                     alert("Please use the 'Upgrade' button in the sidebar to unlock Premium features!");
                                                     setShowReport(false);
                                                 }}

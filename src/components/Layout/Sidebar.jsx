@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Layout, BookOpen, Code, Clock, User, Target, Mic, HelpCircle, X, CheckCircle, Crown
+  Layout, BookOpen, Code, Clock, User, Target, Mic, X, CheckCircle, Crown, Search
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useFocus } from '../../context/FocusContext';
 import { requestNotificationPermission, notifyProUpgrade } from '../../utils/notifications';
 
 const Sidebar = () => {
   const { logout, user } = useAuth();
+  const { isRunning, formattedTime } = useFocus();
   const [showPayment, setShowPayment] = useState(false);
   const [utr, setUtr] = useState('');
   const [verifying, setVerifying] = useState(false);
@@ -35,7 +37,7 @@ const Sidebar = () => {
 
   const menuItems = [
     { path: '/', name: 'Dashboard', icon: Layout },
-    { path: '/roadmaps', name: 'Learning Hub', icon: BookOpen },
+    { path: '/learning-hub', name: 'Learning Hub', icon: Search },
     { path: '/career-planner', name: 'Career Planner', icon: Target },
     { path: '/code-engine', name: 'Code Engine', icon: Code },
     { path: '/mock-interview', name: 'Mock Interview', icon: Mic },
@@ -106,7 +108,12 @@ const Sidebar = () => {
                   <>
                      <item.icon size={18} color={isActive ? "#a78bfa" : "var(--icon-color)"} strokeWidth={isActive ? 2.5 : 2} />
                      <span>{item.name}</span>
-                     {isActive && (
+                     {item.path === '/focus' && isRunning && (
+                        <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: '#34d399', fontWeight: 600, fontVariantNumeric: 'tabular-nums', background: 'rgba(52,211,153,0.1)', padding: '2px 6px', borderRadius: 4 }}>
+                          {formattedTime}
+                        </span>
+                     )}
+                     {isActive && !(item.path === '/focus' && isRunning) && (
                        <div style={{
                          position: 'absolute', right: '12px', width: '6px', height: '6px',
                          borderRadius: '50%', background: '#7c3aed'
@@ -120,21 +127,6 @@ const Sidebar = () => {
 
           {/* Bottom Section */}
           <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            {/* Help Center */}
-            <NavLink
-              to="/help"
-              style={({ isActive }) => ({
-                display: 'flex', alignItems: 'center', gap: '12px',
-                padding: '0.625rem 1rem', borderRadius: '10px',
-                textDecoration: 'none',
-                color: isActive ? '#a78bfa' : 'var(--text-secondary)',
-                background: isActive ? 'rgba(124, 58, 237, 0.1)' : 'transparent',
-                fontSize: '0.9rem', fontWeight: 500, transition: 'all 0.15s ease',
-              })}
-            >
-              <HelpCircle size={18} />
-              <span>Help Center</span>
-            </NavLink>
 
             {/* Pro Plan Card */}
             {isPro ? (
@@ -154,7 +146,7 @@ const Sidebar = () => {
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#a78bfa', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    Pro Premium Member
+                    Premium Member
                     <span style={{
                       padding: '2px 6px', borderRadius: '6px',
                       background: 'rgba(80,250,123,0.15)', color: '#50fa7b',
@@ -173,7 +165,7 @@ const Sidebar = () => {
                 background: 'var(--bg-card)', border: '1px solid var(--border-color)',
                 display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '0.75rem'
               }}>
-                <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-primary)' }}>Pro Plan</div>
+                <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-primary)' }}>Premium Plan</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', lineHeight: 1.4 }}>
                   Get unlimited AI mentoring and interview practice.
                 </div>
@@ -231,7 +223,7 @@ const Sidebar = () => {
                 <div style={{ textAlign: 'center', padding: '2rem 0' }}>
                   <CheckCircle size={56} color="#50fa7b" style={{ marginBottom: '1rem' }} />
                   <h2 style={{ fontSize: '1.4rem', color: '#50fa7b', marginBottom: '0.5rem' }}>Payment Verified!</h2>
-                  <p style={{ color: '#a1a1aa', fontSize: '0.9rem' }}>Pro Plan unlocked. Enjoy unlimited features!</p>
+                  <p style={{ color: '#a1a1aa', fontSize: '0.9rem' }}>Premium Plan unlocked. Enjoy unlimited features!</p>
                 </div>
               ) : (
                 <>

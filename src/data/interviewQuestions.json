@@ -1,0 +1,78 @@
+{
+  "backend_developer": [
+    { "q": "Explain the difference between REST and GraphQL.", "difficulty": "medium", "domain": "api", "followUp": { "easy": "What does REST stand for?", "hard": "How would you implement pagination in GraphQL?" }},
+    { "q": "What is the difference between SQL and NoSQL databases?", "difficulty": "easy", "domain": "database", "followUp": { "easy": "Name two SQL databases.", "hard": "When would you choose a document store over a relational DB?" }},
+    { "q": "How does indexing work in databases?", "difficulty": "medium", "domain": "database", "followUp": { "easy": "What is a primary key?", "hard": "Explain B-tree vs Hash indexing trade-offs." }},
+    { "q": "What is caching and when should you use it?", "difficulty": "medium", "domain": "architecture", "followUp": { "easy": "Name a popular caching tool.", "hard": "Explain cache invalidation strategies." }},
+    { "q": "Explain the concept of microservices architecture.", "difficulty": "hard", "domain": "architecture", "followUp": { "easy": "What is a monolithic architecture?", "hard": "How do you handle distributed transactions in microservices?" }},
+    { "q": "What is the event loop in Node.js?", "difficulty": "medium", "domain": "nodejs", "followUp": { "easy": "Is Node.js single-threaded?", "hard": "How does libuv handle I/O operations?" }},
+    { "q": "How do you handle authentication in a REST API?", "difficulty": "medium", "domain": "security", "followUp": { "easy": "What is a JWT?", "hard": "Compare OAuth 2.0 flows for different client types." }},
+    { "q": "What is rate limiting and why is it important?", "difficulty": "easy", "domain": "security", "followUp": { "easy": "What happens when rate limit is exceeded?", "hard": "Implement a token bucket algorithm." }},
+    { "q": "Describe the difference between horizontal and vertical scaling.", "difficulty": "medium", "domain": "architecture", "followUp": { "easy": "Which is more expensive?", "hard": "How would you design a system that auto-scales?" }},
+    { "q": "What are design patterns? Name three you've used.", "difficulty": "medium", "domain": "design", "followUp": { "easy": "What is the Singleton pattern?", "hard": "When would Observer pattern be better than Pub/Sub?" }}
+  ],
+  "frontend_developer": [
+    { "q": "What is the Virtual DOM and how does React use it?", "difficulty": "medium", "domain": "react", "followUp": { "easy": "What is the real DOM?", "hard": "How does React's reconciliation algorithm work?" }},
+    { "q": "Explain the difference between CSS Grid and Flexbox.", "difficulty": "easy", "domain": "css", "followUp": { "easy": "When would you use Flexbox?", "hard": "Design a responsive dashboard layout using both." }},
+    { "q": "What are React Hooks? Explain useState and useEffect.", "difficulty": "medium", "domain": "react", "followUp": { "easy": "What did Hooks replace?", "hard": "Explain the useEffect cleanup function and stale closure issues." }},
+    { "q": "How does the browser render a webpage?", "difficulty": "hard", "domain": "browser", "followUp": { "easy": "What is the DOM?", "hard": "Explain the critical rendering path and how to optimize it." }},
+    { "q": "What is a closure in JavaScript?", "difficulty": "medium", "domain": "javascript", "followUp": { "easy": "What is scope?", "hard": "Create a function factory using closures." }},
+    { "q": "How do you optimize the performance of a React application?", "difficulty": "hard", "domain": "react", "followUp": { "easy": "What is React.memo?", "hard": "Explain concurrent rendering and Suspense." }},
+    { "q": "What is the event delegation pattern?", "difficulty": "medium", "domain": "javascript", "followUp": { "easy": "What is event bubbling?", "hard": "How would you implement a virtual scroll?" }},
+    { "q": "Explain the concept of responsive design.", "difficulty": "easy", "domain": "css", "followUp": { "easy": "What is a media query?", "hard": "How would you handle responsive images with art direction?" }},
+    { "q": "What is state management and when do you need it?", "difficulty": "medium", "domain": "architecture", "followUp": { "easy": "What is local state?", "hard": "Compare Redux, Zustand, and Recoil approaches." }},
+    { "q": "Describe the same-origin policy and CORS.", "difficulty": "medium", "domain": "security", "followUp": { "easy": "What is an origin?", "hard": "How would you implement a CORS proxy?" }}
+  ],
+  "data_scientist": [
+    { "q": "What is the difference between supervised and unsupervised learning?", "difficulty": "easy", "domain": "ml", "followUp": { "easy": "Give an example of each.", "hard": "When would you use semi-supervised learning?" }},
+    { "q": "Explain bias-variance tradeoff.", "difficulty": "medium", "domain": "ml", "followUp": { "easy": "What is overfitting?", "hard": "How does regularization address this tradeoff?" }},
+    { "q": "What is the Central Limit Theorem?", "difficulty": "medium", "domain": "statistics", "followUp": { "easy": "What is a normal distribution?", "hard": "How does CLT apply to A/B testing?" }},
+    { "q": "How would you handle missing data in a dataset?", "difficulty": "medium", "domain": "data", "followUp": { "easy": "What is imputation?", "hard": "Compare MICE vs KNN imputation for multivariate data." }},
+    { "q": "Explain the concept of feature engineering.", "difficulty": "medium", "domain": "ml", "followUp": { "easy": "What is a feature?", "hard": "How would you create features from time-series data?" }},
+    { "q": "What evaluation metrics would you use for a classification problem?", "difficulty": "medium", "domain": "ml", "followUp": { "easy": "What is accuracy?", "hard": "When is F1-score more appropriate than AUC-ROC?" }},
+    { "q": "What is gradient descent? Explain its variants.", "difficulty": "hard", "domain": "ml", "followUp": { "easy": "What is a learning rate?", "hard": "Explain Adam optimizer and learning rate scheduling." }},
+    { "q": "What is a p-value and how do you interpret it?", "difficulty": "medium", "domain": "statistics", "followUp": { "easy": "What is a hypothesis test?", "hard": "Explain the problem of multiple comparisons." }},
+    { "q": "Describe a data pipeline you would build for a ML project.", "difficulty": "hard", "domain": "engineering", "followUp": { "easy": "What tools would you use?", "hard": "How would you handle data drift in production?" }},
+    { "q": "Explain the difference between L1 and L2 regularization.", "difficulty": "hard", "domain": "ml", "followUp": { "easy": "What is regularization?", "hard": "Why does L1 produce sparse solutions?" }}
+  ],
+  "hr": [
+    { "q": "How do you handle a conflict between two team members?", "difficulty": "medium", "domain": "behavioral", "followUp": { "easy": "What is conflict resolution?", "hard": "Describe a situation where you had to mediate a serious workplace dispute." }},
+    { "q": "What is your approach to conducting performance reviews?", "difficulty": "medium", "domain": "management", "followUp": { "easy": "What is a KPI?", "hard": "How do you handle a consistently underperforming employee?" }},
+    { "q": "Describe your experience with employee onboarding.", "difficulty": "easy", "domain": "process", "followUp": { "easy": "What should an onboarding checklist include?", "hard": "How would you measure onboarding effectiveness?" }},
+    { "q": "How do you ensure diversity and inclusion in hiring?", "difficulty": "medium", "domain": "dei", "followUp": { "easy": "What is unconscious bias?", "hard": "Design a DEI strategy for a 500-person company." }},
+    { "q": "What employment laws should every HR professional know?", "difficulty": "medium", "domain": "compliance", "followUp": { "easy": "What is wrongful termination?", "hard": "How do you handle a harassment investigation?" }},
+    { "q": "How do you manage employee retention?", "difficulty": "medium", "domain": "strategy", "followUp": { "easy": "What is employee turnover?", "hard": "Design a retention program for a high-attrition department." }},
+    { "q": "Tell me about a time you had to implement a difficult policy change.", "difficulty": "hard", "domain": "behavioral", "followUp": { "easy": "How do you communicate change?", "hard": "How would you handle union negotiations?" }},
+    { "q": "What HRIS systems have you worked with?", "difficulty": "easy", "domain": "tools", "followUp": { "easy": "What is an HRIS?", "hard": "How would you evaluate and implement a new HRIS?" }}
+  ],
+  "product_manager": [
+    { "q": "How do you prioritize features for a product?", "difficulty": "medium", "domain": "strategy", "followUp": { "easy": "What is a feature request?", "hard": "Compare RICE, KANO, and weighted scoring frameworks." }},
+    { "q": "Walk me through how you would launch a new product.", "difficulty": "hard", "domain": "strategy", "followUp": { "easy": "What is a go-to-market strategy?", "hard": "How do you handle a product launch that fails to meet targets?" }},
+    { "q": "What is a PRD and what should it contain?", "difficulty": "easy", "domain": "documentation", "followUp": { "easy": "What is a user story?", "hard": "How do you write PRDs for platform/infrastructure features?" }},
+    { "q": "How do you measure product success?", "difficulty": "medium", "domain": "metrics", "followUp": { "easy": "What is a KPI?", "hard": "Design a metrics framework for a two-sided marketplace." }},
+    { "q": "Describe a time you had to make a decision with incomplete data.", "difficulty": "hard", "domain": "behavioral", "followUp": { "easy": "What is data-driven decision making?", "hard": "How do you balance intuition with data?" }},
+    { "q": "How do you handle disagreements with engineering teams?", "difficulty": "medium", "domain": "behavioral", "followUp": { "easy": "What is stakeholder management?", "hard": "Describe a time technical constraints changed your product vision." }},
+    { "q": "What is an MVP and when should you launch one?", "difficulty": "easy", "domain": "strategy", "followUp": { "easy": "What is a prototype?", "hard": "How do you decide between an MVP and a pilot program?" }},
+    { "q": "How do you conduct user research?", "difficulty": "medium", "domain": "research", "followUp": { "easy": "What is a user persona?", "hard": "Compare qualitative and quantitative research methods." }}
+  ],
+  "digital_marketing": [
+    { "q": "How would you create a digital marketing strategy for a new product?", "difficulty": "medium", "domain": "strategy", "followUp": { "easy": "What channels would you consider?", "hard": "How do you allocate budget across channels with different attribution windows?" }},
+    { "q": "Explain SEO and its key components.", "difficulty": "easy", "domain": "seo", "followUp": { "easy": "What is a keyword?", "hard": "How do you build a programmatic SEO strategy at scale?" }},
+    { "q": "What metrics do you track for a social media campaign?", "difficulty": "medium", "domain": "social", "followUp": { "easy": "What is engagement rate?", "hard": "How do you attribute conversions from organic social?" }},
+    { "q": "Describe A/B testing in marketing.", "difficulty": "medium", "domain": "analytics", "followUp": { "easy": "What is a control group?", "hard": "How do you determine sample size for statistical significance?" }},
+    { "q": "How do you handle a campaign that is underperforming?", "difficulty": "hard", "domain": "strategy", "followUp": { "easy": "What would you check first?", "hard": "Walk me through a systematic optimization process." }},
+    { "q": "What's the difference between organic and paid marketing?", "difficulty": "easy", "domain": "general", "followUp": { "easy": "Give an example of each.", "hard": "How do you build a balanced organic + paid strategy?" }},
+    { "q": "How do you measure ROI of content marketing?", "difficulty": "hard", "domain": "content", "followUp": { "easy": "What is content marketing?", "hard": "Set up a multi-touch attribution model for content." }},
+    { "q": "What email marketing best practices do you follow?", "difficulty": "medium", "domain": "email", "followUp": { "easy": "What is open rate?", "hard": "How do you design an email re-engagement sequence?" }}
+  ],
+  "general": [
+    { "q": "Tell me about yourself.", "difficulty": "easy", "domain": "behavioral", "followUp": { "easy": "What are your strengths?", "hard": "How does your unique background make you the best candidate?" }},
+    { "q": "Why do you want this role?", "difficulty": "easy", "domain": "behavioral", "followUp": { "easy": "What interests you about our company?", "hard": "How does this role align with your 5-year plan?" }},
+    { "q": "Describe a challenging project you worked on.", "difficulty": "medium", "domain": "behavioral", "followUp": { "easy": "What was the outcome?", "hard": "What would you do differently if given the chance?" }},
+    { "q": "How do you handle tight deadlines?", "difficulty": "medium", "domain": "behavioral", "followUp": { "easy": "Give an example.", "hard": "How do you communicate to stakeholders when deadlines are at risk?" }},
+    { "q": "Where do you see yourself in 5 years?", "difficulty": "easy", "domain": "behavioral", "followUp": { "easy": "What skills do you want to develop?", "hard": "How does this position contribute to that vision?" }},
+    { "q": "Tell me about a time you failed.", "difficulty": "hard", "domain": "behavioral", "followUp": { "easy": "What did you learn?", "hard": "How did this failure change your approach to similar situations?" }},
+    { "q": "How do you stay updated with industry trends?", "difficulty": "easy", "domain": "behavioral", "followUp": { "easy": "What sources do you follow?", "hard": "How do you evaluate and apply new knowledge?" }},
+    { "q": "Describe your ideal work environment.", "difficulty": "easy", "domain": "behavioral", "followUp": { "easy": "Do you prefer remote or in-office?", "hard": "How do you adapt to work environments that don't match your ideal?" }}
+  ]
+}

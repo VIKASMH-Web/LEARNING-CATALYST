@@ -55,12 +55,12 @@ export const sendNotification = (title, options = {}) => {
 };
 
 /**
- * Notify on Pro Plan upgrade
+ * Notify on Premium Plan upgrade
  */
 export const notifyProUpgrade = () => {
-    sendNotification('🎉 Pro Plan Activated!', {
+    sendNotification('🎉 Premium Plan Activated!', {
         body: 'You now have unlimited AI mentoring and interview practice.',
-        tag: 'pro-upgrade',
+        tag: 'premium-upgrade',
     });
 };
 
