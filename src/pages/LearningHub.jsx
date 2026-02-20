@@ -358,7 +358,7 @@ const LearningHub = () => {
                     </div>
 
                     {/* Topics */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10, marginBottom: 20 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10 }}>
                       {searchResult.roadmap.stages[activeStage].topics.map((topic, j) => (
                         <motion.div
                           key={j}
@@ -378,45 +378,6 @@ const LearningHub = () => {
                         </motion.div>
                       ))}
                     </div>
-
-                    {/* Stage Resources */}
-                    {searchResult.roadmap.stages[activeStage].resources && searchResult.roadmap.stages[activeStage].resources.length > 0 && (
-                      <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                        <h4 style={{ fontSize: '0.9rem', color: '#a1a1aa', fontWeight: 600, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <BookOpen size={16} color="#7c3aed" /> Stage Specific Resources
-                        </h4>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
-                          {searchResult.roadmap.stages[activeStage].resources.map((res, j) => (
-                            <a 
-                              key={j} 
-                              href={res.link} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              style={{
-                                padding: '12px 16px', borderRadius: 10,
-                                background: 'rgba(255,255,255,0.02)',
-                                border: '1px solid rgba(255,255,255,0.06)',
-                                textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: 4,
-                                transition: 'all 0.2s',
-                              }}
-                              onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; }}
-                              onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; }}
-                            >
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#f4f4f5', lineHeight: 1.4 }}>{res.title}</span>
-                                <ExternalLink size={14} color="#6b7280" />
-                              </div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                <span style={{ padding: '2px 6px', borderRadius: 4, background: 'rgba(124,58,237,0.1)', color: '#a78bfa', fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase' }}>
-                                  {res.type}
-                                </span>
-                                <span style={{ fontSize: '0.75rem', color: '#9ca3af' }}>{res.source}</span>
-                              </div>
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-                    )}
 
                     {/* Stage Progress Hint */}
                     <div style={{ marginTop: 20, padding: '12px 16px', borderRadius: 10, background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.12)', display: 'flex', alignItems: 'center', gap: 10 }}>

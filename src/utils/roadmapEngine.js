@@ -91,39 +91,6 @@ export function matchDomainKey(query) {
 // ============================
 // GENERATE ROADMAP
 // ============================
-function generateStageResources(query, stageTitle, topics) {
-  const q = encodeURIComponent(query);
-  const topic = encodeURIComponent(topics && topics.length > 0 ? topics[0] : stageTitle);
-  const capQ = capitalize(query);
-
-  return [
-    {
-      title: `${capQ} ${topics[0] || stageTitle} - Official Docs`,
-      source: 'Official Documentation',
-      type: 'Documentation',
-      link: `https://devdocs.io/search?q=${topic}`
-    },
-    {
-      title: `${capQ}: ${stageTitle} Handwritten Notes`,
-      source: 'GitHub Repositories',
-      type: 'Notes',
-      link: `https://github.com/search?q=${q}+${topic}+notes&type=repositories`
-    },
-    {
-      title: `${stageTitle} Cheatsheet & Reference`,
-      source: 'PDF Search',
-      type: 'Cheatsheet',
-      link: `https://www.google.com/search?q=${q}+${topic}+cheatsheet+filetype:pdf`
-    },
-    {
-      title: `Practice ${stageTitle}`,
-      source: 'Interactive Platform',
-      type: 'Practice',
-      link: `https://roadmap.sh/search?q=${q}+${topic}`
-    }
-  ];
-}
-
 export function generateRoadmap(query) {
   const type = detectDomainType(query);
   const domainKey = matchDomainKey(query);
@@ -173,16 +140,11 @@ export function generateRoadmap(query) {
     }
   }
   
-  const enhancedStages = roadmap.stages.map((stage) => ({
-    ...stage,
-    resources: generateStageResources(query, stage.title, stage.topics || [])
-  }));
-
   return {
     label,
     type,
     domainKey: domainKey || lower.replace(/\s+/g, '_'),
-    stages: enhancedStages,
+    stages: roadmap.stages,
     query: query
   };
 }
@@ -191,34 +153,48 @@ export function generateRoadmap(query) {
 // GET RESOURCES FOR DOMAIN
 // ============================
 export function getResourcesForDomain(domainKey, query = '') {
-  // Try exact match
-  if (resourceDatabase[domainKey]) {
-    return resourceDatabase[domainKey];
-  }
-  
-  // Try partial match
-  for (const key of Object.keys(resourceDatabase)) {
-    if (domainKey.includes(key) || key.includes(domainKey)) {
-      return resourceDatabase[key];
+  const searchQuery = query || domainKey.replace(/_/g, ' ');
+  const q = encodeURIComponent(searchQuery);
+  const capQ = capitalize(searchQuery);
+
+  return [
+    {
+      title: `${capQ} Official Documentation`,
+      source: 'Official Docs & DevDocs',
+      type: 'Documentation',
+      link: `https://devdocs.io/search?q=${q}`
+    },
+    {
+      title: `${capQ} Developer Roadmap`,
+      source: 'roadmap.sh',
+      type: 'Roadmap',
+      link: `https://roadmap.sh/search?q=${q}`
+    },
+    {
+      title: `${capQ} Handwritten Notes & Repos`,
+      source: 'GitHub',
+      type: 'Notes',
+      link: `https://github.com/search?q=${q}+handwritten+notes&type=repositories`
+    },
+    {
+      title: `${capQ} Free Text Tutorials & Articles`,
+      source: 'freeCodeCamp',
+      type: 'Tutorial',
+      link: `https://www.freecodecamp.org/news/search/?query=${q}`
+    },
+    {
+      title: `${capQ} Cheatsheet (PDF)`,
+      source: 'Google Search',
+      type: 'Cheatsheet',
+      link: `https://www.google.com/search?q=${q}+cheatsheet+filetype:pdf`
+    },
+    {
+      title: `${capQ} Video Crash Course`,
+      source: 'YouTube',
+      type: 'Video',
+      link: `https://www.youtube.com/results?search_query=${q}+crash+course+full+tutorial`
     }
-  }
-  
-  const defaults = resourceDatabase['_default'];
-  if (!query) return defaults;
-  
-  const q = encodeURIComponent(query);
-  const capQ = capitalize(query);
-  
-  return defaults.map(r => {
-    let url = r.link;
-    let title = r.title;
-    if (r.source === 'Coursera') { url = `https://www.coursera.org/search?query=${q}`; title = `${capQ} on Coursera`; }
-    else if (r.source === 'Khan Academy') { url = `https://www.khanacademy.org/search?page_search_query=${q}`; title = `${capQ} on Khan Academy`; }
-    else if (r.source === 'Wikipedia') { url = `https://en.wikipedia.org/wiki/Special:Search?search=${q}`; title = `${capQ} on Wikipedia`; }
-    else if (r.source === 'roadmap.sh') { url = `https://roadmap.sh/search?q=${q}`; title = `${capQ} on roadmap.sh`; }
-    else if (r.source === 'freeCodeCamp') { url = `https://www.freecodecamp.org/news/search/?query=${q}`; title = `${capQ} on freeCodeCamp`; }
-    return { ...r, link: url, title: title };
-  });
+  ];
 }
 
 // ============================
