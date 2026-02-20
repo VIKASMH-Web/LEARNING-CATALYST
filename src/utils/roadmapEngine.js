@@ -91,6 +91,39 @@ export function matchDomainKey(query) {
 // ============================
 // GENERATE ROADMAP
 // ============================
+function generateStageResources(query, stageTitle, topics) {
+  const q = encodeURIComponent(query);
+  const topic = encodeURIComponent(topics && topics.length > 0 ? topics[0] : stageTitle);
+  const capQ = capitalize(query);
+
+  return [
+    {
+      title: `${capQ} ${topics[0] || stageTitle} - Official Docs`,
+      source: 'Official Documentation',
+      type: 'Documentation',
+      link: `https://devdocs.io/search?q=${topic}`
+    },
+    {
+      title: `${capQ}: ${stageTitle} Handwritten Notes`,
+      source: 'GitHub Repositories',
+      type: 'Notes',
+      link: `https://github.com/search?q=${q}+${topic}+notes&type=repositories`
+    },
+    {
+      title: `${stageTitle} Cheatsheet & Reference`,
+      source: 'PDF Search',
+      type: 'Cheatsheet',
+      link: `https://www.google.com/search?q=${q}+${topic}+cheatsheet+filetype:pdf`
+    },
+    {
+      title: `Practice ${stageTitle}`,
+      source: 'Interactive Platform',
+      type: 'Practice',
+      link: `https://roadmap.sh/search?q=${q}+${topic}`
+    }
+  ];
+}
+
 export function generateRoadmap(query) {
   const type = detectDomainType(query);
   const domainKey = matchDomainKey(query);
@@ -140,11 +173,16 @@ export function generateRoadmap(query) {
     }
   }
   
+  const enhancedStages = roadmap.stages.map((stage) => ({
+    ...stage,
+    resources: generateStageResources(query, stage.title, stage.topics || [])
+  }));
+
   return {
     label,
     type,
     domainKey: domainKey || lower.replace(/\s+/g, '_'),
-    stages: roadmap.stages,
+    stages: enhancedStages,
     query: query
   };
 }
