@@ -152,7 +152,7 @@ export function generateRoadmap(query) {
 // ============================
 // GET RESOURCES FOR DOMAIN
 // ============================
-export function getResourcesForDomain(domainKey) {
+export function getResourcesForDomain(domainKey, query = '') {
   // Try exact match
   if (resourceDatabase[domainKey]) {
     return resourceDatabase[domainKey];
@@ -165,7 +165,22 @@ export function getResourcesForDomain(domainKey) {
     }
   }
   
-  return resourceDatabase['_default'];
+  const defaults = resourceDatabase['_default'];
+  if (!query) return defaults;
+  
+  const q = encodeURIComponent(query);
+  const capQ = capitalize(query);
+  
+  return defaults.map(r => {
+    let url = r.link;
+    let title = r.title;
+    if (r.source === 'Coursera') { url = `https://www.coursera.org/search?query=${q}`; title = `${capQ} on Coursera`; }
+    else if (r.source === 'Khan Academy') { url = `https://www.khanacademy.org/search?page_search_query=${q}`; title = `${capQ} on Khan Academy`; }
+    else if (r.source === 'Wikipedia') { url = `https://en.wikipedia.org/wiki/Special:Search?search=${q}`; title = `${capQ} on Wikipedia`; }
+    else if (r.source === 'roadmap.sh') { url = `https://roadmap.sh/search?q=${q}`; title = `${capQ} on roadmap.sh`; }
+    else if (r.source === 'freeCodeCamp') { url = `https://www.freecodecamp.org/news/search/?query=${q}`; title = `${capQ} on freeCodeCamp`; }
+    return { ...r, link: url, title: title };
+  });
 }
 
 // ============================
@@ -223,7 +238,7 @@ export function fullSearch(query) {
   if (cached) return cached;
   
   const roadmap = generateRoadmap(query);
-  const resources = getResourcesForDomain(roadmap.domainKey);
+  const resources = getResourcesForDomain(roadmap.domainKey, query);
   const tools = getToolsForDomain(roadmap.domainKey);
   
   const result = {
@@ -320,7 +335,7 @@ export function generateCareerPlan({ targetRole, currentLevel, timeAvailability,
     currentLevel,
     country: country || 'Global',
     plan,
-    resources: getResourcesForDomain(roadmap.domainKey),
+    resources: getResourcesForDomain(roadmap.domainKey, targetRole),
     tools: getToolsForDomain(roadmap.domainKey),
   };
 }
