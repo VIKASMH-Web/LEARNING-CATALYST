@@ -87,6 +87,9 @@ const SkillTreePage = () => {
   const [challengeScore, setChallengeScore] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [challengeQuestion, setChallengeQuestion] = useState(null);
+  const [challengeQuestions, setChallengeQuestions] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
   const [showInsights, setShowInsights] = useState(false);
 
@@ -251,25 +254,42 @@ const SkillTreePage = () => {
     setIsProcessing(true);
     setUserAnswer('');
     setChallengeScore(null);
+    setCurrentQuestionIndex(0);
+    setCorrectAnswersCount(0);
     
     // Simulate generation delay
     setTimeout(() => {
       setIsProcessing(false);
       const qList = CHALLENGE_BANK[selectedNode?.id];
-      let qData;
-      if (qList && qList.length > 0) {
-        qData = qList[Math.floor(Math.random() * qList.length)];
+      if (qList && qList.length >= 5) {
+        // Randomly pick 5 questions
+        const shuffled = [...qList].sort(() => 0.5 - Math.random());
+        const selected = shuffled.slice(0, 5);
+        setChallengeQuestions(selected);
+        setChallengeQuestion(selected[0]);
       } else {
-        qData = { q: "Type 'ready' to pass the general assessment.", a: "ready" };
+        const fallback = [{ q: "Type 'ready' to pass the general assessment.", a: "ready" }];
+        setChallengeQuestions(fallback);
+        setChallengeQuestion(fallback[0]);
       }
-      setChallengeQuestion(qData);
     }, 1500);
   };
 
   const submitAnswer = () => {
     if (!challengeQuestion) return;
     const isCorrect = userAnswer.toLowerCase().trim() === challengeQuestion.a.toLowerCase();
-    setChallengeScore(isCorrect ? 100 : 40);
+    
+    let currentCorrect = correctAnswersCount;
+    if (isCorrect) currentCorrect += 1;
+    setCorrectAnswersCount(currentCorrect);
+
+    if (currentQuestionIndex + 1 < challengeQuestions.length) {
+      setCurrentQuestionIndex(prev => prev + 1);
+      setChallengeQuestion(challengeQuestions[currentQuestionIndex + 1]);
+      setUserAnswer('');
+    } else {
+      setChallengeScore(Math.round((currentCorrect / challengeQuestions.length) * 100));
+    }
   };
 
   const handleCompleteChallenge = () => {
@@ -465,7 +485,7 @@ const SkillTreePage = () => {
                     </div>
                   ) : challengeScore === null ? (
                     <div>
-                      <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#a78bfa', marginBottom: '1rem' }}>AI Module Challenge</h3>
+                      <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#a78bfa', marginBottom: '1rem' }}>AI Module Challenge ({currentQuestionIndex + 1}/{challengeQuestions.length})</h3>
                       <p style={{ fontSize: '1.1rem', color: '#f8fafc', marginBottom: '2rem', lineHeight: 1.5 }}>{challengeQuestion?.q}</p>
                       
                       <input 
