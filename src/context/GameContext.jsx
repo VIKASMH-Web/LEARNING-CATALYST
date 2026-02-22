@@ -62,6 +62,33 @@ export const GameProvider = ({ children }) => {
     return parseInt(localStorage.getItem('lc_lvsScore') || '78', 10);
   });
 
+  // --- Phase 4: Career Marketplace States ---
+  const [userRole, setUserRole] = useState(() => {
+    return localStorage.getItem('lc_userRole') || 'student'; // 'student' or 'recruiter'
+  });
+
+  const [talentProfiles, setTalentProfiles] = useState(() => {
+    try {
+      const stored = localStorage.getItem('lc_talentProfiles');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [shortlist, setShortlist] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('lc_shortlist') || '[]');
+    } catch {
+      return [];
+    }
+  });
+
+  const [jobRoleFilter, setJobRoleFilter] = useState(() => {
+    return localStorage.getItem('lc_jobRoleFilter') || 'all';
+  });
+  // ------------------------------------------
+
   const [weeklyReportData, setWeeklyReportData] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('lc_weeklyReportData') || 'null');
@@ -117,7 +144,14 @@ export const GameProvider = ({ children }) => {
     localStorage.setItem('lc_lvsScore', lvsScore.toString());
     localStorage.setItem('lc_weeklyReportData', JSON.stringify(weeklyReportData));
     localStorage.setItem('lc_skillHistory', JSON.stringify(skillHistory));
-  }, [xp, streak, completedQuests, skillTreeState, skillScores, masteryLevels, isPremium, lvsScore, weeklyReportData, skillHistory]);
+    
+    // Phase 4 persistence
+    localStorage.setItem('lc_userRole', userRole);
+    if(talentProfiles) localStorage.setItem('lc_talentProfiles', JSON.stringify(talentProfiles));
+    localStorage.setItem('lc_shortlist', JSON.stringify(shortlist));
+    localStorage.setItem('lc_jobRoleFilter', jobRoleFilter);
+
+  }, [xp, streak, completedQuests, skillTreeState, skillScores, masteryLevels, isPremium, lvsScore, weeklyReportData, skillHistory, userRole, talentProfiles, shortlist, jobRoleFilter]);
 
   const addXP = (amount) => {
     setXP(prev => prev + amount);
@@ -170,6 +204,14 @@ export const GameProvider = ({ children }) => {
     lvsScore,
     weeklyReportData,
     skillHistory,
+    userRole,
+    setUserRole,
+    talentProfiles,
+    setTalentProfiles,
+    shortlist,
+    setShortlist,
+    jobRoleFilter,
+    setJobRoleFilter,
     addXP,
     updateStreak,
     completeQuest,

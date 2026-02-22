@@ -15,6 +15,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { GameProvider } from './context/GameContext';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import SkillTreePage from './pages/SkillTreePage';
+import CareerMarketplace from './pages/CareerMarketplace';
 
 // Auth Gate: shows login if not authenticated
 const AuthGate = ({ children }) => {
@@ -59,6 +60,7 @@ function App() {
                                         } />
                                         <Route path="mock-interview" element={<MockInterview />} />
                                         <Route path="skill-tree" element={<SkillTreePage />} />
+                                        <Route path="marketplace" element={<CareerMarketplace />} />
                                         <Route path="focus" element={<FocusMode />} />
                                         <Route path="profile" element={<Profile />} />
                                         <Route path="*" element={<Navigate to="/" replace />} />

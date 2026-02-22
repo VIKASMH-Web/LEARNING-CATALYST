@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Layout, BookOpen, Code, Clock, User, Target, Mic, X, CheckCircle, Crown, Search, Flame, Star, Zap, Network
+  Layout, BookOpen, Code, Clock, User, Target, Mic, X, CheckCircle, Crown, Search, Flame, Star, Zap, Network, Briefcase, Users
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useFocus } from '../../context/FocusContext';
@@ -14,7 +14,7 @@ const RAZORPAY_SCRIPT = "https://checkout.razorpay.com/v1/checkout.js";
 const Sidebar = () => {
   const { logout, user } = useAuth();
   const { isRunning, formattedTime } = useFocus();
-  const { xp, level, streak, dailyQuests, completedQuests, completeQuest, isPremium, upgradeToPremium } = useGame();
+  const { xp, level, streak, isPremium, upgradeToPremium, userRole, setUserRole } = useGame();
   const [showPayment, setShowPayment] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
@@ -23,16 +23,26 @@ const Sidebar = () => {
     requestNotificationPermission();
   }, []);
 
-  const menuItems = [
+  const studentMenuItems = [
     { path: '/', name: 'Dashboard', icon: Layout },
     { path: '/learning-hub', name: 'Learning Hub', icon: Search },
     { path: '/skill-tree', name: 'Skill Tree', icon: Network },
-    { path: '/career-planner', name: 'Career Planner', icon: Target },
-    { path: '/code-engine', name: 'Code Engine', icon: Code },
     { path: '/mock-interview', name: 'Mock Interview', icon: Mic },
+    { path: '/career-planner', name: 'Career Planner', icon: Target },
+    { path: '/marketplace', name: 'Career Marketplace', icon: Briefcase },
+    { path: '/code-engine', name: 'Code Engine', icon: Code },
     { path: '/focus', name: 'Focus Mode', icon: Clock },
-    { path: '/profile', name: 'Profile', icon: User },
   ];
+
+  const recruiterMenuItems = [
+    { path: '/marketplace', name: 'Talent Search', icon: Users },
+  ];
+
+  const menuItems = userRole === 'recruiter' ? recruiterMenuItems : studentMenuItems;
+
+  const handleRoleToggle = () => {
+     setUserRole(prev => prev === 'student' ? 'recruiter' : 'student');
+  };
 
   const handleUpgrade = () => {
     const script = document.createElement("script");
@@ -111,34 +121,56 @@ const Sidebar = () => {
             </span>
           </div>
 
-          {/* Gamification Stats */}
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '10px 12px', background: 'rgba(255,255,255,0.03)',
-            borderRadius: '12px', marginBottom: '1.5rem', border: '1px solid rgba(255,255,255,0.06)'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Gamification Stats (Only show for students) */}
+          {userRole === 'student' && (
               <div style={{
-                width: 32, height: 32, borderRadius: '8px',
-                background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'white', fontWeight: 800, fontSize: '0.85rem'
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '10px 12px', background: 'rgba(255,255,255,0.03)',
+                borderRadius: '12px', marginBottom: '1.5rem', border: '1px solid rgba(255,255,255,0.06)'
               }}>
-                L{level}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{
+                    width: 32, height: 32, borderRadius: '8px',
+                    background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: 'white', fontWeight: 800, fontSize: '0.85rem'
+                  }}>
+                    L{level}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600 }}>XP</span>
+                    <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 800 }}>{xp.toLocaleString()}</span>
+                  </div>
+                </div>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                  padding: '6px 10px', background: 'rgba(239, 68, 68, 0.1)',
+                  borderRadius: '8px', color: '#ef4444'
+                }}>
+                  <Flame size={16} fill="currentColor" />
+                  <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>{streak}</span>
+                </div>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600 }}>XP</span>
-                <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 800 }}>{xp.toLocaleString()}</span>
-              </div>
-            </div>
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: '6px',
-              padding: '6px 10px', background: 'rgba(239, 68, 68, 0.1)',
-              borderRadius: '8px', color: '#ef4444'
-            }}>
-              <Flame size={16} fill="currentColor" />
-              <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>{streak}</span>
-            </div>
+          )}
+
+          {/* Role Toggle Switch */}
+          <div style={{
+             display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0.75rem',
+             background: 'rgba(0,0,0,0.2)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '1.5rem'
+          }}>
+             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                 {userRole === 'student' ? 'Student Mode' : 'Recruiter Mode'}
+             </span>
+             <button onClick={handleRoleToggle} style={{
+                 background: userRole === 'recruiter' ? 'linear-gradient(135deg, #10b981, #059669)' : 'rgba(255,255,255,0.1)', border: 'none',
+                 width: '40px', height: '22px', borderRadius: '12px', position: 'relative', cursor: 'pointer', transition: 'all 0.3s'
+             }}>
+                 <div style={{
+                     width: '18px', height: '18px', background: 'white', borderRadius: '50%',
+                     position: 'absolute', top: '2px', left: userRole === 'recruiter' ? '20px' : '2px',
+                     transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                 }} />
+             </button>
           </div>
 
           {/* Platform Label */}
