@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Award, CheckCircle, Flame, Star, Zap, ChevronRight, User, Github, FileText, Bookmark, BookmarkCheck, LayoutDashboard } from 'lucide-react';
+import { Search, MapPin, Award, CheckCircle, Flame, Star, Zap, ChevronRight, User, Github, FileText, Bookmark, BookmarkCheck, LayoutDashboard, Lock, Users } from 'lucide-react';
 import { useGame } from '../context/GameContext';
 import { useAuth } from '../context/AuthContext';
 import PremiumModal from '../components/Shared/PremiumModal';
