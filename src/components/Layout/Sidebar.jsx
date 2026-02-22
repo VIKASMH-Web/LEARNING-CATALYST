@@ -25,6 +25,7 @@ const Sidebar = () => {
 
   const studentMenuItems = [
     { path: '/', name: 'Dashboard', icon: Layout },
+    { path: '/profile', name: 'Profile', icon: User },
     { path: '/learning-hub', name: 'Learning Hub', icon: Search },
     { path: '/skill-tree', name: 'Skill Tree', icon: Network },
     { path: '/mock-interview', name: 'Mock Interview', icon: Mic },
@@ -32,7 +33,6 @@ const Sidebar = () => {
     { path: '/marketplace', name: 'Career Marketplace', icon: Briefcase },
     { path: '/code-engine', name: 'Code Engine', icon: Code },
     { path: '/focus', name: 'Focus Mode', icon: Clock },
-    { path: '/profile', name: 'Profile', icon: User },
   ];
 
   const recruiterMenuItems = [
