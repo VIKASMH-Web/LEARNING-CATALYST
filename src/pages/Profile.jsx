@@ -487,6 +487,7 @@ const Profile = () => {
                             )}
                         </div>
                     </div>
+
                     {/* Cognitive Performance */}
                     <div className="glass-card" style={{ padding: '2rem', minHeight: '280px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
@@ -504,6 +505,7 @@ const Profile = () => {
                             </ResponsiveContainer>
                         </div>
                     </div>
+                </div>
 
                 {/* RIGHT COLUMN */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
