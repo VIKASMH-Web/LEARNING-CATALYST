@@ -136,15 +136,114 @@ const SkillTreePage = () => {
   };
 
   const CHALLENGE_BANK = {
-    'js_basics': { q: "What keyword declares a block-scoped mutable variable in JS?", a: "let" },
-    'js_async': { q: "What JS object represents the eventual completion of an asynchronous operation?", a: "promise" },
-    'js_adv': { q: "What function concept allows maintaining access to its lexical scope even when executing outside?", a: "closure" },
-    'backend_core': { q: "Which HTTP method is traditionally used for creating a new resource?", a: "post" },
-    'node_js': { q: "What is the name of Node's package manager?", a: "npm" },
-    'databases': { q: "What language is used to query relational databases natively?", a: "sql" },
-    'system_design': { q: "What technique distributes traffic across multiple servers?", a: "load balancing" },
-    'cache_layer': { q: "Which open-source in-memory data store is frequently used as a cache?", a: "redis" },
-    'microservices': { q: "What is the standard format used to pass data between microservices?", a: "json" },
+    'js_basics': [
+        { q: "What keyword declares a block-scoped mutable variable in JS?", a: "let" },
+        { q: "What keyword declares a block-scoped immutable variable in JS?", a: "const" },
+        { q: "What data type is 'true' or 'false' in JS?", a: "boolean" },
+        { q: "What acts as the strictly equal operator in JS?", a: "===" },
+        { q: "What method adds one or more elements to the end of an array?", a: "push" },
+        { q: "What keyword represents the 'nothing' value in JavaScript?", a: "null" },
+        { q: "What is the global object in a browser environment?", a: "window" },
+        { q: "What method removes the last element from an array?", a: "pop" },
+        { q: "What function outputs text to the web console?", a: "console.log" },
+        { q: "What built-in object is used for mathematical operations in JS?", a: "Math" }
+    ],
+    'js_async': [
+        { q: "What JS object represents the eventual completion of an asynchronous operation?", a: "promise" },
+        { q: "What keyword pauses execution until a Promise settles?", a: "await" },
+        { q: "What keyword specifies that a function returns a Promise?", a: "async" },
+        { q: "What method is called when a Promise is fulfilled?", a: "then" },
+        { q: "What method handles Promise rejections?", a: "catch" },
+        { q: "What method runs after a Promise is settled, regardless of outcome?", a: "finally" },
+        { q: "What Web API function is commonly used for making network requests in modern JS?", a: "fetch" },
+        { q: "What timer function executes code after a specified delay?", a: "setTimeout" },
+        { q: "What timer function repeats code execution at a specified interval?", a: "setInterval" },
+        { q: "What is the JS concurrency model based on?", a: "event loop" }
+    ],
+    'js_adv': [
+        { q: "What function concept allows maintaining access to its lexical scope even when executing outside?", a: "closure" },
+        { q: "What keyword refers to the object it belongs to?", a: "this" },
+        { q: "What function creates a new array populated with the results of calling a provided function?", a: "map" },
+        { q: "What function creates a new array with all elements that pass the test implemented by the provided function?", a: "filter" },
+        { q: "What method executes a reducer function on each element of the array, resulting in a single output value?", a: "reduce" },
+        { q: "What design pattern is commonly used to restrict instantiation of a class to one object?", a: "singleton" },
+        { q: "What mechanism allows JS objects to inherit properties from one another?", a: "prototype" },
+        { q: "What syntax allows unpacking values from arrays or properties from objects into distinct variables?", a: "destructuring" },
+        { q: "What operator allows an iterable to expand in places where zero or more arguments are expected?", a: "spread" },
+        { q: "What JS feature prevents modifying existing property attributes and values of an object?", a: "freeze" }
+    ],
+    'backend_core': [
+        { q: "Which HTTP method is traditionally used for creating a new resource?", a: "post" },
+        { q: "Which HTTP method retrieves a resource?", a: "get" },
+        { q: "Which HTTP method is traditionally used to delete a resource?", a: "delete" },
+        { q: "Which HTTP method updates an entire resource?", a: "put" },
+        { q: "Which HTTP method updates a resource partially?", a: "patch" },
+        { q: "What does API stand for? (Acronym)", a: "application programming interface" },
+        { q: "What status code indicates Not Found?", a: "404" },
+        { q: "What status code indicates a successful GET request?", a: "200" },
+        { q: "What architecture style uses standard HTTP methods and stateless operations?", a: "rest" },
+        { q: "What server-side component sits between the client request and the route handler?", a: "middleware" }
+    ],
+    'node_js': [
+        { q: "What is the name of Node's package manager?", a: "npm" },
+        { q: "What file lists the dependencies for a Node project?", a: "package.json" },
+        { q: "What module provides access to the file system in Node?", a: "fs" },
+        { q: "What framework is widely used to build web applications in Node?", a: "express" },
+        { q: "What engine powers Node.js under the hood?", a: "v8" },
+        { q: "What object represents the ongoing Node.js process?", a: "process" },
+        { q: "Which module creates HTTP servers in Node.js natively?", a: "http" },
+        { q: "What function imports modules in CommonJS?", a: "require" },
+        { q: "What mechanism handles and dispatches events in Node?", a: "event emitter" },
+        { q: "What is the default global object in Node.js?", a: "global" }
+    ],
+    'databases': [
+        { q: "What language is used to query relational databases natively?", a: "sql" },
+        { q: "What keys link two tables together in a relational DB?", a: "foreign key" },
+        { q: "What constraint uniquely identifies each record in a DB table?", a: "primary key" },
+        { q: "What SQL clause filters query results?", a: "where" },
+        { q: "What type of DB does not use tables, rows, and columns?", a: "nosql" },
+        { q: "What MongoDB format stores data conceptually similar to an object?", a: "document" },
+        { q: "What database operation combines columns from one or more tables?", a: "join" },
+        { q: "What property guarantees that DB transactions are processed reliably?", a: "acid" },
+        { q: "What database structure improves the speed of data retrieval operations?", a: "index" },
+        { q: "What SQL command creates a new table?", a: "create table" }
+    ],
+    'system_design': [
+        { q: "What technique distributes traffic across multiple servers?", a: "load balancing" },
+        { q: "What is scaling by adding more servers to the pool called?", a: "horizontal scaling" },
+        { q: "What is scaling by adding more CPU/RAM to an existing server called?", a: "vertical scaling" },
+        { q: "What architecture splits an application into small, independent services?", a: "microservices" },
+        { q: "What technique temporarily stores copies of data to serve requests faster?", a: "caching" },
+        { q: "What system manages a queue of messages between microservices?", a: "message broker" },
+        { q: "What technique partitions a database across multiple machines?", a: "sharding" },
+        { q: "What geographically distributed network delivers content to users based on location?", a: "cdn" },
+        { q: "What limits the number of requests a user can make to an API in a given time?", a: "rate limiting" },
+        { q: "What component acts as a reverse proxy to route client requests to backend services?", a: "api gateway" }
+    ],
+    'cache_layer': [
+        { q: "Which open-source in-memory data store is frequently used as a cache?", a: "redis" },
+        { q: "Which other popular memory caching system helps speed up dynamic applications?", a: "memcached" },
+        { q: "What scenario happens when requested data is not found in the cache?", a: "cache miss" },
+        { q: "What scenario happens when requested data is found in the cache?", a: "cache hit" },
+        { q: "What strategy removes the least recently used items first when the cache is full?", a: "lru" },
+        { q: "What mechanism automatically expires cached data after a certain time?", a: "ttl" },
+        { q: "What caching strategy updates the cache directly from the database whenever data changes?", a: "write through" },
+        { q: "Where does browser caching store web resources temporarily?", a: "local storage" },
+        { q: "Which part of the CPU has the fastest cache memory?", a: "l1 cache" },
+        { q: "What issue happens when cached data becomes outdated compared to the database?", a: "stale cache" }
+    ],
+    'microservices': [
+        { q: "What is the standard format used to pass data between microservices?", a: "json" },
+        { q: "What protocol is commonly used for communication between web microservices?", a: "http" },
+        { q: "What type of architecture typically preceded microservices?", a: "monolith" },
+        { q: "What mechanism is used to discover the network locations of available service instances?", a: "service discovery" },
+        { q: "What pattern prevents cascading failures when a microservice is down?", a: "circuit breaker" },
+        { q: "What platform automates deployment, scaling, and management of containerized applications?", a: "kubernetes" },
+        { q: "What technology is commonly used to package microservices into standardized units?", a: "docker" },
+        { q: "What pattern is used to track a request as it passes through multiple microservices?", a: "distributed tracing" },
+        { q: "What is the term for breaking down a monolithic application into microservices?", a: "decoupling" },
+        { q: "What pattern ensures data consistency across microservices via a sequence of local transactions?", a: "saga" }
+    ],
   };
 
   const handleStartChallenge = () => {
@@ -156,7 +255,13 @@ const SkillTreePage = () => {
     // Simulate generation delay
     setTimeout(() => {
       setIsProcessing(false);
-      const qData = CHALLENGE_BANK[selectedNode?.id] || { q: "Type 'ready' to pass the general assessment.", a: "ready" };
+      const qList = CHALLENGE_BANK[selectedNode?.id];
+      let qData;
+      if (qList && qList.length > 0) {
+        qData = qList[Math.floor(Math.random() * qList.length)];
+      } else {
+        qData = { q: "Type 'ready' to pass the general assessment.", a: "ready" };
+      }
       setChallengeQuestion(qData);
     }, 1500);
   };

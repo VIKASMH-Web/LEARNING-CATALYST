@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Book, Target, Award, CheckCircle, ArrowRight, Brain, FileText, ChevronRight, Star, Lock } from 'lucide-react';
 import { useGame } from '../../context/GameContext';
-import PremiumModal from '../Shared/PremiumModal';
 
 const RECIPES = [
   {
@@ -33,46 +32,15 @@ const RECIPES = [
       { id: 'ar_5', title: 'Analysis & Feedback', desc: 'Find gaps in your knowledge' }
     ]
   },
-  {
-    id: 'workflow_builder',
-    title: 'Custom Workflow Builder',
-    description: 'Chain multiple concepts, auto-reinforce weak areas.',
-    icon: <Star size={20} color="#fbbf24" />,
-    xp: 300,
-    isPremium: true,
-    steps: [
-      { id: 'wb_1', title: 'Define Domain', desc: 'Select multi-topic targets' },
-      { id: 'wb_2', title: 'Smart Scheduling', desc: 'AI spaced repetition config' },
-      { id: 'wb_3', title: 'Generative Path', desc: 'Auto-creating study material' }
-    ]
-  },
-  {
-    id: 'smart_revision',
-    title: 'Smart Revision',
-    description: 'Auto-reinforcement mode against weaknesses.',
-    icon: <Target size={20} color="#fbbf24" />,
-    xp: 250,
-    isPremium: true,
-    steps: [
-      { id: 'sr_1', title: 'Analyze Heatmap', desc: 'Finding low mastery areas' },
-      { id: 'sr_2', title: 'Micro-tests', desc: 'Targeted short-burst questions' },
-      { id: 'sr_3', title: 'Confidence Check', desc: 'Re-evaluating domain LVS' }
-    ]
-  }
 ];
 
 const WorkflowEngine = () => {
   const [activeRecipe, setActiveRecipe] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const { addXP, updateStreak, isPremium } = useGame();
 
   const handleStartRecipe = (recipe) => {
-    if (recipe.isPremium && !isPremium) {
-      setShowPremiumModal(recipe.title);
-      return;
-    }
     setActiveRecipe(recipe);
     setCurrentStep(0);
   };
@@ -264,26 +232,11 @@ const WorkflowEngine = () => {
           onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(124,58,237,0.4)'}
           onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
           >
-            {/* Visual Lock Overlay */}
-            {recipe.isPremium && !isPremium && (
-                <div style={{
-                    position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(3px)',
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                    zIndex: 10, borderRadius: '16px', border: '1px solid rgba(251,191,36,0.3)'
-                }}>
-                     <Lock size={32} color="#fbbf24" opacity={0.9} style={{ marginBottom: '10px' }} />
-                     <span style={{ color: '#fbbf24', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '0.5px' }}>Premium Access</span>
-                </div>
-            )}
-
-            <div style={{ padding: '1.5rem', flex: 1, filter: recipe.isPremium && !isPremium ? 'blur(2px)' : 'none' }}>
+            <div style={{ padding: '1.5rem', flex: 1 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                 <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {recipe.icon}
                 </div>
-                {recipe.isPremium && (
-                    <div style={{ position: 'absolute', top: 10, right: -25, background: '#fbbf24', color: '#78350f', fontSize: '0.65rem', fontWeight: 800, padding: '4px 30px', transform: 'rotate(45deg)', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', zIndex: 5, letterSpacing: '0.5px' }}>PRO</div>
-                )}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(251, 191, 36, 0.1)', color: '#fde047', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700 }}>
                   <Award size={14} /> +{recipe.xp} XP
                 </div>
@@ -302,7 +255,7 @@ const WorkflowEngine = () => {
                 {recipe.steps.length > 3 && <span style={{ fontSize: '0.7rem', color: '#64748b', padding: '2px' }}>+{recipe.steps.length - 3} more</span>}
               </div>
             </div>
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '1rem 1.5rem', background: 'rgba(0,0,0,0.2)', filter: recipe.isPremium && !isPremium ? 'blur(2px)' : 'none' }}>
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '1rem 1.5rem', background: 'rgba(0,0,0,0.2)' }}>
               <button 
                 onClick={() => handleStartRecipe(recipe)}
                 style={{
@@ -316,19 +269,9 @@ const WorkflowEngine = () => {
                 <Play size={16} fill="currentColor" /> Start Recipe
               </button>
             </div>
-            
-            {/* Click-to-upgrade invisible overlay, catching clicks when locked */}
-            {recipe.isPremium && !isPremium && (
-                <div onClick={() => handleStartRecipe(recipe)} style={{ position: 'absolute', inset: 0, zIndex: 11, cursor: 'pointer' }} />
-            )}
           </div>
         ))}
       </div>
-      <PremiumModal 
-        isOpen={!!showPremiumModal} 
-        onClose={() => setShowPremiumModal(false)}
-        featureName="Advanced Workflow Recipes"
-      />
     </>
   );
 };

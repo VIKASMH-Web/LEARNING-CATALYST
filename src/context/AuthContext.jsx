@@ -89,6 +89,16 @@ export const AuthProvider = ({ children }) => {
     const loginWithGoogle = async () => {
         try {
             const result = await signInWithPopup(auth, googleProvider);
+            const userObj = {
+                id: result.user.uid,
+                email: result.user.email,
+                name: result.user.displayName || result.user.email.split('@')[0],
+                method: 'google',
+                photoURL: result.user.photoURL,
+                loginDate: new Date().toISOString()
+            };
+            setUser(userObj);
+            localStorage.setItem('lc_auth_user', JSON.stringify(userObj));
             return result.user;
         } catch (err) {
             console.warn("Firebase Auth blocked. Using fallback Google login.");

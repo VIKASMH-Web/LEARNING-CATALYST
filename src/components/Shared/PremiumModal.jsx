@@ -13,50 +13,7 @@ const PremiumModal = ({ isOpen, onClose, featureName }) => {
 
   if (!isOpen) return null;
 
-  const handleUpgrade = () => {
-    const script = document.createElement("script");
-    script.src = RAZORPAY_SCRIPT;
-    script.onload = () => {
-      const options = {
-        key: "rzp_test_dummykey",
-        amount: "19900",
-        currency: "INR",
-        name: "Learning Catalyst",
-        description: "Premium Member Upgrade",
-        theme: { color: "#7c3aed" },
-        handler: function (response) {
-            setVerifying(true);
-            setTimeout(() => {
-              setVerifying(false);
-              setVerified(true);
-              upgradeToPremium();
-              notifyProUpgrade();
-              setTimeout(() => { onClose(); setVerified(false); }, 2500);
-            }, 1000);
-        },
-        prefill: {
-            name: "Premium Learner",
-            email: "learner@example.com",
-        }
-      };
-      
-      try {
-         const rzp = new window.Razorpay(options);
-         rzp.on('payment.failed', function (response){
-            alert("Payment failed: " + response.error.description);
-         });
-         rzp.open();
-      } catch (err) {
-         simulateMockPayment();
-      }
-    };
-    script.onerror = () => {
-        simulateMockPayment();
-    };
-    document.body.appendChild(script);
-  };
-
-  const simulateMockPayment = () => {
+  const handlePaymentConfirm = () => {
     setVerifying(true);
     setTimeout(() => {
       setVerifying(false);
@@ -116,25 +73,20 @@ const PremiumModal = ({ isOpen, onClose, featureName }) => {
                 <Star size={32} fill="#fbbf24" color="#fbbf24" />
               </div>
               
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'white', marginBottom: '0.5rem' }}>Premium Member Feature</h2>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'white', marginBottom: '0.5rem' }}>Premium Upgrade</h2>
               <p style={{ color: '#9ca3af', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.5 }}>
                 {featureName ? `Access to ${featureName} requires a Premium membership.` : 'This feature requires a Premium membership.'}
               </p>
 
-              <div style={{ textAlign: 'left', background: 'rgba(255,255,255,0.02)', padding: '1.25rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '2rem' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Unlock:</span>
-                <ul style={{ listStyle: 'none', padding: 0, margin: '10px 0 0 0', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {['Advanced analytics', 'Predictive skill growth', 'Full AI insights', 'Custom workflow builder'].map((item, i) => (
-                    <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#e2e8f0', fontSize: '0.9rem' }}>
-                      <CheckCircle size={16} color="#fbbf24" /> {item}
-                    </li>
-                  ))}
-                </ul>
+              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <img src="/upi_qrcode.png" alt="UPI QR Code" style={{ width: '180px', height: '180px', borderRadius: '12px', border: '2px solid rgba(251,191,36,0.4)', marginBottom: '12px' }} />
+                  <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f59e0b', marginBottom: '6px' }}>Amount: ₹200</div>
+                  <p style={{ fontSize: '0.85rem', color: '#9ca3af', margin: 0, lineHeight: 1.5 }}>Scan this QR code using any UPI App (PhonePe, GPay, Paytm) to upgrade.</p>
               </div>
 
               <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
                 <button
-                  onClick={handleUpgrade}
+                  onClick={handlePaymentConfirm}
                   style={{
                     width: '100%', padding: '1rem', borderRadius: '12px',
                     background: 'linear-gradient(135deg, #f59e0b, #d97706)',
@@ -143,7 +95,7 @@ const PremiumModal = ({ isOpen, onClose, featureName }) => {
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
                   }}
                 >
-                  <Star size={16} fill="white" /> Upgrade Now
+                  <CheckCircle size={16} fill="white" color="#d97706" /> I have completed the payment
                 </button>
                 <button
                   onClick={onClose}
