@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, Unlock, CheckCircle, Award, Network, ChevronRight, X, Play, Zap, BarChart2 } from 'lucide-react';
+import { Lock, Unlock, CheckCircle, Award, Network, ChevronRight, X, Play, Zap, BarChart2, Book } from 'lucide-react';
 import { useGame } from '../context/GameContext';
 
 const CURRICULUM = {
@@ -86,6 +86,8 @@ const SkillTreePage = () => {
   const [showChallenge, setShowChallenge] = useState(false);
   const [challengeScore, setChallengeScore] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [challengeQuestion, setChallengeQuestion] = useState(null);
+  const [userAnswer, setUserAnswer] = useState('');
   const [showInsights, setShowInsights] = useState(false);
 
   // Initialize Root node if not preset
@@ -133,16 +135,36 @@ const SkillTreePage = () => {
     setChallengeScore(null);
   };
 
+  const CHALLENGE_BANK = {
+    'js_basics': { q: "What keyword declares a block-scoped mutable variable in JS?", a: "let" },
+    'js_async': { q: "What JS object represents the eventual completion of an asynchronous operation?", a: "promise" },
+    'js_adv': { q: "What function concept allows maintaining access to its lexical scope even when executing outside?", a: "closure" },
+    'backend_core': { q: "Which HTTP method is traditionally used for creating a new resource?", a: "post" },
+    'node_js': { q: "What is the name of Node's package manager?", a: "npm" },
+    'databases': { q: "What language is used to query relational databases natively?", a: "sql" },
+    'system_design': { q: "What technique distributes traffic across multiple servers?", a: "load balancing" },
+    'cache_layer': { q: "Which open-source in-memory data store is frequently used as a cache?", a: "redis" },
+    'microservices': { q: "What is the standard format used to pass data between microservices?", a: "json" },
+  };
+
   const handleStartChallenge = () => {
     setShowChallenge(true);
     setIsProcessing(true);
-    // Simulate AI Challenge taking logic
+    setUserAnswer('');
+    setChallengeScore(null);
+    
+    // Simulate generation delay
     setTimeout(() => {
       setIsProcessing(false);
-      // Generate a mock score >= 70% most of the time for demo, else failed
-      const score = Math.floor(Math.random() * 40) + 60; // 60 to 100
-      setChallengeScore(score);
-    }, 2000);
+      const qData = CHALLENGE_BANK[selectedNode?.id] || { q: "Type 'ready' to pass the general assessment.", a: "ready" };
+      setChallengeQuestion(qData);
+    }, 1500);
+  };
+
+  const submitAnswer = () => {
+    if (!challengeQuestion) return;
+    const isCorrect = userAnswer.toLowerCase().trim() === challengeQuestion.a.toLowerCase();
+    setChallengeScore(isCorrect ? 100 : 40);
   };
 
   const handleCompleteChallenge = () => {
@@ -336,6 +358,25 @@ const SkillTreePage = () => {
                       <h3 style={{ fontSize: '1.3rem', color: 'white' }}>Generating Assessment...</h3>
                       <p style={{ color: '#9ca3af', fontSize: '0.9rem' }}>Analyzing your historical logic patterns</p>
                     </div>
+                  ) : challengeScore === null ? (
+                    <div>
+                      <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#a78bfa', marginBottom: '1rem' }}>AI Module Challenge</h3>
+                      <p style={{ fontSize: '1.1rem', color: '#f8fafc', marginBottom: '2rem', lineHeight: 1.5 }}>{challengeQuestion?.q}</p>
+                      
+                      <input 
+                        type="text" 
+                        value={userAnswer}
+                        onChange={(e) => setUserAnswer(e.target.value)}
+                        placeholder="Your answer..."
+                        onKeyDown={(e) => { if(e.key === 'Enter') submitAnswer(); }}
+                        style={{ width: '100%', padding: '1rem', background: '#09090b', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '12px', color: 'white', fontSize: '1rem', marginBottom: '1.5rem', outline: 'none' }}
+                      />
+                      <button 
+                         onClick={submitAnswer}
+                         disabled={!userAnswer.trim()}
+                         style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: 'none', background: userAnswer.trim() ? '#7c3aed' : 'rgba(124,58,237,0.2)', color: 'white', fontWeight: 700, fontSize: '1rem', cursor: userAnswer.trim() ? 'pointer' : 'not-allowed' }}
+                      >Submit Answer</button>
+                    </div>
                   ) : (
                     <div>
                       <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'white', marginBottom: '2rem' }}>Challenge Results</h3>
@@ -354,8 +395,8 @@ const SkillTreePage = () => {
                           <h4 style={{ color: '#ef4444', fontSize: '1.2rem', marginBottom: '0.5rem' }}>More Practice Needed</h4>
                           <p style={{ color: '#9ca3af', marginBottom: '2rem' }}>You scored below the 70% threshold. Review the material and try again.</p>
                           <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '12px', textAlign: 'left', marginBottom: '2rem' }}>
-                            <strong style={{ color: '#e2e8f0', fontSize: '0.85rem', display: 'block', marginBottom: '4px' }}>AI Suggestion:</strong>
-                            <span style={{ color: '#9ca3af', fontSize: '0.8rem' }}>Focus on understanding asynchronous callback flow before retaking.</span>
+                            <strong style={{ color: '#e2e8f0', fontSize: '0.85rem', display: 'block', marginBottom: '4px' }}>Correct Answer Hint:</strong>
+                            <span style={{ color: '#9ca3af', fontSize: '0.8rem' }}>The answer was expected to be "{challengeQuestion?.a}".</span>
                           </div>
                         </>
                       )}

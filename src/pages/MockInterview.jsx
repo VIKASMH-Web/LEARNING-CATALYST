@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { notifyInterviewComplete } from '../utils/notifications';
 import interviewQuestionsData from '../data/interviewQuestions.json';
 import { useGame } from '../context/GameContext';
+import { Sparkles, Play, Zap, Video, Camera, VideoOff, Clock, Mic, MicOff, PhoneOff, Brain, CheckCircle, Eye, MessageCircle, Target, BarChart3, ChevronLeft } from 'lucide-react';
 
 const domains = [
     { key: 'backend_developer', label: 'Backend Development', icon: '⚙️', color: '#60a5fa' },
@@ -39,6 +40,8 @@ const MockInterview = () => {
     const [paceStatus, setPaceStatus] = useState('Analyzing...');
     const [clarityStatus, setClarityStatus] = useState('Analyzing...');
     const analyzeInterval = useRef(null);
+    const recognitionRef = useRef(null);
+    const [liveTranscript, setLiveTranscript] = useState('');
 
     const loadQuestions = (domain, diff) => {
         const domainQ = interviewQuestionsData[domain] || interviewQuestionsData['general'];
@@ -110,6 +113,32 @@ const MockInterview = () => {
         }
     }, [view, stream]);
 
+    // Initialize Speech Recognition
+    useEffect(() => {
+        if (view === 'interview' && isRecording && micEnabled) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                const recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.onresult = (e) => {
+                    const currentTranscript = Array.from(e.results).map(r => r[0].transcript).join(' ');
+                    setLiveTranscript(currentTranscript);
+                };
+                try {
+                    recognition.start();
+                    recognitionRef.current = recognition;
+                } catch (err) { console.log(err); }
+            }
+        }
+        
+        return () => {
+             if (recognitionRef.current) {
+                 try { recognitionRef.current.stop(); } catch(e){}
+             }
+        }
+    }, [view, isRecording, micEnabled]);
+
     useEffect(() => {
         if (view !== 'interview' || !isRecording) return;
         const timer = setInterval(() => {
@@ -132,19 +161,43 @@ const MockInterview = () => {
     useEffect(() => {
         if (view !== 'interview' || !stream) return;
         let analysisCount = 0;
+        let lastTranscriptLen = 0;
+        
         analyzeInterval.current = setInterval(() => {
             analysisCount++;
+            
+            // Generate Eye score (still somewhat simulated as actual pupil tracking requires heavy models)
             const baseEye = 75 + Math.random() * 20;
             setEyeScore(prev => Math.round((prev * 0.7 + baseEye * 0.3)));
-            const baseClarity = Math.min(60 + analysisCount * 2 + Math.random() * 15, 98);
-            setClarityScore(prev => Math.round((prev * 0.6 + baseClarity * 0.4)));
-            const basePacing = 65 + Math.random() * 25;
-            setPacingScore(prev => Math.round((prev * 0.7 + basePacing * 0.3)));
+            
+            // Calculate pacing and clarity dynamically from actual transcript changes
+            setLiveTranscript(prev => {
+                const words = prev.trim().split(/\s+/).filter(w=>w.length>0).length;
+                const newWords = words > lastTranscriptLen ? words - lastTranscriptLen : 0;
+                lastTranscriptLen = words;
+                
+                // Words per 2 seconds. Average speaking rate is ~4-5 words per 2 seconds.
+                const speedScore = newWords === 0 ? 0 : Math.min(100, (newWords / 5) * 100);
+                setPacingScore(p => Math.round((p * 0.6) + (speedScore * 0.4)));
+                
+                const clarityBase = newWords > 0 ? 80 + Math.random()*15 : 40;
+                setClarityScore(c => Math.round((c * 0.6) + (clarityBase * 0.4)));
+                
+                return prev;
+            });
 
-            const eyeVal = baseEye;
-            setBodyLanguage(eyeVal > 80 ? 'Good' : eyeVal > 65 ? 'Fair' : 'Needs Work');
-            setPaceStatus(basePacing > 80 ? 'Excellent' : basePacing > 65 ? 'A bit fast' : 'Too fast');
-            setClarityStatus(baseClarity > 85 ? 'Excellent' : baseClarity > 70 ? 'Good' : 'Improving');
+            setBodyLanguage(baseEye > 80 ? 'Good' : baseEye > 65 ? 'Fair' : 'Needs Work');
+            
+            setPacingScore(currentPacing => {
+                setPaceStatus(currentPacing > 80 ? 'Excellent' : currentPacing > 50 ? 'A bit fast' : currentPacing > 0 ? 'Too slow' : 'Silent');
+                return currentPacing;
+            });
+            
+            setClarityScore(currentClarity => {
+                setClarityStatus(currentClarity > 85 ? 'Excellent' : currentClarity > 50 ? 'Good' : 'Improving');
+                return currentClarity;
+            });
+            
         }, 2000);
 
         return () => {
@@ -298,7 +351,7 @@ const MockInterview = () => {
                     </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', height: '100%', overflow: 'hidden' }}>
                     <div style={{ padding: '1rem', borderRadius: '16px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#50fa7b', animation: 'pulse 2s infinite' }} />
                         <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#50fa7b' }}>LIVE METRICS</span>
@@ -309,20 +362,32 @@ const MockInterview = () => {
                         { label: 'Clarity', status: clarityStatus, score: clarityScore, color: clarityScore > 75 ? '#50fa7b' : '#ffb86c', icon: MessageCircle },
                         { label: 'Pacing', status: paceStatus, score: pacingScore, color: pacingScore > 75 ? '#50fa7b' : '#ffb86c', icon: BarChart3 }
                     ].map((m, i) => (
-                        <div key={i} style={{ padding: '1.25rem', borderRadius: '16px', background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.75rem' }}><m.icon size={14} color={m.color} /><span style={{ fontSize: '0.65rem', color: '#71717a', fontWeight: 700 }}>{m.label}</span></div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ fontSize: '1.25rem', fontWeight: 800, color: m.color }}>{m.score}%</span><span style={{ fontSize: '0.75rem', color: m.color }}>{m.status}</span></div>
+                        <div key={i} style={{ padding: '0.75rem 1rem', borderRadius: '12px', background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.25rem' }}><m.icon size={12} color={m.color} /><span style={{ fontSize: '0.65rem', color: '#71717a', fontWeight: 700 }}>{m.label}</span></div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ fontSize: '1.1rem', fontWeight: 800, color: m.color }}>{m.score}%</span><span style={{ fontSize: '0.7rem', color: m.color }}>{m.status}</span></div>
                             <div style={{ height: 4, background: 'rgba(255,255,255,0.05)', borderRadius: 2 }}><div style={{ width: `${m.score}%`, height: '100%', background: m.color, borderRadius: 2, transition: 'width 0.5s' }} /></div>
                         </div>
                     ))}
 
-                    <button onClick={() => { if(currentQuestionIdx < questions.length - 1) { setCurrentQuestionIdx(i => i + 1); setTimeLeft(120); } else endSession(); }} style={{ padding: '0.75rem', borderRadius: '14px', background: 'rgba(124,58,237,0.1)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', cursor: 'pointer', fontWeight: 700, marginTop: 'auto' }}>
+                    <div style={{ background: '#18181b', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.06)', padding: '0.75rem', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem' }}><MessageCircle size={12} color="#a78bfa" /><h3 style={{ fontSize: '0.75rem', fontWeight: 800, margin: 0 }}>Live Transcript</h3></div>
+                        <div style={{ flex: 1, overflowY: 'auto', padding: '8px', background: 'rgba(0,0,0,0.2)', borderRadius: '8px', fontSize: '0.8rem', color: '#e4e4e7', lineHeight: 1.5 }}>
+                            {liveTranscript || <span style={{ color: '#71717a', fontStyle: 'italic' }}>Waiting for speech...</span>}
+                        </div>
+                    </div>
+
+                    <button onClick={() => { if(currentQuestionIdx < questions.length - 1) { setCurrentQuestionIdx(i => i + 1); setTimeLeft(120); setLiveTranscript(''); } else endSession(); }} style={{ padding: '0.75rem', borderRadius: '12px', background: 'rgba(124,58,237,0.1)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', cursor: 'pointer', fontWeight: 700, flexShrink: 0 }}>
                         {currentQuestionIdx < questions.length - 1 ? 'Next Question' : 'Finish Interview'}
                     </button>
                     
-                    <div style={{ padding: '1.25rem', borderRadius: '16px', background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', color: 'white', marginTop: '0.75rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem' }}><Brain size={14} /><h3 style={{ fontSize: '0.85rem', fontWeight: 800, margin: 0 }}>AI Tip</h3></div>
-                        <p style={{ fontSize: '0.8rem', lineHeight: 1.5, opacity: 0.9, margin: 0 }}>Use the STAR method: Situation → Task → Action → Result. Structure your answers for maximum clarity.</p>
+                    <div style={{ padding: '0.75rem', borderRadius: '12px', background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', color: 'white', flexShrink: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.25rem' }}><Brain size={12} /><h3 style={{ fontSize: '0.75rem', fontWeight: 800, margin: 0 }}>AI Tip</h3></div>
+                        <p style={{ fontSize: '0.75rem', lineHeight: 1.4, opacity: 0.9, margin: 0 }}>
+                            {bodyLanguage === 'Needs Work' ? "Try to maintain steady eye contact with the lens to convey confidence." 
+                            : bodyLanguage === 'Silent' ? "Don't forget to verbally communicate your thoughts."
+                            : paceStatus === 'Too slow' || paceStatus === 'Silent' ? "Try to speak a bit more."
+                            : paceStatus === 'Too fast' || paceStatus === 'A bit fast' ? "Pace yourself. Take a breath between key points." : "You're speaking clearly and purposefully. Keep it up!"}
+                        </p>
                     </div>
                 </div>
             </div>
