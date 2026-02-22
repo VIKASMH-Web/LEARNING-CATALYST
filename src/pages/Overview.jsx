@@ -1,35 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Clock, Zap, Trophy, Target, 
+  Clock, Zap, Trophy, Target, Star,
   TrendingUp, BarChart2, MoreHorizontal, ArrowRight, Activity,
   Lock, CheckCircle, AlertTriangle, FileText
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
+import { useGame } from '../context/GameContext';
+import PremiumModal from '../components/Shared/PremiumModal';
 import { Link } from 'react-router-dom';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { Treemap, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 const Overview = () => {
     const { focusMinutes, roadmapProgress, activeDays, getSkillLevel } = useProgress();
     const { user } = useAuth();
+    const { isPremium, lvsScore } = useGame();
     const displayName = user?.name || user?.email?.split('@')[0] || 'Learner';
     const [selectedPeriod, setSelectedPeriod] = useState('Last 7 days');
     const [showReport, setShowReport] = useState(false);
-
-    // Pro Status Check
-    const storageKey = user?.id ? `lc_pro_${user.id}` : 'lc_pro_guest';
-    const [isPro, setIsPro] = useState(() => localStorage.getItem(storageKey) === 'true');
-
-    useEffect(() => {
-        const check = () => setIsPro(localStorage.getItem(storageKey) === 'true');
-        window.addEventListener('storage', check);
-        window.addEventListener('pro-status-update', check);
-        return () => {
-            window.removeEventListener('storage', check);
-            window.removeEventListener('pro-status-update', check);
-        };
-    }, [storageKey]);
+    const [showPremiumModal, setShowPremiumModal] = useState(false);
 
     // --- 1. REAL DATA CALCULATION ---
     const totalHours = (focusMinutes / 60).toFixed(1);
@@ -133,9 +123,8 @@ const Overview = () => {
     const consistencyScore = 85; 
     const skillImprovement = 4.2; 
     const difficultyMultiplier = 1.2;
-    const lvs = Math.round((consistencyScore * skillImprovement * difficultyMultiplier) / 10); // Scaled for 0-100 logic roughly
+    const lvs = lvsScore; // Pulled dynamically from premium context module
 
-    // --- 5. CURRENT ROADMAPS ---
     const activeRoadmaps = Array.from(new Set(
         Object.keys(roadmapProgress).map(k => k.split('-')[0])
     )).map(title => {
@@ -149,6 +138,19 @@ const Overview = () => {
 
     const recommendedRoadmap = activeRoadmaps.find(r => r.percentage < 100) || activeRoadmaps[0];
 
+    const heatmapData = [{
+        name: 'Skills',
+        children: processedSkills.map(s => ({
+            name: s.name,
+            size: Math.max(s.score, 20), // Prevent invisible boxes if score is 0
+            score: s.score,
+            weakness: s.weakest,
+            action: s.nextAction
+        }))
+    }];
+
+    const weakestSkill = [...processedSkills].sort((a, b) => a.score - b.score)[0];
+
     return (
         <motion.div 
             initial={{ opacity: 0, y: 10 }}
@@ -159,7 +161,10 @@ const Overview = () => {
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
-                    <h1 className="h1" style={{ marginBottom: '0.5rem' }}>Welcome back, {displayName}</h1>
+                    <h1 className="h1" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        Welcome back, {displayName}
+                        {isPremium && <Star size={20} fill="#fbbf24" color="#fbbf24" style={{marginTop: '4px'}} />}
+                    </h1>
                     <p className="body-sm">You've maintained a {activeDays.length} day streak! Keep it up!</p>
                 </div>
                 <button 
@@ -175,7 +180,7 @@ const Overview = () => {
                 >
                     <FileText size={18} />
                     View Weekly Report
-                    {!isPro && <Lock size={14} style={{ opacity: 0.8 }} />}
+                    {!isPremium && <Lock size={14} style={{ opacity: 0.8 }} />}
                 </button>
             </div>
 
@@ -188,7 +193,7 @@ const Overview = () => {
             </div>
 
             {/* Charts Row */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                 {/* Learning Activity Chart */}
                 <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '400px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
@@ -215,6 +220,36 @@ const Overview = () => {
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
+                </div>
+
+                {/* Knowledge Heatmap */}
+                <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '400px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                        <div>
+                            <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Knowledge Heatmap</h3>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Based on quizzes, mock interviews & recall</p>
+                        </div>
+                    </div>
+                    <div style={{ flex: 1, width: '100%', minHeight: '220px', marginBottom: '1rem' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <Treemap
+                                data={heatmapData}
+                                dataKey="size"
+                                stroke="#121222"
+                                fill="#8884d8"
+                                content={<HeatmapCustomContent />}
+                            />
+                        </ResponsiveContainer>
+                    </div>
+                    {weakestSkill && (
+                        <div style={{ background: 'rgba(239, 68, 68, 0.1)', borderLeft: '4px solid #ef4444', padding: '1rem', borderRadius: '0 8px 8px 0', marginTop: 'auto' }}>
+                            <div style={{ fontSize: '0.8rem', color: '#fca5a5', fontWeight: 700, marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}><AlertTriangle size={14} /> AI DIAGNOSTIC</div>
+                            <div style={{ fontSize: '0.9rem', color: '#f8fafc', lineHeight: 1.4 }}>
+                                You struggle with <strong style={{color: '#f87171'}}>{weakestSkill.weakest}</strong>.
+                                <br/>Recommended: {weakestSkill.nextAction}.
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -325,9 +360,9 @@ const Overview = () => {
                             <div style={{ position: 'relative' }}>
                                 {/* Content (Effective content that is blurred if not pro) */}
                                 <div style={{ 
-                                    filter: isPro ? 'none' : 'blur(8px)', 
-                                    opacity: isPro ? 1 : 0.5,
-                                    pointerEvents: isPro ? 'auto' : 'none',
+                                    filter: isPremium ? 'none' : 'blur(8px)', 
+                                    opacity: isPremium ? 1 : 0.5,
+                                    pointerEvents: isPremium ? 'auto' : 'none',
                                     transition: 'all 0.3s ease'
                                 }}>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
@@ -380,7 +415,7 @@ const Overview = () => {
                                 </div>
 
                                 {/* GATE OVERLAY */}
-                                {!isPro && (
+                                {!isPremium && (
                                     <div style={{
                                         position: 'absolute', inset: 0, 
                                         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -406,11 +441,7 @@ const Overview = () => {
                                                 ))}
                                             </div>
                                             <button 
-                                                onClick={() => {
-                                                    // This would ideally open the Sidebar payment modal or route to a pro page
-                                                    alert("Please use the 'Upgrade' button in the sidebar to unlock Premium features!");
-                                                    setShowReport(false);
-                                                }}
+                                                onClick={() => setShowPremiumModal(true)}
                                                 style={{
                                                     width: '100%', marginTop: '2rem', padding: '14px',
                                                     background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
@@ -429,6 +460,11 @@ const Overview = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+            <PremiumModal 
+                isOpen={showPremiumModal} 
+                onClose={() => setShowPremiumModal(false)}
+                featureName="Advanced AI Intelligence"
+            />
         </motion.div>
     );
 };
@@ -468,6 +504,51 @@ const RoadmapItem = ({ icon, title, progress, color }) => (
         </div>
     </div>
 );
+
+const HeatmapCustomContent = (props) => {
+    const { root, depth, x, y, width, height, index, name, score } = props;
+    if (depth !== 1) return null; // Only render children of root
+    
+    let status = "Strength";
+    let statusColor = "#34d399"; // Green
+    if (score < 50) {
+        status = "Critical Weakness";
+        statusColor = "#ef4444"; // Red
+    } else if (score <= 70) {
+        status = "Needs Practice";
+        statusColor = "#fbbf24"; // Yellow
+    }
+
+    return (
+        <g>
+            <rect
+                x={x}
+                y={y}
+                width={width}
+                height={height}
+                style={{
+                    fill: statusColor,
+                    stroke: '#09090b',
+                    strokeWidth: 4,
+                    strokeOpacity: 0.8,
+                    opacity: 0.85,
+                    transition: 'all 0.3s',
+                    cursor: 'pointer'
+                }}
+            />
+            {width > 60 && height > 40 && (
+                <>
+                    <text x={x + 10} y={y + 20} fill="#fff" fontSize={12} fontWeight="bold" textAnchor="start">
+                        {name}
+                    </text>
+                    <text x={x + 10} y={y + 36} fill="rgba(255,255,255,0.9)" fontSize={10} textAnchor="start">
+                        {score}% - {status}
+                    </text>
+                </>
+            )}
+        </g>
+    );
+};
 
 const RadarChart = ({ skills }) => {
     // 5 points polygon for 5 clusters

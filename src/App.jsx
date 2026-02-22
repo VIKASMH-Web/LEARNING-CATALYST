@@ -12,7 +12,9 @@ import LoginPage from './pages/LoginPage';
 import ProgressProvider from './context/ProgressContext';
 import { FocusProvider } from './context/FocusContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { GameProvider } from './context/GameContext';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
+import SkillTreePage from './pages/SkillTreePage';
 
 // Auth Gate: shows login if not authenticated
 const AuthGate = ({ children }) => {
@@ -40,30 +42,33 @@ const AuthGate = ({ children }) => {
 function App() {
     return (
         <AuthProvider>
-            <ProgressProvider>
-                <FocusProvider>
-                    <Router>
-                        <AuthGate>
-                            <Routes>
-                                <Route path="/" element={<MainLayout />}>
-                                    <Route index element={<Overview />} />
-                                    <Route path="learning-hub" element={<LearningHub />} />
-                                    <Route path="career-planner" element={<CareerPlanner />} />
-                                    <Route path="code-engine" element={
-                                        <ErrorBoundary>
-                                            <CodeEnginePage />
-                                        </ErrorBoundary>
-                                    } />
-                                    <Route path="mock-interview" element={<MockInterview />} />
-                                    <Route path="focus" element={<FocusMode />} />
-                                    <Route path="profile" element={<Profile />} />
-                                    <Route path="*" element={<Navigate to="/" replace />} />
-                                </Route>
-                            </Routes>
-                        </AuthGate>
-                    </Router>
-                </FocusProvider>
-            </ProgressProvider>
+            <GameProvider>
+                <ProgressProvider>
+                    <FocusProvider>
+                        <Router>
+                            <AuthGate>
+                                <Routes>
+                                    <Route path="/" element={<MainLayout />}>
+                                        <Route index element={<Overview />} />
+                                        <Route path="learning-hub" element={<LearningHub />} />
+                                        <Route path="career-planner" element={<CareerPlanner />} />
+                                        <Route path="code-engine" element={
+                                            <ErrorBoundary>
+                                                <CodeEnginePage />
+                                            </ErrorBoundary>
+                                        } />
+                                        <Route path="mock-interview" element={<MockInterview />} />
+                                        <Route path="skill-tree" element={<SkillTreePage />} />
+                                        <Route path="focus" element={<FocusMode />} />
+                                        <Route path="profile" element={<Profile />} />
+                                        <Route path="*" element={<Navigate to="/" replace />} />
+                                    </Route>
+                                </Routes>
+                            </AuthGate>
+                        </Router>
+                    </FocusProvider>
+                </ProgressProvider>
+            </GameProvider>
         </AuthProvider>
     );
 }

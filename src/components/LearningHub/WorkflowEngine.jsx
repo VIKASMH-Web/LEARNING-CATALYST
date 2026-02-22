@@ -1,0 +1,336 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Play, Book, Target, Award, CheckCircle, ArrowRight, Brain, FileText, ChevronRight, Star, Lock } from 'lucide-react';
+import { useGame } from '../../context/GameContext';
+import PremiumModal from '../Shared/PremiumModal';
+
+const RECIPES = [
+  {
+    id: 'exam_prep',
+    title: 'Exam Prep',
+    description: 'Master a topic through concept extraction and mock testing.',
+    icon: <FileText size={20} color="#3b82f6" />,
+    xp: 200,
+    steps: [
+      { id: 'ep_1', title: 'Upload PDF', desc: 'Provide your study material' },
+      { id: 'ep_2', title: 'Extract Concepts', desc: 'AI identifies key topics' },
+      { id: 'ep_3', title: 'Generate Mock Test', desc: 'Creating customized questions' },
+      { id: 'ep_4', title: 'Take Test', desc: 'Test your knowledge' },
+      { id: 'ep_5', title: 'Results & Feedback', desc: 'Review your performance' }
+    ]
+  },
+  {
+    id: 'active_recall',
+    title: 'Active Recall',
+    description: 'Enhance memory retention through Socratic questioning.',
+    icon: <Brain size={20} color="#8b5cf6" />,
+    xp: 150,
+    steps: [
+      { id: 'ar_1', title: 'Enter Topic', desc: 'What do you want to recall?' },
+      { id: 'ar_2', title: 'AI Socratic Questions', desc: 'Answer deep questions' },
+      { id: 'ar_3', title: 'Student Answers', desc: 'Provide your explanation' },
+      { id: 'ar_4', title: 'AI Rating', desc: 'Evaluating your understanding' },
+      { id: 'ar_5', title: 'Analysis & Feedback', desc: 'Find gaps in your knowledge' }
+    ]
+  },
+  {
+    id: 'workflow_builder',
+    title: 'Custom Workflow Builder',
+    description: 'Chain multiple concepts, auto-reinforce weak areas.',
+    icon: <Star size={20} color="#fbbf24" />,
+    xp: 300,
+    isPremium: true,
+    steps: [
+      { id: 'wb_1', title: 'Define Domain', desc: 'Select multi-topic targets' },
+      { id: 'wb_2', title: 'Smart Scheduling', desc: 'AI spaced repetition config' },
+      { id: 'wb_3', title: 'Generative Path', desc: 'Auto-creating study material' }
+    ]
+  },
+  {
+    id: 'smart_revision',
+    title: 'Smart Revision',
+    description: 'Auto-reinforcement mode against weaknesses.',
+    icon: <Target size={20} color="#fbbf24" />,
+    xp: 250,
+    isPremium: true,
+    steps: [
+      { id: 'sr_1', title: 'Analyze Heatmap', desc: 'Finding low mastery areas' },
+      { id: 'sr_2', title: 'Micro-tests', desc: 'Targeted short-burst questions' },
+      { id: 'sr_3', title: 'Confidence Check', desc: 'Re-evaluating domain LVS' }
+    ]
+  }
+];
+
+const WorkflowEngine = () => {
+  const [activeRecipe, setActiveRecipe] = useState(null);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const { addXP, updateStreak, isPremium } = useGame();
+
+  const handleStartRecipe = (recipe) => {
+    if (recipe.isPremium && !isPremium) {
+      setShowPremiumModal(recipe.title);
+      return;
+    }
+    setActiveRecipe(recipe);
+    setCurrentStep(0);
+  };
+
+  const handleNextStep = () => {
+    if (!activeRecipe) return;
+    
+    setIsProcessing(true);
+    // Mock processing delay for realism
+    setTimeout(() => {
+      setIsProcessing(false);
+      
+      if (currentStep < activeRecipe.steps.length - 1) {
+        setCurrentStep(prev => prev + 1);
+      } else {
+        // Complete Workflow
+        addXP(activeRecipe.xp);
+        updateStreak();
+        setCurrentStep(activeRecipe.steps.length); // Mark all as complete
+      }
+    }, 1500);
+  };
+
+  const handleQuit = () => {
+    setActiveRecipe(null);
+    setCurrentStep(0);
+  };
+
+  if (activeRecipe) {
+    const isCompleted = currentStep === activeRecipe.steps.length;
+
+    return (
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{
+        background: '#0a0a14', borderRadius: '16px', border: '1px solid rgba(124,58,237,0.2)',
+        padding: '2rem', maxWidth: '800px', margin: '0 auto'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              {activeRecipe.icon}
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#e2e8f0', margin: 0 }}>
+                {activeRecipe.title}
+              </h2>
+            </div>
+            <p style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem', margin: 0 }}>
+              {activeRecipe.description} • Reward: <strong style={{ color: '#fbbf24' }}>+{activeRecipe.xp} XP</strong>
+            </p>
+          </div>
+          <button onClick={handleQuit} style={{
+            background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-secondary)',
+            padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.85rem'
+          }}>
+            {isCompleted ? 'Close' : 'Quit Workflow'}
+          </button>
+        </div>
+
+        <div style={{ display: 'flex', gap: '3rem' }}>
+          {/* Vertical Stepper UI */}
+          <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative' }}>
+            {/* Connecting line */}
+            <div style={{ 
+              position: 'absolute', top: '15px', bottom: '15px', left: '15px',
+              width: '2px', background: 'rgba(255,255,255,0.05)', zIndex: 0
+            }} />
+            
+            {activeRecipe.steps.map((step, idx) => {
+              const status = idx < currentStep ? 'completed' : idx === currentStep && !isCompleted ? 'active' : 'locked';
+              
+              const nodeColors = {
+                completed: { bg: '#eab308', border: '#ca8a04', text: '#fff' }, // Gold
+                active: { bg: '#3b82f6', border: '#2563eb', text: '#fff' },    // Blue
+                locked: { bg: '#1f2937', border: '#374151', text: '#9ca3af' }    // Grey
+              };
+              
+              const colorConfig = nodeColors[status];
+
+              return (
+                <div key={step.id} style={{ display: 'flex', gap: '16px', position: 'relative', zIndex: 1, opacity: status === 'locked' ? 0.6 : 1 }}>
+                  <div style={{ 
+                    width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0,
+                    background: colorConfig.bg, border: `2px solid ${colorConfig.border}`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: status === 'active' ? '0 0 15px rgba(59, 130, 246, 0.5)' : status === 'completed' ? '0 0 10px rgba(234, 179, 8, 0.3)' : 'none',
+                    transition: 'all 0.3s'
+                  }}>
+                    {status === 'completed' ? <CheckCircle size={16} color="white" /> : <span style={{ fontSize: '0.8rem', fontWeight: 700, color: colorConfig.text }}>{idx + 1}</span>}
+                  </div>
+                  <div style={{ paddingBottom: '0.5rem' }}>
+                    <h3 style={{ 
+                      fontSize: '1.05rem', fontWeight: 700, margin: '0 0 4px 0',
+                      color: status === 'active' ? '#fff' : status === 'completed' ? '#fde047' : '#9ca3af'
+                    }}>
+                      {step.title}
+                    </h3>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', margin: 0 }}>
+                      {step.desc}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Action Area */}
+          <div style={{ flex: '1.5', display: 'flex', flexDirection: 'column' }}>
+            {isCompleted ? (
+              <div style={{
+                background: 'rgba(234, 179, 8, 0.1)', border: '1px solid rgba(234, 179, 8, 0.2)',
+                borderRadius: '16px', padding: '2rem', textAlign: 'center',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                flex: 1
+              }}>
+                <Award size={48} color="#eab308" style={{ marginBottom: '1rem' }} />
+                <h3 style={{ fontSize: '1.3rem', color: '#fde047', fontWeight: 800, marginBottom: '0.5rem' }}>Recipe Completed!</h3>
+                <p style={{ color: '#fef08a', opacity: 0.8, fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+                  Excellent work. You've successfully finished this study workflow.
+                </p>
+                <div style={{ padding: '8px 16px', background: 'rgba(234,179,8,0.2)', borderRadius: '20px', color: '#fde047', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                  +{activeRecipe.xp} XP Awarded
+                </div>
+              </div>
+            ) : (
+              <div style={{
+                background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+                borderRadius: '16px', padding: '2rem', display: 'flex', flexDirection: 'column', flex: 1
+              }}>
+                <div style={{ marginBottom: 'auto' }}>
+                  <div style={{ display: 'inline-block', padding: '4px 10px', background: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '1rem' }}>
+                    Current Step
+                  </div>
+                  <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'white', marginBottom: '1rem' }}>
+                    {activeRecipe.steps[currentStep].title}
+                  </h3>
+                  <div style={{ 
+                    padding: '1.5rem', background: '#11111a', borderRadius: '12px', border: '1px solid #1f1f2e',
+                    color: '#a1a1aa', fontSize: '0.9rem', lineHeight: 1.6, minHeight: '150px'
+                  }}>
+                    {/* Mock Content based on step */}
+                    {currentStep === 0 && "Waiting for user input... Please provide the necessary data to begin this phase of the study recipe."}
+                    {currentStep > 0 && "AI Engine is ready. Please review the output from the previous step or provide your reasoning to move forward."}
+                  </div>
+                </div>
+
+                <div style={{ marginTop: '2rem' }}>
+                  <button 
+                    onClick={handleNextStep} 
+                    disabled={isProcessing}
+                    style={{
+                      width: '100%', padding: '1rem', borderRadius: '12px', border: 'none',
+                      background: isProcessing ? '#1e3a8a' : 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                      color: 'white', fontWeight: 700, fontSize: '1rem', cursor: isProcessing ? 'not-allowed' : 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                      boxShadow: isProcessing ? 'none' : '0 4px 15px rgba(59, 130, 246, 0.3)',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    {isProcessing ? (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        Processing <div className="spin" style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%' }} />
+                      </span>
+                    ) : (
+                      <>
+                        {currentStep === activeRecipe.steps.length - 1 ? 'Complete Workflow' : 'Proceed to Next Step'} <ArrowRight size={18} />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
+  return (
+    <>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
+        {RECIPES.map((recipe) => (
+          <div key={recipe.id} style={{
+            background: 'rgba(20, 20, 30, 0.4)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '16px', overflow: 'hidden',
+            display: 'flex', flexDirection: 'column',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+          }}
+          onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(124,58,237,0.4)'}
+          onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
+          >
+            {/* Visual Lock Overlay */}
+            {recipe.isPremium && !isPremium && (
+                <div style={{
+                    position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(3px)',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                    zIndex: 10, borderRadius: '16px', border: '1px solid rgba(251,191,36,0.3)'
+                }}>
+                     <Lock size={32} color="#fbbf24" opacity={0.9} style={{ marginBottom: '10px' }} />
+                     <span style={{ color: '#fbbf24', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '0.5px' }}>Premium Access</span>
+                </div>
+            )}
+
+            <div style={{ padding: '1.5rem', flex: 1, filter: recipe.isPremium && !isPremium ? 'blur(2px)' : 'none' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {recipe.icon}
+                </div>
+                {recipe.isPremium && (
+                    <div style={{ position: 'absolute', top: 10, right: -25, background: '#fbbf24', color: '#78350f', fontSize: '0.65rem', fontWeight: 800, padding: '4px 30px', transform: 'rotate(45deg)', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', zIndex: 5, letterSpacing: '0.5px' }}>PRO</div>
+                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(251, 191, 36, 0.1)', color: '#fde047', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700 }}>
+                  <Award size={14} /> +{recipe.xp} XP
+                </div>
+              </div>
+              <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#f8fafc', marginBottom: '0.5rem' }}>{recipe.title}</h4>
+              <p style={{ fontSize: '0.85rem', color: '#94a3b8', lineHeight: 1.5, margin: 0 }}>
+                {recipe.description}
+              </p>
+              
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '1rem' }}>
+                {recipe.steps.slice(0, 3).map((step, i) => (
+                   <span key={i} style={{ fontSize: '0.7rem', color: '#64748b', background: 'rgba(255,255,255,0.02)', padding: '2px 8px', borderRadius: '4px' }}>
+                     {i+1}. {step.title}
+                   </span>
+                ))}
+                {recipe.steps.length > 3 && <span style={{ fontSize: '0.7rem', color: '#64748b', padding: '2px' }}>+{recipe.steps.length - 3} more</span>}
+              </div>
+            </div>
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '1rem 1.5rem', background: 'rgba(0,0,0,0.2)', filter: recipe.isPremium && !isPremium ? 'blur(2px)' : 'none' }}>
+              <button 
+                onClick={() => handleStartRecipe(recipe)}
+                style={{
+                  width: '100%', padding: '0.8rem', borderRadius: '10px', border: 'none',
+                  background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white',
+                  fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                  boxShadow: '0 4px 15px rgba(124, 58, 237, 0.3)', transition: 'all 0.2s'
+                }}
+              >
+                <Play size={16} fill="currentColor" /> Start Recipe
+              </button>
+            </div>
+            
+            {/* Click-to-upgrade invisible overlay, catching clicks when locked */}
+            {recipe.isPremium && !isPremium && (
+                <div onClick={() => handleStartRecipe(recipe)} style={{ position: 'absolute', inset: 0, zIndex: 11, cursor: 'pointer' }} />
+            )}
+          </div>
+        ))}
+      </div>
+      <PremiumModal 
+        isOpen={!!showPremiumModal} 
+        onClose={() => setShowPremiumModal(false)}
+        featureName="Advanced Workflow Recipes"
+      />
+    </>
+  );
+};
+
+export default WorkflowEngine;

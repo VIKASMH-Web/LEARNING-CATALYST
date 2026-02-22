@@ -2,42 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Layout, BookOpen, Code, Clock, User, Target, Mic, X, CheckCircle, Crown, Search
+  Layout, BookOpen, Code, Clock, User, Target, Mic, X, CheckCircle, Crown, Search, Flame, Star, Zap, Network
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useFocus } from '../../context/FocusContext';
+import { useGame } from '../../context/GameContext';
 import { requestNotificationPermission, notifyProUpgrade } from '../../utils/notifications';
+
+const RAZORPAY_SCRIPT = "https://checkout.razorpay.com/v1/checkout.js";
 
 const Sidebar = () => {
   const { logout, user } = useAuth();
   const { isRunning, formattedTime } = useFocus();
+  const { xp, level, streak, dailyQuests, completedQuests, completeQuest, isPremium, upgradeToPremium } = useGame();
   const [showPayment, setShowPayment] = useState(false);
-  const [utr, setUtr] = useState('');
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
   
-  const storageKey = user?.id ? `lc_pro_${user.id}` : 'lc_pro_guest';
-  const [isPro, setIsPro] = useState(() => localStorage.getItem(storageKey) === 'true');
-
   useEffect(() => {
-    setIsPro(localStorage.getItem(storageKey) === 'true');
-  }, [user?.id, storageKey]);
-
-  useEffect(() => {
-    // Listen for storage changes in other tabs
-    const check = () => setIsPro(localStorage.getItem(storageKey) === 'true');
-    window.addEventListener('storage', check);
-    window.addEventListener('pro-status-update', check);
     requestNotificationPermission();
-    return () => {
-      window.removeEventListener('storage', check);
-      window.removeEventListener('pro-status-update', check);
-    };
-  }, [storageKey]);
+  }, []);
 
   const menuItems = [
     { path: '/', name: 'Dashboard', icon: Layout },
     { path: '/learning-hub', name: 'Learning Hub', icon: Search },
+    { path: '/skill-tree', name: 'Skill Tree', icon: Network },
     { path: '/career-planner', name: 'Career Planner', icon: Target },
     { path: '/code-engine', name: 'Code Engine', icon: Code },
     { path: '/mock-interview', name: 'Mock Interview', icon: Mic },
@@ -45,17 +34,59 @@ const Sidebar = () => {
     { path: '/profile', name: 'Profile', icon: User },
   ];
 
-  const handleVerify = () => {
+  const handleUpgrade = () => {
+    const script = document.createElement("script");
+    script.src = RAZORPAY_SCRIPT;
+    script.onload = () => {
+      const options = {
+        key: "rzp_test_dummykey", // Mock dummy key
+        amount: "19900", // 199.00 INR
+        currency: "INR",
+        name: "Learning Catalyst",
+        description: "Premium Member Upgrade",
+        theme: { color: "#7c3aed" },
+        handler: function (response) {
+            setVerifying(true);
+            setTimeout(() => {
+              setVerifying(false);
+              setVerified(true);
+              upgradeToPremium();
+              notifyProUpgrade();
+              setTimeout(() => { setShowPayment(false); setVerified(false); }, 2500);
+            }, 1000);
+        },
+        prefill: {
+            name: user?.name || "Premium Learner",
+            email: user?.email || "learner@example.com",
+        }
+      };
+      
+      try {
+         const rzp = new window.Razorpay(options);
+         rzp.on('payment.failed', function (response){
+            alert("Payment failed: " + response.error.description);
+         });
+         rzp.open();
+      } catch (err) {
+         // Fallback mock if script fails to eval properly without real keys
+         simulateMockPayment();
+      }
+    };
+    script.onerror = () => {
+        simulateMockPayment();
+    };
+    document.body.appendChild(script);
+  };
+
+  const simulateMockPayment = () => {
     setVerifying(true);
     setTimeout(() => {
       setVerifying(false);
       setVerified(true);
-      localStorage.setItem(storageKey, 'true');
-      setIsPro(true);
-      // Send real device notification
+      upgradeToPremium();
       notifyProUpgrade();
-      setTimeout(() => { setShowPayment(false); setVerified(false); setUtr(''); }, 2500);
-    }, 2000);
+      setTimeout(() => { setShowPayment(false); setVerified(false); }, 2500);
+    }, 1500);
   };
 
   return (
@@ -80,6 +111,36 @@ const Sidebar = () => {
             </span>
           </div>
 
+          {/* Gamification Stats */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '10px 12px', background: 'rgba(255,255,255,0.03)',
+            borderRadius: '12px', marginBottom: '1.5rem', border: '1px solid rgba(255,255,255,0.06)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: '8px',
+                background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'white', fontWeight: 800, fontSize: '0.85rem'
+              }}>
+                L{level}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600 }}>XP</span>
+                <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 800 }}>{xp.toLocaleString()}</span>
+              </div>
+            </div>
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              padding: '6px 10px', background: 'rgba(239, 68, 68, 0.1)',
+              borderRadius: '8px', color: '#ef4444'
+            }}>
+              <Flame size={16} fill="currentColor" />
+              <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>{streak}</span>
+            </div>
+          </div>
+
           {/* Platform Label */}
           <div style={{ 
             fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-tertiary)',
@@ -89,7 +150,7 @@ const Sidebar = () => {
           </div>
 
           {/* Navigation Menu */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginBottom: '1.5rem' }}>
             {menuItems.map((item) => (
               <NavLink
                 key={item.path}
@@ -125,59 +186,112 @@ const Sidebar = () => {
             ))}
           </div>
 
+          {/* Daily Quests Section */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ 
+              fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-tertiary)',
+              fontWeight: 600, letterSpacing: '0.1em', paddingLeft: '1rem', marginBottom: '0.75rem',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingRight: '0.5rem'
+            }}>
+              <span>DAILY QUESTS</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {dailyQuests?.map((q, i) => {
+                const isCompleted = completedQuests.includes(q.id);
+                return (
+                  <div key={q.id} style={{
+                    display: 'flex', alignItems: 'flex-start', gap: '10px',
+                    padding: '10px', borderRadius: '12px',
+                    background: isCompleted ? 'rgba(250, 204, 21, 0.1)' : 'rgba(255,255,255,0.02)',
+                    border: isCompleted ? '1px solid rgba(250, 204, 21, 0.2)' : '1px solid rgba(255,255,255,0.05)',
+                    transition: 'all 0.2s', cursor: isCompleted ? 'default' : 'pointer',
+                  }} onClick={() => !isCompleted && completeQuest(q.id, q.reward)}>
+                    <div style={{
+                      width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
+                      background: isCompleted ? '#eab308' : 'rgba(255,255,255,0.1)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      marginTop: '2px'
+                    }}>
+                      {isCompleted ? <CheckCircle size={12} color="white" /> : <Star size={10} color="#a1a1aa" />}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ 
+                        margin: 0, fontSize: '0.8rem', fontWeight: isCompleted ? 600 : 500,
+                        color: isCompleted ? '#fde047' : 'var(--text-secondary)',
+                        textDecoration: isCompleted ? 'line-through' : 'none',
+                        opacity: isCompleted ? 0.8 : 1
+                      }}>
+                        {q.title}
+                      </p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
+                        <Zap size={10} color={isCompleted ? '#eab308' : '#a78bfa'} />
+                        <span style={{ fontSize: '0.7rem', color: isCompleted ? '#eab308' : '#a78bfa', fontWeight: 600 }}>
+                          +{q.reward} XP
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Bottom Section */}
           <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '2px' }}>
 
             {/* Pro Plan Card */}
-            {isPro ? (
-              /* Active Pro Plan Badge */
+            {isPremium ? (
+              /* Active Premium Plan Badge */
               <div style={{ 
                 padding: '1rem', borderRadius: '16px', 
-                background: 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(80,250,123,0.08))',
-                border: '1px solid rgba(124,58,237,0.25)',
+                background: 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(251,191,36,0.08))',
+                border: '1px solid rgba(251,191,36,0.25)',
                 display: 'flex', alignItems: 'center', gap: '10px', marginTop: '0.75rem'
               }}>
                 <div style={{
                   width: 36, height: 36, borderRadius: '10px',
-                  background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
+                  background: 'linear-gradient(135deg, #f59e0b, #d97706)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
                 }}>
                   <Crown size={18} color="white" />
                 </div>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#a78bfa', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ fontWeight: 800, fontSize: '0.85rem', color: '#fbbf24', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     Premium Member
-                    <span style={{
-                      padding: '2px 6px', borderRadius: '6px',
-                      background: 'rgba(80,250,123,0.15)', color: '#50fa7b',
-                      fontSize: '0.6rem', fontWeight: 800, textTransform: 'uppercase'
-                    }}>Active</span>
+                    <Star size={12} fill="#fbbf24" color="#fbbf24" />
                   </div>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', marginTop: '2px' }}>
-                    All features unlocked
+                    All AI Features Unlocked
                   </div>
                 </div>
               </div>
             ) : (
               /* Upgrade Card */
               <div style={{ 
-                padding: '1rem', borderRadius: '16px', 
-                background: 'var(--bg-card)', border: '1px solid var(--border-color)',
+                padding: '1.25rem', borderRadius: '16px', 
+                background: 'linear-gradient(135deg, rgba(124,58,237,0.1), rgba(0,0,0,0.5))', 
+                border: '1px solid rgba(124,58,237,0.2)',
                 display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '0.75rem'
               }}>
-                <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-primary)' }}>Premium Plan</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', lineHeight: 1.4 }}>
-                  Get unlimited AI mentoring and interview practice.
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 800, fontSize: '0.85rem', color: '#e2e8f0' }}>
+                  <Star size={14} fill="#fbbf24" color="#fbbf24" /> Unlock Premium
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#9ca3af', lineHeight: 1.5, marginBottom: '0.5rem' }}>
+                  Weekly Growth Reports, AI Interview insights, and advanced metrics.
                 </div>
                 <button 
-                  onClick={() => setShowPayment(true)}
+                  onClick={handleUpgrade}
                   style={{
-                    padding: '0.5rem', borderRadius: '10px', border: 'none',
-                    background: '#7c3aed', color: 'white', fontSize: '0.8rem',
-                    fontWeight: 700, cursor: 'pointer', marginTop: '4px', transition: 'all 0.2s'
+                    padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(251,191,36,0.15)',
+                    background: 'linear-gradient(135deg, rgba(245,158,11,0.1), rgba(217,119,6,0))', 
+                    color: '#fbbf24', fontSize: '0.8rem',
+                    fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s',
+                    boxShadow: '0 4px 15px rgba(245,158,11,0.05)'
                   }}
+                  onMouseEnter={(e) => e.target.style.background = 'linear-gradient(135deg, rgba(245,158,11,0.2), rgba(217,119,6,0.1))'}
+                  onMouseLeave={(e) => e.target.style.background = 'linear-gradient(135deg, rgba(245,158,11,0.1), rgba(217,119,6,0))'}
                 >
-                  Upgrade
+                  Upgrade Now
                 </button>
               </div>
             )}
@@ -186,105 +300,32 @@ const Sidebar = () => {
         </div>
       </nav>
 
-      {/* ====== UPI PAYMENT MODAL ====== */}
+      {/* ====== PREMIUM ACTION MODAL (Fallback/Loading state) ====== */}
       <AnimatePresence>
-        {showPayment && (
+        {verifying && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setShowPayment(false)}
             style={{
               position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)',
               zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center',
               backdropFilter: 'blur(4px)'
             }}
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={e => e.stopPropagation()}
-              style={{
-                width: '90%', maxWidth: 450, background: '#121222',
-                border: '1px solid var(--border-color)', borderRadius: '20px',
-                padding: '2rem', position: 'relative',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.6)'
-              }}
-            >
-              <button
-                onClick={() => setShowPayment(false)}
-                style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', color: '#666', cursor: 'pointer' }}
-              >
-                <X size={20} />
-              </button>
-
-              {verified ? (
-                <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-                  <CheckCircle size={56} color="#50fa7b" style={{ marginBottom: '1rem' }} />
-                  <h2 style={{ fontSize: '1.4rem', color: '#50fa7b', marginBottom: '0.5rem' }}>Payment Verified!</h2>
-                  <p style={{ color: '#a1a1aa', fontSize: '0.9rem' }}>Premium Plan unlocked. Enjoy unlimited features!</p>
-                </div>
-              ) : (
-                <>
-                  <h2 style={{ fontSize: '1.4rem', marginBottom: '1rem', color: 'white', textAlign: 'center' }}>Scan & Pay via UPI</h2>
-                  
-                  <div style={{
-                    background: '#1a1a30', padding: '1.5rem', borderRadius: '12px',
-                    marginBottom: '1.5rem', border: '1px solid #2a2a4a',
-                    textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem'
-                  }}>
-                    <p style={{ color: '#ccc', fontSize: '0.9rem', margin: 0 }}>Scan the QR Code using any UPI App</p>
-                    <div style={{ background: 'white', padding: '10px', borderRadius: '8px' }}>
-                      <img src="/upi_qrcode.png" alt="UPI QR Code" style={{ width: '180px', height: '180px', objectFit: 'contain' }} />
-                    </div>
-                    <div style={{ background: 'rgba(255,255,255,0.08)', padding: '8px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.15)' }}>
-                      <p style={{ color: '#aaa', fontSize: '0.8rem', marginBottom: '2px', margin: '0 0 2px 0' }}>UPI ID</p>
-                      <strong style={{ color: '#fff', fontSize: '1.1rem', letterSpacing: '0.5px' }}>vikasmh@fam</strong>
-                    </div>
-                    <hr style={{ width: '100%', border: 'none', borderTop: '1px solid #2a2a4a', margin: '0.25rem 0' }} />
-                    <div style={{ textAlign: 'left', width: '100%' }}>
-                      <p style={{ color: '#ccc', fontSize: '0.85rem', marginBottom: '4px', margin: '0 0 4px 0' }}><strong>Step 1:</strong> Pay <strong style={{ color: '#50fa7b' }}>₹199</strong> via UPI.</p>
-                      <p style={{ color: '#ccc', fontSize: '0.85rem', margin: 0 }}><strong>Step 2:</strong> Enter 12-digit UTR below.</p>
-                    </div>
-                  </div>
-
-                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '6px', color: '#ccc' }}>Enter UTR / Transaction ID</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 123456789012"
-                    value={utr}
-                    onChange={e => setUtr(e.target.value.replace(/\D/g, ''))}
-                    maxLength={12}
-                    style={{
-                      width: '100%', padding: '0.85rem', borderRadius: '10px',
-                      border: '1px solid var(--border-color)', background: '#060612',
-                      color: 'white', outline: 'none', fontSize: '1rem', letterSpacing: '1px'
-                    }}
-                  />
-                  <p style={{ fontSize: '0.75rem', color: '#666', marginTop: '4px', textAlign: 'right' }}>{utr.length}/12 digits</p>
-
-                  <button
-                    onClick={handleVerify}
-                    disabled={verifying || utr.length < 12}
-                    style={{
-                      marginTop: '1rem', width: '100%', padding: '1rem', borderRadius: '12px',
-                      background: (verifying || utr.length < 12) ? '#1e1e3e' : '#50fa7b',
-                      color: (verifying || utr.length < 12) ? '#4e4e6e' : 'black',
-                      border: 'none', fontWeight: 700, fontSize: '0.95rem',
-                      cursor: (verifying || utr.length < 12) ? 'not-allowed' : 'pointer',
-                      display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px'
-                    }}
-                  >
-                    {verifying ? (
-                      <>Verifying Payment <Clock className="spin" size={18} /></>
-                    ) : (
-                      <>Verify Payment & Unlock <CheckCircle size={18} /></>
-                    )}
-                  </button>
-                </>
-              )}
-            </motion.div>
+             <div style={{ padding: '3rem', background: '#121222', borderRadius: '24px', textAlign: 'center', border: '1px solid #7c3aed' }}>
+                 {!verified ? (
+                   <>
+                     <div className="spin" style={{ width: 48, height: 48, border: '4px solid rgba(124,58,237,0.2)', borderTopColor: '#7c3aed', borderRadius: '50%', margin: '0 auto 1.5rem' }} />
+                     <h3 style={{ color: 'white' }}>Processing Payment...</h3>
+                   </>
+                 ) : (
+                   <>
+                     <CheckCircle size={56} color="#fbbf24" style={{ margin: '0 auto 1.5rem' }} />
+                     <h3 style={{ color: '#fbbf24' }}>Premium Unlocked!</h3>
+                   </>
+                 )}
+             </div>
           </motion.div>
         )}
       </AnimatePresence>

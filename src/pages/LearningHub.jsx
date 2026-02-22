@@ -7,6 +7,7 @@ import {
   GraduationCap, Layers, Target
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
+import WorkflowEngine from '../components/LearningHub/WorkflowEngine';
 import { fullSearch, popularSearches, generateRoadmap, getResourcesForDomain, getToolsForDomain } from '../utils/roadmapEngine';
 
 // ============================================
@@ -226,6 +227,11 @@ const LearningHub = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Study Recipes Dashboard */}
+      {!searchResult && !isSearching && (
+        <WorkflowEngine />
+      )}
 
       {/* Empty State - Popular Topics */}
       {!searchResult && !isSearching && (

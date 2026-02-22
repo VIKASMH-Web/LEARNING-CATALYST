@@ -11,7 +11,8 @@
       { "title": "Interview Preparation", "topics": ["Common Python Questions", "Algorithm Challenges", "System Design Basics", "Code Review Practice"], "duration": "2-4 weeks" }
     ]
   },
-  "javascript": {
+  "javascript": 
+  {
     "label": "JavaScript Developer",
     "type": "technical",
     "stages": [
