@@ -49,13 +49,24 @@ const Profile = () => {
     // Load profile on mount or user change
     useEffect(() => {
         try {
-            const saved = localStorage.getItem(storageKey);
+            let saved = localStorage.getItem(storageKey);
+            
+            // Migration Logic: If logged in user has no profile data, but guest exists, migrate it once
+            if (!saved && authCtx.user?.id) {
+                const guestData = localStorage.getItem('lc_profile_guest');
+                if (guestData) {
+                    saved = guestData;
+                    localStorage.setItem(storageKey, guestData);
+                    // We keep guest data just in case, or we could remove it. Let's keep it for now.
+                }
+            }
+
             if (saved) {
                 const parsed = JSON.parse(saved);
                 setProfile({
                     ...defaultProfile,
                     ...parsed,
-                    // If switching users, ensure we sync the new user's auth details if not already customized
+                    // Ensure we sync the user's current identity from Auth
                     name: (parsed.name === 'Your Name' || parsed.name === 'Guest Learner') && authCtx.user?.name ? authCtx.user.name : parsed.name,
                     email: (parsed.email === 'your.email@example.com' || !parsed.email) && authCtx.user?.email ? authCtx.user.email : parsed.email,
                     focusAreas: Array.isArray(parsed.focusAreas) ? parsed.focusAreas : defaultProfile.focusAreas,
@@ -63,14 +74,14 @@ const Profile = () => {
                     certifications: Array.isArray(parsed.certifications) ? parsed.certifications : [],
                 });
             } else {
-                // No saved profile for this user, reset to defaults with current auth info
                 setProfile({
                     ...defaultProfile,
                     name: authCtx.user?.name || 'Your Name',
                     email: authCtx.user?.email || 'your.email@example.com',
                 });
             }
-        } catch { 
+        } catch (err) { 
+            console.error("Profile load error:", err);
             setProfile(defaultProfile);
         }
     }, [storageKey, authCtx.user?.name, authCtx.user?.email]);
