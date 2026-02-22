@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { notifyInterviewComplete } from '../utils/notifications';
 import interviewQuestionsData from '../data/interviewQuestions.json';
 import { useGame } from '../context/GameContext';
-import PremiumModal from './Shared/PremiumModal';
+import PremiumModal from '../components/Shared/PremiumModal';
 
 const domains = [
     { key: 'backend_developer', label: 'Backend Development', icon: '⚙️', color: '#60a5fa' },
