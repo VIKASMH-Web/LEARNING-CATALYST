@@ -352,7 +352,13 @@ const SkillTreePage = () => {
         setChallengeQuestions(selected);
         setChallengeQuestion(selected[0]);
       } else {
-        const fallback = [{ q: "Type 'ready' to pass the general assessment.", a: "ready" }];
+        const fallback = [
+          { q: `Assessment for ${selectedNode?.id || 'this module'} is being calibrated. Type 'ready' to proceed.`, a: "ready" },
+          { q: "What is 2 + 2?", a: "4" },
+          { q: "What is the capital of France?", a: "paris" },
+          { q: "Is JavaScript a programming language?", a: "yes" },
+          { q: "Complete the sentence: Code is ... (hint: life)", a: "life" }
+        ];
         setChallengeQuestions(fallback);
         setChallengeQuestion(fallback[0]);
       }
@@ -392,7 +398,10 @@ const SkillTreePage = () => {
         });
       }
 
-      // Special global unlocks if needed could go here
+      // Special global unlocks
+      if (selectedNode.id === 'backend_core') {
+        updateSkillTreeState('system_design', 'available');
+      }
     }
     setShowChallenge(false);
     setSelectedNode(null);

@@ -32,9 +32,9 @@ export const GameProvider = ({ children }) => {
 
   const [skillTreeState, setSkillTreeState] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('lc_skillTreeState') || '{"prog_javascript_basics": "available"}');
+      return JSON.parse(localStorage.getItem('lc_skillTreeState') || '{"root_programming": "mastered", "js_core": "available", "backend_core": "available"}');
     } catch {
-      return { "prog_javascript_basics": "available" };
+      return { "root_programming": "mastered", "js_core": "available", "backend_core": "available" };
     }
   });
 

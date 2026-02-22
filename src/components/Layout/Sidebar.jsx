@@ -32,6 +32,7 @@ const Sidebar = () => {
     { path: '/marketplace', name: 'Career Marketplace', icon: Briefcase },
     { path: '/code-engine', name: 'Code Engine', icon: Code },
     { path: '/focus', name: 'Focus Mode', icon: Clock },
+    { path: '/profile', name: 'Profile', icon: User },
   ];
 
   const recruiterMenuItems = [
