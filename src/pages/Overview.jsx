@@ -9,6 +9,7 @@ import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
 import { useGame } from '../context/GameContext';
 import PremiumModal from '../components/Shared/PremiumModal';
+import { Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 const Overview = () => {
