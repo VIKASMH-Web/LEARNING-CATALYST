@@ -228,10 +228,7 @@ const LearningHub = () => {
         )}
       </AnimatePresence>
 
-      {/* Study Recipes Dashboard */}
-      {!searchResult && !isSearching && (
-        <WorkflowEngine />
-      )}
+
 
       {/* Empty State - Popular Topics */}
       {!searchResult && !isSearching && (
@@ -253,6 +250,17 @@ const LearningHub = () => {
             ))}
           </div>
         </motion.div>
+      )}
+
+      {/* Study Recipes Dashboard */}
+      {!searchResult && !isSearching && (
+        <div style={{ marginTop: '4rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: 30 }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'white', marginBottom: '0.5rem' }}>Automated Study Workflows</h2>
+                <p style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem' }}>One-click recipes to accomplish specific learning goals.</p>
+            </div>
+            <WorkflowEngine />
+        </div>
       )}
 
       {/* ============================================ */}

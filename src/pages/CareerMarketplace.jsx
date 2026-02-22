@@ -24,7 +24,6 @@ export default function CareerMarketplace() {
   const [activeTab, setActiveTab] = useState('search'); // search, shortlist
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDomain, setSelectedDomain] = useState('All');
-  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [mockAvailable, setMockAvailable] = useState(true);
 
   // Computed Values for Student Profile
@@ -132,13 +131,11 @@ export default function CareerMarketplace() {
             </div>
             
             <div style={{ display: 'flex', gap: '1.5rem' }}>
-                <button onClick={() => { if(!isPremium) setShowPremiumModal(true); }} style={{ flex: 1, padding: '1.2rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.1)', color: '#a1a1aa', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontSize: '0.9rem', fontWeight: 600, transition: 'all 0.2s' }}>
+                <button onClick={() => alert('GitHub integration coming soon.')} style={{ flex: 1, padding: '1.2rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.1)', color: '#a1a1aa', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontSize: '0.9rem', fontWeight: 600, transition: 'all 0.2s' }}>
                    <Github size={20} /> Connect GitHub
-                   {!isPremium && <Lock size={14} style={{marginLeft: 'auto'}}/>}
                 </button>
-                <button onClick={() => { if(!isPremium) setShowPremiumModal(true); }} style={{ flex: 1, padding: '1.2rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.1)', color: '#a1a1aa', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontSize: '0.9rem', fontWeight: 600, transition: 'all 0.2s' }}>
+                <button onClick={() => alert('Resume upload coming soon.')} style={{ flex: 1, padding: '1.2rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.1)', color: '#a1a1aa', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontSize: '0.9rem', fontWeight: 600, transition: 'all 0.2s' }}>
                    <FileText size={20} /> Upload Resume
-                   {!isPremium && <Lock size={14} style={{marginLeft: 'auto'}}/>}
                 </button>
             </div>
 
@@ -160,23 +157,8 @@ export default function CareerMarketplace() {
                   </div>
               </div>
 
-              {!isPremium && (
-                 <div style={{ padding: '1.5rem', background: 'linear-gradient(135deg, rgba(251,191,36,0.1), rgba(217,119,6,0.02))', border: '1px solid rgba(251,191,36,0.2)', borderRadius: '20px' }}>
-                    <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#fbbf24', margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: '8px' }}><Star size={16} fill="#fbbf24"/> Premium Boost</h3>
-                    <p style={{ fontSize: '0.85rem', color: '#e2e8f0', margin: '0 0 1rem 0', lineHeight: 1.5 }}>
-                        Get 3x more visibility in Recruiter Search results and unlock the advanced AI cover letter generator.
-                    </p>
-                    <button onClick={() => setShowPremiumModal(true)} style={{ width: '100%', padding: '0.75rem', background: '#fbbf24', color: '#78350f', border: 'none', borderRadius: '10px', fontWeight: 700, cursor: 'pointer' }}>Upgrade Profile</button>
-                 </div>
-              )}
           </div>
         </div>
-        
-        <PremiumModal 
-            isOpen={showPremiumModal} 
-            onClose={() => setShowPremiumModal(false)}
-            featureName="Premium Talent Profile"
-        />
       </div>
     );
   }
@@ -227,11 +209,6 @@ export default function CareerMarketplace() {
                 >
                     {CAREER_DOMAINS.map(d => <option key={d} value={d}>{d}</option>)}
                 </select>
-                {!isPremium && (
-                    <button onClick={() => setShowPremiumModal(true)} style={{ padding: '0 1.5rem', background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Star size={16} fill="white" /> Pro Filters
-                    </button>
-                )}
             </div>
         )}
 
@@ -321,7 +298,7 @@ export default function CareerMarketplace() {
                                         >
                                             {isShortlisted ? <BookmarkCheck size={18} /> : <Bookmark size={18} />}
                                         </button>
-                                        <button style={{ padding: '0 1.25rem', height: 40, background: 'white', color: 'black', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}>
+                                        <button onClick={() => alert('Full profile view coming soon!')} style={{ padding: '0 1.25rem', height: 40, background: 'white', color: 'black', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}>
                                             View Profile
                                         </button>
                                     </div>
@@ -332,12 +309,6 @@ export default function CareerMarketplace() {
                 })
             )}
         </div>
-        
-        <PremiumModal 
-            isOpen={showPremiumModal} 
-            onClose={() => setShowPremiumModal(false)}
-            featureName="Recruiter Pro Suite"
-        />
     </div>
   );
 }

@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { notifyInterviewComplete } from '../utils/notifications';
 import interviewQuestionsData from '../data/interviewQuestions.json';
 import { useGame } from '../context/GameContext';
-import PremiumModal from '../components/Shared/PremiumModal';
 
 const domains = [
     { key: 'backend_developer', label: 'Backend Development', icon: '⚙️', color: '#60a5fa' },
@@ -18,13 +17,11 @@ const domains = [
 
 const MockInterview = () => {
     const { addXP } = useProgress();
-    const { isPremium } = useGame();
     const [view, setView] = useState('lobby'); // lobby, domain, difficulty, permission, interview, feedback
     const [selectedDomain, setSelectedDomain] = useState('general');
     const [difficulty, setDifficulty] = useState('medium');
     const [questions, setQuestions] = useState([]);
     const [advancedMode, setAdvancedMode] = useState(false);
-    const [showPremiumModal, setShowPremiumModal] = useState(false);
     
     // Media & Interview State
     const [stream, setStream] = useState(null);
@@ -183,7 +180,7 @@ const MockInterview = () => {
                                     boxShadow: '0 0 30px rgba(124,58,237,0.3)'
                                 }}><Play size={18} fill="white" /> Choose Domain</button>
 
-                                <button onClick={() => { if(!isPremium) setShowPremiumModal(true); else setAdvancedMode(!advancedMode); }} style={{
+                                <button onClick={() => setAdvancedMode(!advancedMode)} style={{
                                     padding: '0.875rem 1.25rem', background: advancedMode ? 'rgba(251,191,36,0.1)' : 'rgba(255,255,255,0.02)', 
                                     border: advancedMode ? '1px solid rgba(251,191,36,0.3)' : '1px solid rgba(255,255,255,0.08)', color: advancedMode ? '#fbbf24' : '#a1a1aa', borderRadius: '14px', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s', boxShadow: advancedMode ? '0 0 15px rgba(251,191,36,0.1)' : 'none'
                                 }}>
@@ -215,11 +212,6 @@ const MockInterview = () => {
                         </div>
                     ))}
                 </div>
-                <PremiumModal 
-                    isOpen={showPremiumModal} 
-                    onClose={() => setShowPremiumModal(false)}
-                    featureName="Mock Interview Advanced Mode"
-                />
             </motion.div>
         );
     }

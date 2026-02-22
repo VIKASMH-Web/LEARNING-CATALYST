@@ -508,41 +508,59 @@ const RoadmapItem = ({ icon, title, progress, color }) => (
 const HeatmapCustomContent = (props) => {
     const { root, depth, x, y, width, height, index, name, score } = props;
     if (depth !== 1) return null; // Only render children of root
-    
     let status = "Strength";
-    let statusColor = "#34d399"; // Green
+    let fillCol = "url(#gradGreen)";
+    let strokeCol = "#10b981";
+    
     if (score < 50) {
         status = "Critical Weakness";
-        statusColor = "#ef4444"; // Red
+        fillCol = "url(#gradRed)";
+        strokeCol = "#ef4444";
     } else if (score <= 70) {
         status = "Needs Practice";
-        statusColor = "#fbbf24"; // Yellow
+        fillCol = "url(#gradYellow)";
+        strokeCol = "#fbbf24";
     }
 
     return (
-        <g>
+        <g transform={`translate(${x},${y})`}>
+            <defs>
+                <linearGradient id="gradRed" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="rgba(239,68,68,0.3)" />
+                    <stop offset="100%" stopColor="rgba(153,27,27,0.8)" />
+                </linearGradient>
+                <linearGradient id="gradYellow" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="rgba(245,158,11,0.3)" />
+                    <stop offset="100%" stopColor="rgba(180,83,9,0.8)" />
+                </linearGradient>
+                <linearGradient id="gradGreen" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="rgba(16,185,129,0.3)" />
+                    <stop offset="100%" stopColor="rgba(4,120,87,0.8)" />
+                </linearGradient>
+            </defs>
             <rect
-                x={x}
-                y={y}
+                x={0}
+                y={0}
                 width={width}
                 height={height}
+                rx={12}
+                ry={12}
                 style={{
-                    fill: statusColor,
-                    stroke: '#09090b',
-                    strokeWidth: 4,
-                    strokeOpacity: 0.8,
-                    opacity: 0.85,
-                    transition: 'all 0.3s',
-                    cursor: 'pointer'
+                    fill: fillCol,
+                    stroke: strokeCol,
+                    strokeWidth: 2,
+                    strokeOpacity: 0.6,
+                    cursor: 'pointer',
+                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
                 }}
             />
-            {width > 60 && height > 40 && (
+            {width > 60 && height > 45 && (
                 <>
-                    <text x={x + 10} y={y + 20} fill="#fff" fontSize={12} fontWeight="bold" textAnchor="start">
+                    <text x={12} y={24} fill="#ffffff" fontSize={13} fontWeight="800" textAnchor="start">
                         {name}
                     </text>
-                    <text x={x + 10} y={y + 36} fill="rgba(255,255,255,0.9)" fontSize={10} textAnchor="start">
-                        {score}% - {status}
+                    <text x={12} y={42} fill="rgba(255,255,255,0.7)" fontSize={11} fontWeight="600" textAnchor="start">
+                        {score}% 
                     </text>
                 </>
             )}

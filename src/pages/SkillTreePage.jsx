@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, Unlock, CheckCircle, Award, Network, ChevronRight, X, Play, Zap, BarChart2 } from 'lucide-react';
 import { useGame } from '../context/GameContext';
-import PremiumModal from '../components/Shared/PremiumModal';
 
 const CURRICULUM = {
   id: 'root_programming',
@@ -87,9 +86,7 @@ const SkillTreePage = () => {
   const [showChallenge, setShowChallenge] = useState(false);
   const [challengeScore, setChallengeScore] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [showInsights, setShowInsights] = useState(false);
-  const { isPremium } = useGame();
 
   // Initialize Root node if not preset
   useEffect(() => {
@@ -231,7 +228,7 @@ const SkillTreePage = () => {
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <button 
-              onClick={() => { if (!isPremium) setShowPremiumModal(true); else setShowInsights(true); }}
+              onClick={() => setShowInsights(true)}
               style={{
                 display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '16px', border: '1px solid rgba(251,191,36,0.3)', background: 'linear-gradient(135deg, rgba(251,191,36,0.1), rgba(217,119,6,0.02))', color: '#fbbf24', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 15px rgba(251,191,36,0.1)'
               }}
@@ -409,12 +406,6 @@ const SkillTreePage = () => {
            </motion.div>
         )}
       </AnimatePresence>
-
-      <PremiumModal 
-        isOpen={showPremiumModal} 
-        onClose={() => setShowPremiumModal(false)}
-        featureName="Advanced Skill Tree Insights"
-      />
     </div>
   );
 };
