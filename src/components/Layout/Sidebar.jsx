@@ -14,7 +14,7 @@ const RAZORPAY_SCRIPT = "https://checkout.razorpay.com/v1/checkout.js";
 const Sidebar = () => {
   const { logout, user } = useAuth();
   const { isRunning, formattedTime } = useFocus();
-  const { xp, level, streak, isPremium, upgradeToPremium, userRole, setUserRole } = useGame();
+  const { xp, level, streak, dailyQuests, completedQuests, completeQuest, isPremium, upgradeToPremium, userRole, setUserRole } = useGame();
   const [showPayment, setShowPayment] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
