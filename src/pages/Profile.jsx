@@ -174,11 +174,12 @@ const Profile = () => {
                 <div
                     onClick={() => isEditing && bannerInputRef.current?.click()}
                     style={{
-                        height: '180px',
+                        height: '120px',
                         background: profile.bannerUrl
                             ? `url(${profile.bannerUrl}) center/cover no-repeat`
-                            : 'linear-gradient(135deg, #7c3aed 0%, #3b82f6 50%, #06b6d4 100%)',
-                        position: 'relative', cursor: isEditing ? 'pointer' : 'default'
+                            : 'var(--bg-elevated)',
+                        position: 'relative', cursor: isEditing ? 'pointer' : 'default',
+                        borderBottom: '1px solid var(--border-color)'
                     }}
                 >
                     <div style={{ position: 'absolute', inset: 0, opacity: 0.15, backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(255,255,255,0.5) 0%, transparent 20%)' }} />
@@ -199,20 +200,20 @@ const Profile = () => {
                         <div style={{ position: 'relative' }}>
                             <div
                                 style={{
-                                    width: 120, height: 120, borderRadius: '24px',
-                                    background: '#1e293b', padding: '4px',
-                                    boxShadow: '0 10px 25px rgba(0,0,0,0.3)', overflow: 'hidden'
+                                    width: 90, height: 90, borderRadius: 12,
+                                    background: 'var(--bg-elevated)', padding: '3px',
+                                    border: '1px solid var(--border-color)', overflow: 'hidden'
                                 }}
                             >
                                 {profile.avatarUrl ? (
                                     <img src={profile.avatarUrl} alt="Profile" style={{ width: '100%', height: '100%', borderRadius: '20px', objectFit: 'cover' }} />
                                 ) : (
                                     <div style={{
-                                        width: '100%', height: '100%', borderRadius: '20px',
-                                        background: 'linear-gradient(135deg, #334155, #1e293b)',
+                                        width: '100%', height: '100%', borderRadius: 10,
+                                        background: 'var(--bg-surface)',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center'
                                     }}>
-                                        <User size={48} color="#64748b" strokeWidth={1.5} />
+                                        <User size={36} color="var(--text-tertiary)" strokeWidth={1.5} />
                                     </div>
                                 )}
                             </div>
@@ -572,19 +573,19 @@ const Profile = () => {
                     </div>
 
                     {/* Progress Insights */}
-                    <div className="glass-card" style={{ padding: '2rem', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', border: 'none', color: 'white' }}>
-                        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.5rem' }}>Progress Insights</h3>
-                        <p style={{ fontSize: '0.85rem', opacity: 0.9, lineHeight: 1.6, marginBottom: '1.5rem' }}>
-                            You have {activeDays.length} active days and {(focusMinutes / 60).toFixed(1)}h of focused learning. Keep going!
+                    <div style={{ border: '1px solid var(--border-color)', borderRadius: 8, padding: '1.5rem' }}>
+                        <h3 style={{ fontSize: '1rem', fontWeight: 500, marginBottom: '0.375rem' }}>Progress Insights</h3>
+                        <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                            You have {activeDays.length} active days and {(focusMinutes / 60).toFixed(1)}h of focused learning.
                         </p>
-                        <div style={{ display: 'flex', gap: '1rem' }}>
-                            <div style={{ flex: 1, padding: '0.75rem', background: 'rgba(255,255,255,0.12)', borderRadius: '8px', textAlign: 'center' }}>
-                                <div style={{ fontWeight: 800, fontSize: '1.2rem' }}>{activeDays.length}</div>
-                                <div style={{ fontSize: '0.7rem', opacity: 0.8 }}>Active Days</div>
+                        <div style={{ display: 'flex', gap: '0.75rem' }}>
+                            <div style={{ flex: 1, padding: '0.625rem', border: '1px solid var(--border-color)', borderRadius: 6, textAlign: 'center' }}>
+                                <div style={{ fontWeight: 600, fontSize: '1rem' }}>{activeDays.length}</div>
+                                <div className="body-xs">Active Days</div>
                             </div>
-                            <div style={{ flex: 1, padding: '0.75rem', background: 'rgba(255,255,255,0.12)', borderRadius: '8px', textAlign: 'center' }}>
-                                <div style={{ fontWeight: 800, fontSize: '1.2rem' }}>{codeRuns}</div>
-                                <div style={{ fontSize: '0.7rem', opacity: 0.8 }}>Code Runs</div>
+                            <div style={{ flex: 1, padding: '0.625rem', border: '1px solid var(--border-color)', borderRadius: 6, textAlign: 'center' }}>
+                                <div style={{ fontWeight: 600, fontSize: '1rem' }}>{codeRuns}</div>
+                                <div className="body-xs">Code Runs</div>
                             </div>
                         </div>
                     </div>

@@ -29,7 +29,7 @@ const Sidebar = () => {
     { path: '/skill-tree', name: 'Skill Tree', icon: Network },
     { path: '/mock-interview', name: 'Mock Interview', icon: Mic },
     { path: '/career-planner', name: 'Career Planner', icon: Target },
-    { path: '/marketplace', name: 'Career Marketplace', icon: Briefcase },
+    { path: '/marketplace', name: 'Marketplace', icon: Briefcase },
     { path: '/code-engine', name: 'Code Engine', icon: Code },
     { path: '/focus', name: 'Focus Mode', icon: Clock },
     { path: '/profile', name: 'Profile', icon: User },
@@ -50,12 +50,12 @@ const Sidebar = () => {
     script.src = RAZORPAY_SCRIPT;
     script.onload = () => {
       const options = {
-        key: "rzp_test_dummykey", // Mock dummy key
-        amount: "19900", // 199.00 INR
+        key: "rzp_test_dummykey",
+        amount: "19900",
         currency: "INR",
         name: "Learning Catalyst",
         description: "Premium Member Upgrade",
-        theme: { color: "#7c3aed" },
+        theme: { color: "#6366f1" },
         handler: function (response) {
             setVerifying(true);
             setTimeout(() => {
@@ -79,7 +79,6 @@ const Sidebar = () => {
          });
          rzp.open();
       } catch (err) {
-         // Fallback mock if script fails to eval properly without real keys
          simulateMockPayment();
       }
     };
@@ -103,115 +102,90 @@ const Sidebar = () => {
   return (
     <>
       <nav className="sidebar">
-        <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <div style={{ padding: '1.25rem 1rem', display: 'flex', flexDirection: 'column', height: '100%' }}>
           
-          {/* Logo Section */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem', paddingLeft: '0.5rem' }}>
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ borderRadius: '10px', flexShrink: 0 }}>
-              <defs>
-                <linearGradient id="logoBg" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#7c3aed"/>
-                  <stop offset="1" stopColor="#4f46e5"/>
-                </linearGradient>
-              </defs>
-              <rect width="36" height="36" rx="10" fill="url(#logoBg)"/>
-              <text x="18" y="24" textAnchor="middle" fill="white" fontFamily="Inter, sans-serif" fontWeight="800" fontSize="16" letterSpacing="-0.5">LC</text>
-            </svg>
-            <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+          {/* Logo */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '1.75rem', paddingLeft: '0.5rem' }}>
+            <div style={{
+              width: 28, height: 28, borderRadius: 7,
+              background: 'var(--accent-color)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'white', fontWeight: 700, fontSize: '0.75rem', flexShrink: 0,
+              letterSpacing: '-0.02em'
+            }}>
+              LC
+            </div>
+            <span style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
               Catalyst
             </span>
+            {isPremium && <Star size={12} fill="#fbbf24" color="#fbbf24" style={{ marginLeft: 'auto', opacity: 0.7 }} />}
           </div>
 
-          {/* Gamification Stats (Only show for students) */}
+          {/* Minimal XP / Streak Row */}
           {userRole === 'student' && (
-              <div style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '10px 12px', background: 'rgba(255,255,255,0.03)',
-                borderRadius: '12px', marginBottom: '1.5rem', border: '1px solid rgba(255,255,255,0.06)'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{
-                    width: 32, height: 32, borderRadius: '8px',
-                    background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: 'white', fontWeight: 800, fontSize: '0.85rem'
-                  }}>
-                    L{level}
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600 }}>XP</span>
-                    <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 800 }}>{xp.toLocaleString()}</span>
-                  </div>
-                </div>
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: '6px',
-                  padding: '6px 10px', background: 'rgba(239, 68, 68, 0.1)',
-                  borderRadius: '8px', color: '#ef4444'
-                }}>
-                  <Flame size={16} fill="currentColor" />
-                  <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>{streak}</span>
-                </div>
-              </div>
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '12px',
+              padding: '0 0.5rem', marginBottom: '1.5rem',
+              fontSize: '0.75rem', color: 'var(--text-tertiary)'
+            }}>
+              <span style={{ fontVariantNumeric: 'tabular-nums' }}>{xp.toLocaleString()} XP</span>
+              <span style={{ width: 1, height: 12, background: 'var(--border-color)' }} />
+              <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                <Flame size={11} /> {streak}d streak
+              </span>
+            </div>
           )}
 
-          {/* Role Toggle Switch */}
+          {/* Role Toggle */}
           <div style={{
-             display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0.75rem',
-             background: 'rgba(0,0,0,0.2)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '1.5rem'
+             display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
+             padding: '0.375rem 0.625rem',
+             borderRadius: 6, border: '1px solid var(--border-color)', marginBottom: '1.25rem'
           }}>
-             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
-                 {userRole === 'student' ? 'Student Mode' : 'Recruiter Mode'}
+             <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-tertiary)' }}>
+                 {userRole === 'student' ? 'Student' : 'Recruiter'}
              </span>
              <button onClick={handleRoleToggle} style={{
-                 background: userRole === 'recruiter' ? 'linear-gradient(135deg, #10b981, #059669)' : 'rgba(255,255,255,0.1)', border: 'none',
-                 width: '40px', height: '22px', borderRadius: '12px', position: 'relative', cursor: 'pointer', transition: 'all 0.3s'
+                 background: userRole === 'recruiter' ? 'var(--success)' : 'rgba(255,255,255,0.08)', border: 'none',
+                 width: '32px', height: '18px', borderRadius: '9px', position: 'relative', cursor: 'pointer', transition: 'all 0.2s'
              }}>
                  <div style={{
-                     width: '18px', height: '18px', background: 'white', borderRadius: '50%',
-                     position: 'absolute', top: '2px', left: userRole === 'recruiter' ? '20px' : '2px',
-                     transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                     width: '14px', height: '14px', background: 'white', borderRadius: '50%',
+                     position: 'absolute', top: '2px', left: userRole === 'recruiter' ? '16px' : '2px',
+                     transition: 'left 0.2s ease'
                  }} />
              </button>
           </div>
 
-          {/* Platform Label */}
-          <div style={{ 
-            fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-tertiary)',
-            fontWeight: 600, letterSpacing: '0.1em', paddingLeft: '1rem', marginBottom: '0.75rem'
-          }}>
-            PLATFORM
+          {/* Section Label */}
+          <div className="label" style={{ paddingLeft: '0.75rem', marginBottom: '0.5rem' }}>
+            Navigation
           </div>
 
-          {/* Navigation Menu */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginBottom: '1.5rem' }}>
+          {/* Navigation */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', marginBottom: '1.5rem' }}>
             {menuItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 style={({ isActive }) => ({
-                  display: 'flex', alignItems: 'center', gap: '12px',
-                  padding: '0.625rem 1rem', borderRadius: '10px',
+                  display: 'flex', alignItems: 'center', gap: '10px',
+                  padding: '0.4375rem 0.75rem', borderRadius: 6,
                   textDecoration: 'none',
-                  color: isActive ? '#a78bfa' : 'var(--text-secondary)',
-                  background: isActive ? 'rgba(124, 58, 237, 0.1)' : 'transparent',
-                  fontWeight: isActive ? 600 : 500, fontSize: '0.9rem',
-                  transition: 'all 0.15s ease', position: 'relative',
+                  color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+                  background: isActive ? 'rgba(255,255,255,0.05)' : 'transparent',
+                  fontWeight: isActive ? 500 : 400, fontSize: '0.8125rem',
+                  transition: 'all 0.1s ease',
                 })}
               >
                 {({ isActive }) => (
                   <>
-                     <item.icon size={18} color={isActive ? "#a78bfa" : "var(--icon-color)"} strokeWidth={isActive ? 2.5 : 2} />
+                     <item.icon size={15} color={isActive ? "var(--text-primary)" : "var(--text-tertiary)"} strokeWidth={isActive ? 2 : 1.5} />
                      <span>{item.name}</span>
                      {item.path === '/focus' && isRunning && (
-                        <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: '#34d399', fontWeight: 600, fontVariantNumeric: 'tabular-nums', background: 'rgba(52,211,153,0.1)', padding: '2px 6px', borderRadius: 4 }}>
+                        <span style={{ marginLeft: 'auto', fontSize: '0.6875rem', color: 'var(--success)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
                           {formattedTime}
                         </span>
-                     )}
-                     {isActive && !(item.path === '/focus' && isRunning) && (
-                       <div style={{
-                         position: 'absolute', right: '12px', width: '6px', height: '6px',
-                         borderRadius: '50%', background: '#7c3aed'
-                       }} />
                      )}
                   </>
                 )}
@@ -219,102 +193,76 @@ const Sidebar = () => {
             ))}
           </div>
 
-          {/* Daily Quests Section */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <div style={{ 
-              fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-tertiary)',
-              fontWeight: 600, letterSpacing: '0.1em', paddingLeft: '1rem', marginBottom: '0.75rem',
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingRight: '0.5rem'
-            }}>
-              <span>DAILY QUESTS</span>
+          {/* Daily Quests */}
+          <div style={{ marginBottom: '1rem' }}>
+            <div className="label" style={{ paddingLeft: '0.75rem', marginBottom: '0.5rem' }}>
+              Today
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {dailyQuests?.map((q, i) => {
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              {dailyQuests?.map((q) => {
                 const isCompleted = completedQuests.includes(q.id);
                 return (
-                  <div key={q.id} style={{
-                    display: 'flex', alignItems: 'flex-start', gap: '10px',
-                    padding: '10px', borderRadius: '12px',
-                    background: isCompleted ? 'rgba(250, 204, 21, 0.1)' : 'rgba(255,255,255,0.02)',
-                    border: isCompleted ? '1px solid rgba(250, 204, 21, 0.2)' : '1px solid rgba(255,255,255,0.05)',
-                    transition: 'all 0.2s', cursor: isCompleted ? 'default' : 'pointer',
-                  }} onClick={() => !isCompleted && completeQuest(q.id, q.reward)}>
+                  <div key={q.id} 
+                    onClick={() => !isCompleted && completeQuest(q.id, q.reward)}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '8px',
+                      padding: '0.375rem 0.75rem', borderRadius: 6,
+                      cursor: isCompleted ? 'default' : 'pointer',
+                      transition: 'background 0.1s',
+                    }}
+                    onMouseEnter={e => !isCompleted && (e.currentTarget.style.background = 'rgba(255,255,255,0.03)')}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
                     <div style={{
-                      width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
-                      background: isCompleted ? '#eab308' : 'rgba(255,255,255,0.1)',
+                      width: 14, height: 14, borderRadius: 3, flexShrink: 0,
+                      border: isCompleted ? 'none' : '1px solid var(--border-hover)',
+                      background: isCompleted ? 'var(--accent-color)' : 'transparent',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      marginTop: '2px'
                     }}>
-                      {isCompleted ? <CheckCircle size={12} color="white" /> : <Star size={10} color="#a1a1aa" />}
+                      {isCompleted && <CheckCircle size={10} color="white" />}
                     </div>
-                    <div style={{ flex: 1 }}>
-                      <p style={{ 
-                        margin: 0, fontSize: '0.8rem', fontWeight: isCompleted ? 600 : 500,
-                        color: isCompleted ? '#fde047' : 'var(--text-secondary)',
-                        textDecoration: isCompleted ? 'line-through' : 'none',
-                        opacity: isCompleted ? 0.8 : 1
-                      }}>
-                        {q.title}
-                      </p>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
-                        <Zap size={10} color={isCompleted ? '#eab308' : '#a78bfa'} />
-                        <span style={{ fontSize: '0.7rem', color: isCompleted ? '#eab308' : '#a78bfa', fontWeight: 600 }}>
-                          +{q.reward} XP
-                        </span>
-                      </div>
-                    </div>
+                    <span style={{ 
+                      fontSize: '0.75rem', fontWeight: 400,
+                      color: isCompleted ? 'var(--text-tertiary)' : 'var(--text-secondary)',
+                      textDecoration: isCompleted ? 'line-through' : 'none',
+                      flex: 1
+                    }}>
+                      {q.title}
+                    </span>
+                    <span style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)' }}>
+                      +{q.reward}
+                    </span>
                   </div>
                 );
               })}
             </div>
           </div>
 
-          {/* Bottom Section */}
-          <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-
-            {/* Pro Plan Card */}
-            {isPremium ? (
-              /* Very Subtle Premium Indicator */
-              <div style={{ padding: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', opacity: 0.8 }}>
-                <Star size={14} fill="#fbbf24" color="#fbbf24" />
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Premium Active</span>
-              </div>
-            ) : (
-              /* Upgrade Card */
-              <div style={{ 
-                padding: '1.25rem', borderRadius: '16px', 
-                background: 'linear-gradient(135deg, rgba(124,58,237,0.1), rgba(0,0,0,0.5))', 
-                border: '1px solid rgba(124,58,237,0.2)',
-                display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '0.75rem'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 800, fontSize: '0.85rem', color: '#e2e8f0' }}>
-                  <Star size={14} fill="#fbbf24" color="#fbbf24" /> Unlock Premium
-                </div>
-                <div style={{ fontSize: '0.75rem', color: '#9ca3af', lineHeight: 1.5, marginBottom: '0.5rem' }}>
-                  Weekly Growth Reports, AI Interview insights, and advanced metrics.
-                </div>
-                <button 
-                  onClick={handleUpgrade}
-                  style={{
-                    padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(251,191,36,0.15)',
-                    background: 'linear-gradient(135deg, rgba(245,158,11,0.1), rgba(217,119,6,0))', 
-                    color: '#fbbf24', fontSize: '0.8rem',
-                    fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s',
-                    boxShadow: '0 4px 15px rgba(245,158,11,0.05)'
-                  }}
-                  onMouseEnter={(e) => e.target.style.background = 'linear-gradient(135deg, rgba(245,158,11,0.2), rgba(217,119,6,0.1))'}
-                  onMouseLeave={(e) => e.target.style.background = 'linear-gradient(135deg, rgba(245,158,11,0.1), rgba(217,119,6,0))'}
-                >
-                  Upgrade Now
-                </button>
-              </div>
+          {/* Bottom Area */}
+          <div style={{ marginTop: 'auto' }}>
+            {!isPremium && (
+              <button 
+                onClick={handleUpgrade}
+                style={{
+                  width: '100%', padding: '0.5rem 0.75rem', borderRadius: 6,
+                  background: 'transparent', 
+                  border: '1px solid var(--border-color)',
+                  color: 'var(--text-secondary)', fontSize: '0.75rem',
+                  fontWeight: 500, cursor: 'pointer', transition: 'all 0.15s',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--border-hover)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+              >
+                Upgrade to Pro
+              </button>
             )}
           </div>
 
         </div>
       </nav>
 
-      {/* ====== PREMIUM ACTION MODAL (Fallback/Loading state) ====== */}
+      {/* Payment Verification Modal */}
       <AnimatePresence>
         {verifying && (
           <motion.div
@@ -322,21 +270,21 @@ const Sidebar = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             style={{
-              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)',
+              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)',
               zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center',
               backdropFilter: 'blur(4px)'
             }}
           >
-             <div style={{ padding: '3rem', background: '#121222', borderRadius: '24px', textAlign: 'center', border: '1px solid #7c3aed' }}>
+             <div style={{ padding: '2.5rem', background: 'var(--bg-elevated)', borderRadius: 12, textAlign: 'center', border: '1px solid var(--border-color)', minWidth: 280 }}>
                  {!verified ? (
                    <>
-                     <div className="spin" style={{ width: 48, height: 48, border: '4px solid rgba(124,58,237,0.2)', borderTopColor: '#7c3aed', borderRadius: '50%', margin: '0 auto 1.5rem' }} />
-                     <h3 style={{ color: 'white' }}>Processing Payment...</h3>
+                     <div className="spin" style={{ width: 36, height: 36, border: '2px solid var(--border-color)', borderTopColor: 'var(--accent-color)', borderRadius: '50%', margin: '0 auto 1.25rem' }} />
+                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Processing...</p>
                    </>
                  ) : (
                    <>
-                     <CheckCircle size={56} color="#fbbf24" style={{ margin: '0 auto 1.5rem' }} />
-                     <h3 style={{ color: '#fbbf24' }}>Premium Unlocked!</h3>
+                     <CheckCircle size={40} color="var(--success)" style={{ margin: '0 auto 1rem', display: 'block' }} />
+                     <p style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 500 }}>Premium Activated</p>
                    </>
                  )}
              </div>

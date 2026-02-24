@@ -155,108 +155,102 @@ const Overview = () => {
 
     return (
         <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: '2rem', paddingBottom: '4rem' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', paddingBottom: '4rem' }}
         >
             {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
-                    <h1 className="h1" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        Welcome back, {displayName}
-                        {isPremium && <Star size={20} fill="#fbbf24" color="#fbbf24" style={{marginTop: '4px'}} />}
+                    <h1 className="h1" style={{ marginBottom: '0.375rem' }}>
+                        Overview
                     </h1>
-                    <p className="body-sm">You've maintained a {activeDays.length} day streak! Keep it up!</p>
+                    <p className="body-sm">Welcome back, {displayName}. Here's your learning analytics.</p>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button 
-                        onClick={() => setShowReport(true)}
-                        style={{
-                            padding: '0.5rem 1rem', background: 'white', color: '#18181b', border: '1px solid rgba(255,255,255,0.1)', 
-                            borderRadius: '8px', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '8px', transition: 'background 0.2s'
-                        }}
-                    >
-                        <FileText size={16} />
-                        View Weekly Report
-                        {!isPremium && <Lock size={12} style={{ opacity: 0.6 }} />}
-                    </button>
-                </div>
+                <button 
+                    onClick={() => setShowReport(true)}
+                    className="btn btn-secondary"
+                    style={{ fontSize: '0.8125rem' }}
+                >
+                    <FileText size={14} />
+                    Weekly Report
+                    {!isPremium && <Lock size={11} style={{ opacity: 0.4 }} />}
+                </button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '1rem' }}>
-                <div style={{ padding: '1.5rem', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '12px' }}>
-                    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', fontWeight: 500 }}>Total XP</div>
-                    <div style={{ fontSize: '1.875rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        {xp} <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--success)', padding: '2px 8px', background: 'rgba(16,185,129,0.1)', borderRadius: '4px' }}>+120 today</span>
+            {/* Metrics Row */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0' }}>
+                {[
+                    { label: 'Total XP', value: xp.toLocaleString(), change: '+120', changeColor: 'var(--success)' },
+                    { label: 'Streak', value: `${streak}d`, change: null },
+                    { label: 'Learning Velocity', value: lvsScore, change: '+12%', changeColor: 'var(--success)' },
+                    { label: 'Focus Hours', value: totalHours, change: null },
+                ].map((m, i) => (
+                    <div key={i} style={{ 
+                        padding: '1.25rem 1.5rem', 
+                        borderRight: i < 3 ? '1px solid var(--border-color)' : 'none',
+                    }}>
+                        <div className="body-xs" style={{ marginBottom: '0.5rem' }}>{m.label}</div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em', display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+                            {m.value}
+                            {m.change && <span style={{ fontSize: '0.75rem', fontWeight: 500, color: m.changeColor }}>{m.change}</span>}
+                        </div>
                     </div>
-                </div>
-                <div style={{ padding: '1.5rem', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '12px' }}>
-                    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', fontWeight: 500 }}>Current Streak</div>
-                    <div style={{ fontSize: '1.875rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        {streak} Days
-                    </div>
-                </div>
-                <div style={{ padding: '1.5rem', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '12px' }}>
-                    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', fontWeight: 500 }}>Learning Velocity</div>
-                    <div style={{ fontSize: '1.875rem', fontWeight: 700, color: 'var(--accent-color)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        {lvsScore} <TrendingUp size={18} />
-                    </div>
-                </div>
+                ))}
             </div>
+
+            {/* Divider */}
+            <div style={{ height: 1, background: 'var(--border-color)' }} />
 
             {/* Charts Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-                {/* Learning Activity Chart */}
-                <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '400px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                        <div>
-                            <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Learning Activity</h3>
-                            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Weekly progress breakdown</p>
-                        </div>
-                        <div style={{ padding: '4px 12px', background: 'var(--bg-elevated)', borderRadius: '8px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                            {selectedPeriod}
-                        </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '2.5rem' }}>
+                {/* Activity Chart */}
+                <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                        <h3 className="h3">Activity</h3>
+                        <span className="body-xs">{selectedPeriod}</span>
                     </div>
-                    <div style={{ flex: 1, width: '100%', minHeight: '300px' }}>
+                    <div style={{ height: '280px', width: '100%' }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={activityData}>
                                 <defs>
                                     <linearGradient id="colorMeasure" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.3}/>
-                                        <stop offset="95%" stopColor="#7c3aed" stopOpacity={0}/>
+                                        <stop offset="5%" stopColor="var(--accent-color)" stopOpacity={0.15}/>
+                                        <stop offset="95%" stopColor="var(--accent-color)" stopOpacity={0}/>
                                     </linearGradient>
                                 </defs>
-                                <XAxis dataKey="day" tick={{fill: 'var(--text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
-                                <Tooltip contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: '8px' }} itemStyle={{ color: 'white' }} />
-                                <Area type="monotone" dataKey="hours" stroke="var(--accent-color)" strokeWidth={3} fillOpacity={1} fill="url(#colorMeasure)" />
+                                <XAxis dataKey="day" tick={{fill: 'var(--text-tertiary)', fontSize: 11}} axisLine={false} tickLine={false} />
+                                <Tooltip 
+                                    contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, fontSize: '0.8125rem' }} 
+                                    itemStyle={{ color: 'var(--text-primary)' }} 
+                                    labelStyle={{ color: 'var(--text-secondary)' }}
+                                />
+                                <Area type="monotone" dataKey="hours" stroke="var(--accent-color)" strokeWidth={2} fillOpacity={1} fill="url(#colorMeasure)" />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
-                {/* Skill Intelligence Block */}
-                <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '1.5rem', display: 'flex', flexDirection: 'column', height: '400px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                        <div>
-                            <h3 style={{ fontSize: '1.125rem', fontWeight: 500, color: 'var(--text-primary)' }}>Skill Intelligence</h3>
-                            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '4px' }}>AI-generated insights</p>
-                        </div>
+                {/* Skill Intelligence */}
+                <div>
+                    <div style={{ marginBottom: '1.25rem' }}>
+                        <h3 className="h3">Skill Intelligence</h3>
+                        <p className="body-xs" style={{ marginTop: '2px' }}>AI-generated from your activity</p>
                     </div>
-                    <div style={{ display: 'flex', flex: 1, gap: '2rem', alignItems: 'center' }}>
-                        <div style={{ flexShrink: 0, width: '220px', height: '220px' }}>
+                    <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
+                        <div style={{ flexShrink: 0, width: '180px', height: '180px' }}>
                             <RadarChart skills={processedSkills} />
                         </div>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
-                                <div style={{ fontSize: '0.875rem', color: 'var(--text-primary)', fontWeight: 500, marginBottom: '4px' }}>Strong Weekly Growth</div>
-                                <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>You improved Backend Engineering <span style={{ color: 'var(--success)' }}>+4%</span> this week. Excellent pacing.</div>
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                            <div style={{ padding: '0.75rem', border: '1px solid var(--border-color)', borderRadius: 6 }}>
+                                <div style={{ fontSize: '0.8125rem', color: 'var(--text-primary)', fontWeight: 500, marginBottom: '2px' }}>Weekly Growth</div>
+                                <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>Backend Engineering <span style={{ color: 'var(--success)' }}>+4%</span></div>
                             </div>
                             {weakestSkill && (
-                                <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
-                                    <div style={{ fontSize: '0.875rem', color: 'var(--text-primary)', fontWeight: 500, marginBottom: '4px' }}>AI Recommended Action</div>
-                                    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Focus needed on {weakestSkill.weakest}. {weakestSkill.nextAction}.</div>
+                                <div style={{ padding: '0.75rem', border: '1px solid var(--border-color)', borderRadius: 6 }}>
+                                    <div style={{ fontSize: '0.8125rem', color: 'var(--text-primary)', fontWeight: 500, marginBottom: '2px' }}>Recommended</div>
+                                    <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>Focus on {weakestSkill.weakest}.</div>
                                 </div>
                             )}
                         </div>
@@ -264,45 +258,47 @@ const Overview = () => {
                 </div>
             </div>
 
+            {/* Divider */}
+            <div style={{ height: 1, background: 'var(--border-color)' }} />
+
             {/* Bottom Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1.5rem' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                         <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Current Roadmaps</h3>
-                         <Link to="/learning-hub" style={{ fontSize: '0.8rem', color: 'var(--accent-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            View All <ArrowRight size={14} />
+            <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '2.5rem' }}>
+                {/* Active Roadmaps */}
+                <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                         <h3 className="h3">Active Roadmaps</h3>
+                         <Link to="/learning-hub" style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            View all <ArrowRight size={12} />
                          </Link>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                         {activeRoadmaps.map((map, i) => (
-                             <RoadmapItem key={i} icon={i === 0 ? "⚛️" : i === 1 ? "🏗️" : "🤖"} title={map.title} progress={map.percentage} color="var(--accent-color)" />
+                             <RoadmapItem key={i} title={map.title} progress={map.percentage} color="var(--accent-color)" />
                         ))}
                     </div>
                 </div>
+
+                {/* AI Recommendation */}
                 <div>
-                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                         <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>AI Recommendations</h3>
-                    </div>
+                    <h3 className="h3" style={{ marginBottom: '1rem' }}>Next Step</h3>
                     <div style={{ 
-                        background: 'var(--bg-card)', border: '1px solid var(--border-color)',
-                        borderRadius: '12px', padding: '1.5rem', 
+                        border: '1px solid var(--border-color)',
+                        borderRadius: 8, padding: '1.25rem', 
                         display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-                        minHeight: '180px'
+                        minHeight: '160px'
                     }}>
                         <div>
-                            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Next Challenge</div>
-                            <h3 style={{ fontSize: '1.125rem', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>Mastering {recommendedRoadmap.title}</h3>
-                            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                                Based on your current trajectory, advancing your skills in {recommendedRoadmap.title} yields the highest ROI.
+                            <div className="label" style={{ marginBottom: '0.5rem' }}>Recommended</div>
+                            <h3 style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>{recommendedRoadmap.title}</h3>
+                            <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                                Advancing this skill yields the highest ROI based on your trajectory.
                             </p>
                         </div>
-                        <Link to="/learning-hub" style={{ 
-                            alignSelf: 'flex-start', padding: '0.6rem 1.25rem', 
-                            background: 'var(--text-primary)', color: 'var(--bg-primary)', border: 'none', 
-                            borderRadius: '6px', fontWeight: 500, fontSize: '0.85rem',
-                            cursor: 'pointer', marginTop: '1rem', textDecoration: 'none', transition: 'opacity 0.2s'
-                        }} onMouseEnter={e => e.target.style.opacity = 0.9} onMouseLeave={e => e.target.style.opacity = 1}>
-                            Start Module
+                        <Link to="/learning-hub" className="btn btn-primary" style={{ 
+                            alignSelf: 'flex-start', marginTop: '1rem', textDecoration: 'none',
+                            padding: '0.4375rem 1rem', fontSize: '0.8125rem'
+                        }}>
+                            Continue →
                         </Link>
                     </div>
                 </div>
@@ -317,152 +313,94 @@ const Overview = () => {
                         exit={{ opacity: 0 }}
                         onClick={() => setShowReport(false)}
                         style={{
-                            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)',
+                            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
                             backdropFilter: 'blur(4px)', zIndex: 1000,
                             display: 'flex', alignItems: 'center', justifyContent: 'center'
                         }}
                     >
                         <motion.div
-                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 8 }}
                             onClick={e => e.stopPropagation()}
                             style={{
-                                width: '90%', maxWidth: '800px', maxHeight: '90vh', overflowY: 'auto',
-                                background: '#18181b', border: '1px solid #27272a', borderRadius: '24px',
+                                width: '90%', maxWidth: '720px', maxHeight: '85vh', overflowY: 'auto',
+                                background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 12,
                                 padding: '2rem', position: 'relative'
                             }}
                         >
-                            <button onClick={() => setShowReport(false)} style={{ position: 'absolute', top: 20, right: 20, border: 'none', background: 'none', color: '#71717a', cursor: 'pointer' }}>
-                                <AlertTriangle size={24} style={{ transform: 'rotate(180deg)', display: 'none' }} /> 
-                                <span style={{fontSize: '1.5rem'}}>×</span>
-                            </button>
+                            <button onClick={() => setShowReport(false)} style={{ position: 'absolute', top: 16, right: 16, border: 'none', background: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', fontSize: '1.25rem' }}>×</button>
 
-                            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                                <div style={{ 
-                                    display: 'inline-flex', alignItems: 'center', gap: '8px',
-                                    background: 'rgba(124, 58, 237, 0.1)', color: '#a78bfa',
-                                    padding: '6px 16px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 600,
-                                    marginBottom: '1rem'
-                                }}>
-                                    <CheckCircle size={16} /> Weekly Growth Report
-                                </div>
-                                <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'white' }}>Your Weekly Intelligence</h2>
-                                <p style={{ color: '#a1a1aa' }}>Feb 12 - Feb 19 • Week 7</p>
+                            <div style={{ marginBottom: '2rem' }}>
+                                <div className="label" style={{ marginBottom: '0.5rem' }}>Weekly Report</div>
+                                <h2 className="h1">Growth Summary</h2>
+                                <p className="body-xs" style={{ marginTop: '4px' }}>Feb 17 – Feb 24 · Week 8</p>
                             </div>
 
-                            {/* Free Tier Content */}
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
-                                <div className="glass-card" style={{ padding: '1.5rem', textAlign: 'center' }}>
-                                    <div style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Study Time</div>
-                                    <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'white' }}>12.5h</div>
-                                </div>
-                                <div className="glass-card" style={{ padding: '1.5rem', textAlign: 'center' }}>
-                                    <div style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Sessions</div>
-                                    <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'white' }}>8</div>
-                                </div>
-                                <div className="glass-card" style={{ padding: '1.5rem', textAlign: 'center' }}>
-                                    <div style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Skill Change</div>
-                                    <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#50fa7b' }}>+2.4%</div>
-                                </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0', borderBottom: '1px solid var(--border-color)', marginBottom: '1.5rem', paddingBottom: '1.5rem' }}>
+                                {[
+                                    { label: 'Study Time', value: '12.5h' },
+                                    { label: 'Sessions', value: '8' },
+                                    { label: 'Skill Change', value: '+2.4%', color: 'var(--success)' },
+                                ].map((m, i) => (
+                                    <div key={i} style={{ padding: '0 1rem', borderRight: i < 2 ? '1px solid var(--border-color)' : 'none' }}>
+                                        <div className="body-xs" style={{ marginBottom: '0.25rem' }}>{m.label}</div>
+                                        <div style={{ fontSize: '1.25rem', fontWeight: 600, color: m.color || 'var(--text-primary)' }}>{m.value}</div>
+                                    </div>
+                                ))}
                             </div>
 
-                            {/* Premium Section */}
                             <div style={{ position: 'relative' }}>
-                                {/* Content (Effective content that is blurred if not pro) */}
-                                <div style={{ 
-                                    filter: isPremium ? 'none' : 'blur(8px)', 
-                                    opacity: isPremium ? 1 : 0.5,
-                                    pointerEvents: isPremium ? 'auto' : 'none',
-                                    transition: 'all 0.3s ease'
-                                }}>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
-                                        {/* Learning Velocity Score */}
-                                        <div className="glass-card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, rgba(124,58,237,0.1), rgba(0,0,0,0))' }}>
-                                            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem', color: '#a78bfa' }}>Learning Velocity Score (LVS)</h3>
-                                            <div style={{ fontSize: '3rem', fontWeight: 900, lineHeight: 1 }}>{lvs}</div>
-                                            <div style={{ fontSize: '0.9rem', color: '#50fa7b', marginTop: '0.5rem' }}>+12% from last week</div>
-                                            <p style={{ fontSize: '0.8rem', color: '#71717a', marginTop: '1rem', lineHeight: 1.5 }}>
-                                                Your consistently high focus scores and mock interview performance have boosted your LVS significantly.
-                                            </p>
+                                <div style={{ filter: isPremium ? 'none' : 'blur(6px)', opacity: isPremium ? 1 : 0.4, pointerEvents: isPremium ? 'auto' : 'none' }}>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
+                                        <div style={{ padding: '1.25rem', border: '1px solid var(--border-color)', borderRadius: 8 }}>
+                                            <div className="label" style={{ marginBottom: '0.75rem' }}>Learning Velocity</div>
+                                            <div style={{ fontSize: '2rem', fontWeight: 600, lineHeight: 1 }}>{lvs}</div>
+                                            <div style={{ fontSize: '0.75rem', color: 'var(--success)', marginTop: '0.375rem' }}>+12% from last week</div>
                                         </div>
-
-                                        {/* 4-Week Projection */}
-                                        <div className="glass-card" style={{ padding: '1.5rem' }}>
-                                            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem', color: '#a78bfa' }}>4-Week Projection</h3>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                        <div style={{ padding: '1.25rem', border: '1px solid var(--border-color)', borderRadius: 8 }}>
+                                            <div className="label" style={{ marginBottom: '0.75rem' }}>4-Week Projection</div>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                                 {processedSkills.slice(0, 3).map((s, i) => (
                                                     <div key={i}>
-                                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '4px' }}>
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', marginBottom: '3px', color: 'var(--text-secondary)' }}>
                                                             <span>{s.name}</span>
-                                                            <span style={{ color: '#50fa7b' }}>{s.score}% → {Math.min(100, Math.round(s.score + (s.growth * 4)))}%</span>
+                                                            <span style={{ color: 'var(--success)' }}>{s.score}% → {Math.min(100, Math.round(s.score + (s.growth * 4)))}%</span>
                                                         </div>
-                                                        <div style={{ width: '100%', height: '6px', background: '#27272a', borderRadius: '3px' }}>
-                                                            <div style={{ width: `${s.score}%`, height: '100%', background: '#a78bfa', borderRadius: '3px' }} />
+                                                        <div style={{ width: '100%', height: '2px', background: 'var(--border-color)', borderRadius: 1 }}>
+                                                            <div style={{ width: `${s.score}%`, height: '100%', background: 'var(--accent-color)', borderRadius: 1 }} />
                                                         </div>
                                                     </div>
                                                 ))}
                                             </div>
                                         </div>
                                     </div>
-
-                                    {/* AI Action Plan */}
-                                    <div className="glass-card" style={{ padding: '1.5rem' }}>
-                                        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem', color: '#a78bfa' }}>AI Action Plan for Next Week</h3>
-                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
-                                            {[
-                                                "Complete 'Advanced Redux' Module",
-                                                "Book 2 Mock Interviews", 
-                                                "Target 15 Focus Hours",
-                                                "Solve 5 'Graph' Medium Problems"
-                                            ].map((action, i) => (
-                                                <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'center', padding: '10px', background: '#27272a', borderRadius: '8px' }}>
-                                                    <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#7c3aed', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 700 }}>{i+1}</div>
-                                                    <span style={{ fontSize: '0.9rem', color: '#f4f4f5' }}>{action}</span>
+                                    <div style={{ padding: '1.25rem', border: '1px solid var(--border-color)', borderRadius: 8 }}>
+                                        <div className="label" style={{ marginBottom: '0.75rem' }}>AI Action Plan</div>
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem' }}>
+                                            {["Complete 'Advanced Redux' Module", "Book 2 Mock Interviews", "Target 15 Focus Hours", "Solve 5 'Graph' Medium Problems"].map((action, i) => (
+                                                <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'center', padding: '0.5rem' }}>
+                                                    <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontWeight: 600, width: 16 }}>{i+1}.</span>
+                                                    <span style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>{action}</span>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* GATE OVERLAY */}
                                 {!isPremium && (
-                                    <div style={{
-                                        position: 'absolute', inset: 0, 
-                                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                                        zIndex: 10
-                                    }}>
-                                        <div style={{
-                                            background: '#18181b', border: '1px solid #7c3aed', borderRadius: '24px',
-                                            padding: '2rem', textAlign: 'center', maxWidth: '400px',
-                                            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
-                                        }}>
-                                            <div style={{ width: 64, height: 64, margin: '0 auto 1.5rem', borderRadius: '50%', background: 'rgba(124, 58, 237, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                <Lock size={32} color="#a78bfa" />
-                                            </div>
-                                            <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.5rem', color: 'white' }}>Unlock AI Intelligence</h3>
-                                            <p style={{ color: '#a1a1aa', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-                                                Get deep insights into your learning velocity, weakness detection, and AI-personalized weekly plans.
-                                            </p>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                                                {['Weakness Detection', 'AI Action Plans', 'Badge Analytics', 'Skill Projections'].map(f => (
-                                                    <div key={f} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', color: '#e4e4e7' }}>
-                                                        <CheckCircle size={16} color="#50fa7b" /> {f}
+                                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+                                        <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 12, padding: '2rem', textAlign: 'center', maxWidth: '360px' }}>
+                                            <Lock size={24} color="var(--text-tertiary)" style={{ marginBottom: '1rem' }} />
+                                            <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '0.375rem' }}>Unlock Intelligence</h3>
+                                            <p className="body-sm" style={{ marginBottom: '1.25rem' }}>Get velocity tracking, projections, and AI action plans.</p>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem', marginBottom: '1.5rem', textAlign: 'left' }}>
+                                                {['Weakness Detection', 'AI Action Plans', 'Skill Projections'].map(f => (
+                                                    <div key={f} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+                                                        <CheckCircle size={13} color="var(--success)" /> {f}
                                                     </div>
                                                 ))}
                                             </div>
-                                            <button 
-                                                onClick={() => setShowPremiumModal(true)}
-                                                style={{
-                                                    width: '100%', marginTop: '2rem', padding: '14px',
-                                                    background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
-                                                    color: 'white', border: 'none', borderRadius: '12px',
-                                                    fontWeight: 700, cursor: 'pointer', fontSize: '1rem',
-                                                    boxShadow: '0 4px 15px rgba(124, 58, 237, 0.4)'
-                                                }}
-                                            >
-                                                Upgrade Now
-                                            </button>
+                                            <button onClick={() => setShowPremiumModal(true)} className="btn btn-primary" style={{ width: '100%' }}>Upgrade to Pro</button>
                                         </div>
                                     </div>
                                 )}
@@ -482,60 +420,29 @@ const Overview = () => {
 
 // --- Sub Components ---
 
-const StatsCard = ({ icon, label, value, trend, trendColor }) => (
-    <div style={{ 
-        padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'relative',
-        background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px'
-    }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div style={{ width: 32, height: 32, borderRadius: '8px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {icon}
-            </div>
-            {trend && (
-                <div style={{ padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', fontSize: '0.75rem', fontWeight: 600, color: trendColor }}>
-                    {trend}
-                </div>
-            )}
-        </div>
-        <div>
-            <div style={{ fontSize: '0.85rem', color: '#a1a1aa', marginBottom: '0.25rem', fontWeight: 500 }}>{label}</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f4f4f5' }}>{value}</div>
-        </div>
-    </div>
-);
-
-const RoadmapItem = ({ icon, title, progress, color }) => (
-    <div style={{ padding: '0.75rem', display: 'flex', alignItems: 'center', gap: '1rem', border: '1px solid var(--border-color)', borderRadius: '8px', background: 'var(--bg-card)' }}>
-        <div style={{ width: 32, height: 32, borderRadius: '6px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>
-            {icon}
-        </div>
+const RoadmapItem = ({ title, progress, color }) => (
+    <div style={{ padding: '0.625rem 0', display: 'flex', alignItems: 'center', gap: '1rem', borderBottom: '1px solid var(--border-subtle)' }}>
         <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', alignItems: 'center' }}>
-                <span style={{ fontWeight: 500, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{title}</span>
-                <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-secondary)' }}>{progress}%</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.375rem', alignItems: 'center' }}>
+                <span style={{ fontWeight: 400, fontSize: '0.8125rem', color: 'var(--text-primary)' }}>{title}</span>
+                <span style={{ fontSize: '0.6875rem', fontWeight: 500, color: 'var(--text-tertiary)', fontVariantNumeric: 'tabular-nums' }}>{progress}%</span>
             </div>
-            <div style={{ width: '100%', height: '4px', background: 'var(--border-color)', borderRadius: '2px', overflow: 'hidden' }}>
-                <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} style={{ height: '100%', background: color, borderRadius: '2px' }} />
+            <div style={{ width: '100%', height: '2px', background: 'var(--border-color)', borderRadius: '1px', overflow: 'hidden' }}>
+                <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} transition={{ duration: 0.6, ease: 'easeOut' }} style={{ height: '100%', background: color, borderRadius: '1px' }} />
             </div>
         </div>
     </div>
 );
 
 const RadarChart = ({ skills }) => {
-    // 5 points polygon for 5 clusters
-    // Vertices at angles: -90, -18, 54, 126, 198 (pi/2 starts top)
-    // Indices 0..4
     const count = 5;
-    const radius = 100;
-    const center = 110; // slightly padded
+    const radius = 80;
+    const center = 90;
     
-    // Helper to get coordinates
     const getCoords = (value, i) => {
         const angle = (Math.PI * 2 * i) / count - Math.PI / 2;
         const r = radius * value;
-        const x = center + r * Math.cos(angle);
-        const y = center + r * Math.sin(angle);
-        return { x, y };
+        return { x: center + r * Math.cos(angle), y: center + r * Math.sin(angle) };
     };
 
     const points = skills.map((s, i) => {
@@ -544,10 +451,9 @@ const RadarChart = ({ skills }) => {
     }).join(' ');
 
     return (
-        <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="220" height="220" viewBox="0 0 220 220">
-                {/* Background Web */}
-                {[0.2, 0.4, 0.6, 0.8, 1].map(r => (
+        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="180" height="180" viewBox="0 0 180 180">
+                {[0.25, 0.5, 0.75, 1].map(r => (
                     <polygon 
                         key={r}
                         points={[0,1,2,3,4].map(i => {
@@ -556,22 +462,17 @@ const RadarChart = ({ skills }) => {
                         }).join(' ')}
                         fill="none"
                         stroke="var(--border-color)"
-                        strokeWidth="1"
-                        style={{ opacity: 0.5 }}
+                        strokeWidth="0.5"
                     />
                 ))}
-                
-                {/* Data Polygon */}
-                <polygon points={points} fill="rgba(124, 58, 237, 0.2)" stroke="var(--accent-color)" strokeWidth="2" />
-                
-                {/* Labels */}
+                <polygon points={points} fill="rgba(99, 102, 241, 0.1)" stroke="var(--accent-color)" strokeWidth="1.5" />
                 {skills.map((s, i) => {
-                    const { x, y } = getCoords(1.15, i); // Place labels further out
+                    const { x, y } = getCoords(1.2, i);
                     let anchor = 'middle';
-                    if (x < center - 10) anchor = 'end';
-                    if (x > center + 10) anchor = 'start';
+                    if (x < center - 8) anchor = 'end';
+                    if (x > center + 8) anchor = 'start';
                     return (
-                        <text key={i} x={x} y={y} textAnchor={anchor} fill="var(--text-secondary)" fontSize="10" dominantBaseline="middle">
+                        <text key={i} x={x} y={y} textAnchor={anchor} fill="var(--text-tertiary)" fontSize="9" dominantBaseline="middle" fontFamily="Inter, sans-serif">
                             {s.name}
                         </text>
                     );
