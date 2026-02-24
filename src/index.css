@@ -4,10 +4,11 @@
   /* ── Color System (Arc Browser Dark) ── */
   --bg-primary: #0E0F11;
   --bg-secondary: #111214;
-  --bg-card: transparent;
-  --bg-card-hover: rgba(255, 255, 255, 0.02);
-  --bg-elevated: #161719;
+  --bg-card: #151718;
+  --bg-card-hover: #1c1d21;
+  --bg-elevated: #1a1b1e;
   --bg-surface: rgba(255, 255, 255, 0.03);
+  --surface-brand: #151718;
 
   /* Text */
   --text-primary: #ECECED;
@@ -396,9 +397,15 @@ button { font-family: var(--font-sans); }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(400%); }
 }
 
 /* ── Code Engine ── */

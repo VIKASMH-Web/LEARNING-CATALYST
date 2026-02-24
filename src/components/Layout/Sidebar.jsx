@@ -239,22 +239,37 @@ const Sidebar = () => {
           </div>
 
           {/* Bottom Area */}
-          <div style={{ marginTop: 'auto' }}>
+          <div style={{ marginTop: 'auto', padding: '0 0.5rem' }}>
             {!isPremium && (
               <button 
                 onClick={handleUpgrade}
                 style={{
-                  width: '100%', padding: '0.5rem 0.75rem', borderRadius: 6,
-                  background: 'transparent', 
-                  border: '1px solid var(--border-color)',
-                  color: 'var(--text-secondary)', fontSize: '0.75rem',
-                  fontWeight: 500, cursor: 'pointer', transition: 'all 0.15s',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+                  width: '100%', padding: '0.75rem', borderRadius: 10,
+                  background: 'linear-gradient(135deg, var(--accent-color) 0%, #4f46e5 100%)',
+                  border: 'none',
+                  color: 'white', fontSize: '0.8125rem',
+                  fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                  boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)',
+                  position: 'relative', overflow: 'hidden'
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--border-hover)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+                onMouseEnter={(e) => { 
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(99, 102, 241, 0.4)';
+                }}
+                onMouseLeave={(e) => { 
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(99, 102, 241, 0.3)';
+                }}
               >
-                Upgrade to Pro
+                <Crown size={15} fill="white" />
+                <span>Upgrade to Pro</span>
+                {/* Subtle shimmer effect */}
+                <div style={{
+                  position: 'absolute', top: 0, left: '-100%', width: '50%', height: '100%',
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                  animation: 'shimmer 2s infinite linear'
+                }} />
               </button>
             )}
           </div>

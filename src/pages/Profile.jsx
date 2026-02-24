@@ -255,22 +255,27 @@ const Profile = () => {
                         {/* Name & Title */}
                         <div style={{ marginBottom: '0.5rem' }}>
                             {isEditing ? (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                                    <input value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                                        placeholder="Your Name"
-                                        style={{ ...inputStyle, fontSize: '1.5rem', fontWeight: 600, width: '300px' }} />
-                                    <input value={profile.title} onChange={(e) => setProfile({ ...profile, title: e.target.value })}
-                                        placeholder="Your Role"
-                                        style={{ ...inputStyle, width: '300px' }} />
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    <input 
+                                        autoFocus
+                                        value={profile.name} 
+                                        onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                                        placeholder="Enter your full name"
+                                        style={{ ...inputStyle, fontSize: '1.5rem', fontWeight: 600, width: '300px', background: 'var(--bg-secondary)' }} />
+                                    <input 
+                                        value={profile.title} 
+                                        onChange={(e) => setProfile({ ...profile, title: e.target.value })}
+                                        placeholder="Your Role (e.g. Software Engineer)"
+                                        style={{ ...inputStyle, width: '300px', background: 'var(--bg-secondary)' }} />
                                 </div>
                             ) : (
                                 <>
-                                    <h1 className="h2" style={{ marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        {profile.name}
-                                        {isPremium && <Star size={18} fill="#fbbf24" color="#fbbf24" style={{marginTop: '2px'}} />}
+                                    <h1 className="h2" style={{ marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.75rem' }}>
+                                        {profile.name || 'Set Your Name'}
+                                        {isPremium && <Crown size={20} fill="var(--warning)" color="var(--warning)" style={{marginTop: '2px'}} />}
                                     </h1>
-                                    <p style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <Briefcase size={14} /> {profile.title}
+                                    <p style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
+                                        <Briefcase size={14} /> {profile.title || 'Add your title'}
                                     </p>
                                 </>
                             )}
@@ -283,24 +288,25 @@ const Profile = () => {
                             onClick={isEditing ? handleSave : () => setIsEditing(true)}
                             className="btn"
                             style={{
-                                padding: '0.5rem 1.25rem', borderRadius: '20px',
-                                background: isEditing ? 'var(--success)' : 'var(--bg-elevated)',
-                                color: isEditing ? 'white' : 'var(--text-primary)',
-                                border: isEditing ? 'none' : '1px solid var(--border-color)',
-                                display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, fontSize: '0.85rem'
+                                padding: '0.625rem 1.5rem', borderRadius: '10px',
+                                background: isEditing ? 'var(--success)' : 'var(--accent-color)',
+                                color: 'white',
+                                border: 'none',
+                                display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '0.875rem',
+                                boxShadow: isEditing ? 'none' : '0 4px 12px rgba(99, 102, 241, 0.2)'
                             }}
                         >
-                            {isEditing ? <><Save size={16} /> Save Profile</> : <><Edit2 size={16} /> Edit Profile</>}
+                            {isEditing ? <><Save size={16} /> Save Changes</> : <><Edit2 size={16} /> Edit Profile</>}
                         </button>
                         <button
                             onClick={authCtx.logout}
                             className="btn"
                             style={{
-                                padding: '0.5rem 1.25rem', borderRadius: '20px',
-                                background: 'rgba(239, 68, 68, 0.15)',
+                                padding: '0.625rem 1.5rem', borderRadius: '10px',
+                                background: 'rgba(239, 68, 68, 0.1)',
                                 color: '#ef4444',
-                                border: '1px solid rgba(239, 68, 68, 0.3)',
-                                display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, fontSize: '0.85rem',
+                                border: '1px solid rgba(239, 68, 68, 0.2)',
+                                display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '0.875rem',
                                 cursor: 'pointer', transition: 'all 0.2s'
                             }}
                         >

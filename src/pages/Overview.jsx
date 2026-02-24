@@ -151,6 +151,13 @@ const Overview = () => {
         }))
     }];
 
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Good Morning";
+        if (hour < 17) return "Good Afternoon";
+        return "Good Evening";
+    };
+
     const weakestSkill = [...processedSkills].sort((a, b) => a.score - b.score)[0];
 
     // --- 5. AI INSIGHT GENERATION ---
@@ -175,40 +182,55 @@ const Overview = () => {
             }}>
                 <div style={{ position: 'absolute', top: 0, right: 0, width: 200, height: 200, background: 'radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)' }} />
                 <div style={{ position: 'relative', zIndex: 1 }}>
-                    <div className="label" style={{ marginBottom: '0.75rem', color: 'var(--accent-color)' }}>AI Intelligence</div>
-                    <h1 style={{ fontSize: '1.375rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.025em', marginBottom: '0.75rem', lineHeight: 1.3 }}>
-                        Your Learning Intelligence Overview
-                    </h1>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem' }}>
+                        <div>
+                            <div className="label" style={{ marginBottom: '0.375rem', color: 'var(--accent-color)' }}>{getGreeting()}</div>
+                            <h1 style={{ fontSize: '1.75rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.025em', lineHeight: 1.2 }}>
+                                Hello, {displayName}
+                            </h1>
+                        </div>
+                        <button 
+                            onClick={() => setShowReport(true)}
+                            className="btn btn-secondary"
+                            style={{ fontSize: '0.8125rem', background: 'rgba(255,255,255,0.02)' }}
+                        >
+                            <FileText size={14} /> Weekly Report
+                            {!isPremium && <Lock size={11} style={{ opacity: 0.4 }} />}
+                        </button>
+                    </div>
+                   
                     <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: '640px', marginBottom: '0.375rem' }}>
                         You improved {bestGrower.name} <span style={{ color: 'var(--success)', fontWeight: 500 }}>+{bestGrower.growth.toFixed(1)}%</span> this week. At this pace, you'll reach {nextLevel} in ~{estimatedWeeksLeft} weeks.
                     </p>
                     <p style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', marginBottom: '1.5rem' }}>
                         Consistency score increased by 12%. Focus on {weakestSkill.weakest} to close your biggest gap.
                     </p>
-                    <div style={{ display: 'flex', gap: '0.75rem' }}>
-                        <Link to="/learning-hub" className="btn btn-primary" style={{ textDecoration: 'none', padding: '0.5rem 1.25rem', fontSize: '0.8125rem' }}>
-                            Continue Learning
-                        </Link>
-                        <button onClick={() => setShowReport(true)} className="btn btn-secondary" style={{ fontSize: '0.8125rem' }}>
-                            View Weekly Report {!isPremium && <Lock size={11} style={{ opacity: 0.4 }} />}
-                        </button>
-                    </div>
+                    <Link to="/learning-hub" className="btn btn-primary" style={{ textDecoration: 'none', padding: '0.625rem 1.5rem', fontSize: '0.875rem' }}>
+                        Continue Learning
+                    </Link>
                 </div>
             </div>
 
             {/* ═══ SECTION 2 — COMPACT METRIC BAR ═══ */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)' }}>
+            <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(4, 1fr)', 
+                gap: 0, 
+                borderTop: '2px solid rgba(255,255,255,0.12)', 
+                borderBottom: '2px solid rgba(255,255,255,0.12)',
+                background: 'rgba(255,255,255,0.01)'
+            }}>
                 {[
                     { label: 'Total XP', value: xp.toLocaleString(), trend: '+120', up: true },
                     { label: 'Streak', value: `${streak} days`, trend: null },
                     { label: 'Learning Velocity', value: lvsScore, trend: '+12%', up: true },
                     { label: 'Focus Hours', value: totalHours, trend: null },
                 ].map((m, i) => (
-                    <div key={i} style={{ padding: '0.75rem 1.25rem', borderRight: i < 3 ? '1px solid var(--border-color)' : 'none' }}>
-                        <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', fontWeight: 500, marginBottom: '0.1875rem' }}>{m.label}</div>
+                    <div key={i} style={{ padding: '1rem 1.25rem', borderRight: i < 3 ? '2px solid rgba(255,255,255,0.12)' : 'none' }}>
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', fontWeight: 600, marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{m.label}</div>
                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                            <span style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{m.value}</span>
-                            {m.trend && <span style={{ fontSize: '0.625rem', fontWeight: 500, color: 'var(--success)' }}>{m.trend}</span>}
+                            <span style={{ fontSize: '1.375rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{m.value}</span>
+                            {m.trend && <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--success)' }}>{m.trend}</span>}
                         </div>
                     </div>
                 ))}
@@ -218,14 +240,14 @@ const Overview = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '65fr 35fr', gap: '2rem' }}>
                 {/* LEFT — Learning Activity Chart */}
                 <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                         <h3 className="h3">Learning Activity</h3>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                             <span style={{ fontSize: '0.6875rem', color: 'var(--success)', fontWeight: 500 }}>+18% vs last week</span>
                             <span className="body-xs">{selectedPeriod}</span>
                         </div>
                     </div>
-                    <div style={{ height: '280px', width: '100%' }}>
+                    <div style={{ height: '280px', width: '100%', background: 'rgba(255,255,255,0.01)', borderRadius: 12, padding: '1rem', border: '1px solid var(--border-color)' }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={activityData}>
                                 <defs>
@@ -243,8 +265,8 @@ const Overview = () => {
                 </div>
 
                 {/* RIGHT — Skill Intelligence Breakdown */}
-                <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <div style={{ background: '#15171A', padding: '1.25rem', borderRadius: 12, border: '1px solid var(--border-color)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                         <h3 className="h3">Skill Intelligence</h3>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
