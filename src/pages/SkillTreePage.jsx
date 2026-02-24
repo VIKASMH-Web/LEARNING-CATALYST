@@ -57,17 +57,17 @@ const NodeLines = ({ childrenCount }) => {
   return (
     <div style={{ position: 'relative', width: '100%', height: '40px', display: 'flex', justifyContent: 'center' }}>
        {/* Small vertical stalk down from parent */}
-       <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.15)', position: 'absolute', top: 0 }} />
+       <div style={{ width: '1px', height: '20px', background: 'var(--border-color)', position: 'absolute', top: 0 }} />
        {childrenCount > 1 && (
          <div style={{ 
-            position: 'absolute', top: '20px', height: '2px', background: 'rgba(255,255,255,0.15)',
+            position: 'absolute', top: '20px', height: '1px', background: 'var(--border-color)',
             width: `calc(100% - ${100 / childrenCount}%)`
          }} />
        )}
        {Array(childrenCount).fill(0).map((_, i) => (
          <div key={i} style={{ 
-            position: 'absolute', left: `calc(${(i + 0.5) * (100 / childrenCount)}% - 1px)`, 
-            top: '20px', width: '2px', height: '20px', background: 'rgba(255,255,255,0.15)' 
+            position: 'absolute', left: `calc(${(i + 0.5) * (100 / childrenCount)}% - 0.5px)`, 
+            top: '20px', width: '1px', height: '20px', background: 'var(--border-color)' 
          }} />
        ))}
     </div>
@@ -415,28 +415,28 @@ const SkillTreePage = () => {
     return (
       <div key={node.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', position: 'relative' }}>
         <motion.div 
-          whileHover={isAvailable || isMastered ? { scale: 1.05 } : {}}
-          whileTap={isAvailable || isMastered ? { scale: 0.95 } : {}}
+          whileHover={isAvailable || isMastered ? { scale: 1.02 } : {}}
+          whileTap={isAvailable || isMastered ? { scale: 0.98 } : {}}
           onClick={() => handleNodeClick(node)}
           style={{
             zIndex: 10,
             padding: '1rem', width: '150px',
-            borderRadius: '16px', textAlign: 'center',
+            borderRadius: '12px', textAlign: 'center',
             cursor: status === 'locked' ? 'not-allowed' : 'pointer',
-            transition: 'all 0.3s',
-            background: isMastered ? 'rgba(251, 191, 36, 0.15)' : isAvailable ? 'rgba(59, 130, 246, 0.15)' : 'rgba(255,255,255,0.02)',
-            border: `1px solid ${isMastered ? '#fbbf24' : isAvailable ? '#3b82f6' : 'rgba(255,255,255,0.05)'}`,
-            boxShadow: isMastered ? '0 0 20px rgba(251, 191, 36, 0.2)' : isAvailable ? '0 0 15px rgba(59, 130, 246, 0.2)' : 'none',
-            filter: status === 'locked' ? 'grayscale(100%) opacity(0.6)' : 'none'
+            transition: 'border-color 0.2s',
+            background: 'var(--bg-card)',
+            border: isMastered ? '2px solid var(--warning)' : isAvailable ? '2px solid var(--accent-color)' : '1px solid var(--border-color)',
+            boxShadow: 'none',
+            opacity: status === 'locked' ? 0.5 : 1
           }}
         >
           <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'center' }}>
-            {isMastered ? <CheckCircle size={24} color="#fbbf24" /> : isAvailable ? <Unlock size={24} color="#60a5fa" /> : <Lock size={24} color="#6b7280" />}
+            {isMastered ? <CheckCircle size={20} color="var(--warning)" /> : isAvailable ? <Unlock size={20} color="var(--accent-color)" /> : <Lock size={20} color="var(--text-tertiary)" />}
           </div>
-          <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: isMastered ? '#fde047' : isAvailable ? '#eff6ff' : '#9ca3af', margin: 0, lineHeight: 1.2 }}>
+          <h4 style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', margin: 0, lineHeight: 1.2 }}>
             {node.title}
           </h4>
-          {node.xp > 0 && <span style={{ fontSize: '0.7rem', color: isMastered ? '#fef08a' : isAvailable ? '#93c5fd' : '#6b7280', display: 'block', marginTop: '4px' }}>+{node.xp} XP</span>}
+          {node.xp > 0 && <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginTop: '4px' }}>+{node.xp} XP</span>}
         </motion.div>
         
         {/* Render Children Recursively */}
@@ -494,7 +494,7 @@ const SkillTreePage = () => {
 
       {/* Tree Container */}
       <div style={{ 
-        background: '#0a0a14', borderRadius: '24px', border: '1px solid rgba(124,58,237,0.15)',
+        background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-color)',
         padding: '4rem 2rem', minHeight: '600px', display: 'flex', justifyContent: 'center',
         overflowX: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative'
       }}>

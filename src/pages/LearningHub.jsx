@@ -23,6 +23,7 @@ const LearningHub = () => {
   const [searchHistory, setSearchHistory] = useState(() => {
     try { return JSON.parse(localStorage.getItem('lh_history') || '[]'); } catch { return []; }
   });
+  const [expandedDomain, setExpandedDomain] = useState(true); // For notion style collapsible
   const searchRef = useRef(null);
   const debounceRef = useRef(null);
   const { completedLessons, completedQuizzes } = useProgress();
@@ -309,103 +310,89 @@ const LearningHub = () => {
             ))}
           </div>
 
-          {/* Roadmap Tab */}
+          {/* Roadmap Tab (Notion Style) */}
           {activeTab === 'roadmap' && (
-            <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 24 }}>
-              {/* Stage Navigator */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {searchResult.roadmap.stages.map((stage, i) => (
-                  <motion.button
-                    key={i}
-                    whileHover={{ x: 4 }}
-                    onClick={() => setActiveStage(i)}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 12,
-                      padding: '12px 14px', borderRadius: 12, border: 'none',
-                      background: activeStage === i ? 'rgba(124,58,237,0.12)' : 'rgba(255,255,255,0.02)',
-                      borderLeft: activeStage === i ? '3px solid #7c3aed' : '3px solid transparent',
-                      cursor: 'pointer', transition: 'all 0.2s', textAlign: 'left'
-                    }}
-                  >
-                    <div style={{
-                      width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                      background: activeStage === i ? 'linear-gradient(135deg, #7c3aed, #6d28d9)' : 'rgba(255,255,255,0.05)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700,
-                      fontSize: '0.8rem', color: activeStage === i ? '#fff' : '#6b7280'
-                    }}>
-                      {i + 1}
-                    </div>
-                    <div>
-                      <div style={{ fontWeight: activeStage === i ? 600 : 500, fontSize: '0.85rem', color: activeStage === i ? '#e2e8f0' : '#9ca3af' }}>
-                        {stage.title}
-                      </div>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', marginTop: 2 }}>
-                        {stage.duration}
-                      </div>
-                    </div>
-                  </motion.button>
-                ))}
-              </div>
-
-              {/* Active Stage Details */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeStage}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.2 }}
+             <div style={{ maxWidth: '800px' }}>
+                {/* Domain Card (Expandable) */}
+                <div 
+                   onClick={() => setExpandedDomain(!expandedDomain)}
+                   style={{
+                      background: 'var(--bg-card)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: '8px', padding: '16px 20px',
+                      cursor: 'pointer', transition: 'all 0.2s',
+                      display: 'flex', flexDirection: 'column', gap: '12px'
+                   }}
+                   onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-elevated)'}
+                   onMouseLeave={e => e.currentTarget.style.background = 'var(--bg-card)'}
                 >
-                  <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, padding: '1.75rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-                      <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, #7c3aed, #3b82f6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Target size={20} color="#fff" />
+                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                         <motion.div animate={{ rotate: expandedDomain ? 90 : 0 }} transition={{ duration: 0.2 }}>
+                            <ChevronRight size={18} color="var(--text-secondary)" />
+                         </motion.div>
+                         <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                            {searchResult.roadmap.label}
+                         </span>
                       </div>
-                      <div>
-                        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#e2e8f0' }}>
-                          Stage {activeStage + 1}: {searchResult.roadmap.stages[activeStage].title}
-                        </h3>
-                        <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>
-                          Estimated: {searchResult.roadmap.stages[activeStage].duration}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Topics */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10 }}>
-                      {searchResult.roadmap.stages[activeStage].topics.map((topic, j) => (
-                        <motion.div
-                          key={j}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: j * 0.05 }}
-                          style={{
-                            display: 'flex', alignItems: 'center', gap: 10,
-                            padding: '12px 16px', borderRadius: 10,
-                            background: 'rgba(124,58,237,0.04)',
-                            border: '1px solid rgba(124,58,237,0.1)',
-                            transition: 'all 0.2s'
-                          }}
-                        >
-                          <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#7c3aed', flexShrink: 0 }} />
-                          <span style={{ fontSize: '0.88rem', color: '#d1d5db', fontWeight: 500 }}>{topic}</span>
-                        </motion.div>
-                      ))}
-                    </div>
-
-                    {/* Stage Progress Hint */}
-                    <div style={{ marginTop: 20, padding: '12px 16px', borderRadius: 10, background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.12)', display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <Zap size={16} color="#34d399" />
-                      <span style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: 500 }}>
-                        {activeStage === 0 ? 'Start here — build your foundation' : 
-                         activeStage === searchResult.roadmap.stages.length - 1 ? 'Final stage — you\'re almost ready!' :
-                         `Complete Stage ${activeStage} before moving here`}
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                         0%
                       </span>
-                    </div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
+                   </div>
+                   {/* Thin Progress Bar */}
+                   <div style={{ width: '100%', height: '2px', background: 'var(--border-color)', borderRadius: '2px', overflow: 'hidden' }}>
+                      <div style={{ width: '0%', height: '100%', background: 'var(--accent-color)' }} />
+                   </div>
+                </div>
+
+                {/* Expanded Stages List */}
+                <AnimatePresence>
+                   {expandedDomain && (
+                      <motion.div 
+                         initial={{ opacity: 0, height: 0 }} 
+                         animate={{ opacity: 1, height: 'auto' }} 
+                         exit={{ opacity: 0, height: 0 }}
+                         style={{ overflow: 'hidden', marginLeft: '12px', paddingLeft: '20px', borderLeft: '1px solid var(--border-color)', marginTop: '8px' }}
+                      >
+                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '8px 0' }}>
+                            {searchResult.roadmap.stages.map((stage, i) => (
+                               <div key={i} style={{ 
+                                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                  padding: '10px 16px', borderRadius: '6px',
+                                  background: 'transparent',
+                                  transition: 'background 0.2s'
+                               }}
+                               onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
+                               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                               >
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                     <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--text-tertiary)' }} />
+                                     <div>
+                                        <div style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}>{stage.title}</div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{stage.topics.slice(0, 2).join(', ')}{stage.topics.length > 2 ? '...' : ''}</div>
+                                     </div>
+                                  </div>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                                     <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>0%</span>
+                                     <button style={{ 
+                                        padding: '6px 14px', borderRadius: '4px',
+                                        background: 'var(--bg-elevated)', border: '1px solid var(--border-color)',
+                                        color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 500,
+                                        cursor: 'pointer', transition: 'all 0.2s'
+                                     }}
+                                     onMouseEnter={e => { e.currentTarget.style.background = 'var(--text-primary)'; e.currentTarget.style.color = 'var(--bg-primary)'; }}
+                                     onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-elevated)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+                                     >
+                                        Start
+                                     </button>
+                                  </div>
+                               </div>
+                            ))}
+                         </div>
+                      </motion.div>
+                   )}
+                </AnimatePresence>
+             </div>
           )}
 
           {/* Resources Tab */}

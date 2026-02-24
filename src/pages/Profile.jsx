@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { User, Award, Edit2, Save, X, Mail, Calendar, MapPin, Briefcase, Camera, Image, Plus, Trophy, Zap, Target, Clock, Code, BookOpen, Trash2, LogOut } from 'lucide-react';
+import { User, Award, Edit2, Save, X, Mail, Calendar, MapPin, Briefcase, Camera, Image, Plus, Trophy, Zap, Target, Clock, Code, BookOpen, Trash2, LogOut, Star } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
+import { useGame } from '../context/GameContext';
 import { ResponsiveContainer, AreaChart, Area, XAxis, Tooltip } from 'recharts';
 
 // --- BADGE DEFINITIONS ---
@@ -17,6 +18,7 @@ const BADGE_DEFINITIONS = [
 const Profile = () => {
     const ctx = useProgress() || {};
     const authCtx = useAuth() || {};
+    const { isPremium } = useGame() || { isPremium: false };
     const activeDays = ctx.activeDays || [];
     const focusMinutes = ctx.focusMinutes || 0;
     const codeRuns = ctx.codeRuns || 0;
@@ -262,7 +264,10 @@ const Profile = () => {
                                 </div>
                             ) : (
                                 <>
-                                    <h1 className="h2" style={{ marginBottom: '0.25rem' }}>{profile.name}</h1>
+                                    <h1 className="h2" style={{ marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        {profile.name}
+                                        {isPremium && <Star size={18} fill="#fbbf24" color="#fbbf24" style={{marginTop: '2px'}} />}
+                                    </h1>
                                     <p style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <Briefcase size={14} /> {profile.title}
                                     </p>

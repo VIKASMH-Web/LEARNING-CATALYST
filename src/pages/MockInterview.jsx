@@ -258,14 +258,14 @@ const MockInterview = () => {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
                     {[
-                        { icon: Eye, title: 'Eye Contact tracking' },
+                        { icon: Eye, title: 'Eye Contact Tracking' },
                         { icon: MessageCircle, title: 'Speech Analysis' },
-                        { icon: Target, title: 'Domain-specific QA' },
+                        { icon: Target, title: 'Domain-Specific QA' },
                         { icon: BarChart3, title: 'Performance Metrics' }
                     ].map((f, i) => (
-                        <div key={i} style={{ padding: '1.5rem', borderRadius: '14px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <f.icon size={24} color="#a78bfa" />
-                            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#f4f4f5' }}>{f.title}</span>
+                        <div key={i} style={{ padding: '1.25rem', borderRadius: '12px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <f.icon size={20} color="var(--accent-color)" />
+                            <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)' }}>{f.title}</span>
                         </div>
                     ))}
                 </div>
@@ -338,61 +338,78 @@ const MockInterview = () => {
         const qText = typeof questionObj === 'string' ? questionObj : questionObj.q || questionObj.question;
 
         return (
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 300px', gap: '1.25rem', height: 'calc(100vh - 140px)', padding: '1rem' }}>
-                <div style={{ position: 'relative', background: '#0a0a0f', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                    <video ref={videoRef} autoPlay playsInline muted style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)', display: camEnabled ? 'block' : 'none' }} />
-                    {!camEnabled && <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0a0a0f' }}><VideoOff size={48} color="#4a4a6a" /></div>}
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: '1.25rem', height: 'calc(100vh - 140px)', padding: '1rem' }}>
+                <div style={{ position: 'relative', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-color)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                    <video ref={videoRef} autoPlay playsInline muted style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)', display: camEnabled ? 'block' : 'none', opacity: 0.9 }} />
+                    {!camEnabled && <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-secondary)' }}><VideoOff size={32} color="var(--text-tertiary)" /></div>}
                     
-                    <div style={{ position: 'absolute', top: 16, right: 16, padding: '8px 16px', background: 'rgba(0,0,0,0.7)', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '6px', color: timeLeft < 30 ? '#ff5555' : '#e4e4e7' }}>
+                    <div style={{ position: 'absolute', top: 16, right: 16, padding: '6px 12px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '6px', color: timeLeft < 30 ? 'var(--danger)' : 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 500 }}>
                         <Clock size={14} />{formatTime(timeLeft)}
                     </div>
 
                     <div style={{ position: 'absolute', bottom: 80, width: '100%', display: 'flex', justifyContent: 'center' }}>
-                        <div style={{ padding: '16px 24px', background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(16px)', borderRadius: '14px', border: '1px solid rgba(124,58,237,0.3)', width: '85%', maxWidth: '700px', textAlign: 'center' }}>
-                            <div style={{ fontSize: '0.7rem', color: '#a78bfa', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 700 }}>AI Interviewer • Q{currentQuestionIdx + 1}/{questions.length}</div>
-                            <div style={{ fontSize: '1.1rem', color: '#f0f0f0', fontWeight: 600 }}>"{qText}"</div>
+                        <div style={{ padding: '1.25rem 2rem', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-color)', width: '85%', maxWidth: '700px', textAlign: 'center' }}>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 600, letterSpacing: '0.5px' }}>AI Interviewer • Q{currentQuestionIdx + 1}/{questions.length}</div>
+                            <div style={{ fontSize: '1rem', color: 'var(--text-primary)', fontWeight: 500 }}>"{qText}"</div>
                         </div>
                     </div>
 
-                    <div style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '0.75rem', padding: '10px 20px', borderRadius: '50px', background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(16px)' }}>
-                        <button onClick={toggleMic} style={{ width: 44, height: 44, borderRadius: '50%', background: micEnabled ? 'rgba(255,255,255,0.1)' : 'rgba(255,85,85,0.2)', border: 'none', color: micEnabled ? 'white' : '#ff5555', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{micEnabled ? <Mic size={18} /> : <MicOff size={18} />}</button>
-                        <button onClick={toggleCam} style={{ width: 44, height: 44, borderRadius: '50%', background: camEnabled ? 'rgba(255,255,255,0.1)' : 'rgba(255,85,85,0.2)', border: 'none', color: camEnabled ? 'white' : '#ff5555', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{camEnabled ? <Video size={18} /> : <VideoOff size={18} />}</button>
-                        <button onClick={endSession} style={{ padding: '10px 24px', borderRadius: '30px', background: 'rgba(255,85,85,0.2)', color: '#ff5555', border: 'none', fontWeight: 700, cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center' }}><PhoneOff size={14} /> End</button>
+                    <div style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '0.5rem', padding: '8px', borderRadius: '8px', background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
+                        <button onClick={toggleMic} style={{ width: 36, height: 36, borderRadius: '6px', background: micEnabled ? 'transparent' : 'rgba(239,68,68,0.1)', border: 'none', color: micEnabled ? 'var(--text-primary)' : 'var(--danger)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{micEnabled ? <Mic size={16} /> : <MicOff size={16} />}</button>
+                        <button onClick={toggleCam} style={{ width: 36, height: 36, borderRadius: '6px', background: camEnabled ? 'transparent' : 'rgba(239,68,68,0.1)', border: 'none', color: camEnabled ? 'var(--text-primary)' : 'var(--danger)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{camEnabled ? <Video size={16} /> : <VideoOff size={16} />}</button>
+                        <div style={{ width: '1px', background: 'var(--border-color)', margin: '0 4px' }} />
+                        <button onClick={endSession} style={{ padding: '0 16px', borderRadius: '6px', background: 'rgba(239,68,68,0.1)', color: 'var(--danger)', border: 'none', fontWeight: 500, fontSize: '0.875rem', cursor: 'pointer', display: 'flex', gap: '6px', alignItems: 'center' }}><PhoneOff size={14} /> End</button>
                     </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', height: '100%', overflow: 'hidden' }}>
-                    <div style={{ padding: '1rem', borderRadius: '16px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#50fa7b', animation: 'pulse 2s infinite' }} />
-                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#50fa7b' }}>LIVE METRICS</span>
+                    <div style={{ padding: '1rem', borderRadius: '8px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--success)' }} />
+                        <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>LIVE METRICS</span>
                     </div>
 
                     {[
-                        { label: 'Eye Contact', status: bodyLanguage, score: eyeScore, color: eyeScore > 75 ? '#50fa7b' : '#ffb86c', icon: Eye },
-                        { label: 'Clarity', status: clarityStatus, score: clarityScore, color: clarityScore > 75 ? '#50fa7b' : '#ffb86c', icon: MessageCircle },
-                        { label: 'Pacing', status: paceStatus, score: pacingScore, color: pacingScore > 75 ? '#50fa7b' : '#ffb86c', icon: BarChart3 }
+                        { label: 'Eye Contact', status: bodyLanguage, score: eyeScore, color: eyeScore > 75 ? 'var(--success)' : 'var(--warning)', icon: Eye },
+                        { label: 'Clarity', status: clarityStatus, score: clarityScore, color: clarityScore > 75 ? 'var(--success)' : 'var(--warning)', icon: MessageCircle },
+                        { label: 'Pacing', status: paceStatus, score: pacingScore, color: pacingScore > 75 ? 'var(--success)' : 'var(--warning)', icon: BarChart3 }
                     ].map((m, i) => (
-                        <div key={i} style={{ padding: '0.75rem 1rem', borderRadius: '12px', background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.25rem' }}><m.icon size={12} color={m.color} /><span style={{ fontSize: '0.65rem', color: '#71717a', fontWeight: 700 }}>{m.label}</span></div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ fontSize: '1.1rem', fontWeight: 800, color: m.color }}>{m.score}%</span><span style={{ fontSize: '0.7rem', color: m.color }}>{m.status}</span></div>
-                            <div style={{ height: 4, background: 'rgba(255,255,255,0.05)', borderRadius: 2 }}><div style={{ width: `${m.score}%`, height: '100%', background: m.color, borderRadius: 2, transition: 'width 0.5s' }} /></div>
+                        <div key={i} style={{ padding: '1rem', borderRadius: '8px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <m.icon size={14} color="var(--text-secondary)" />
+                                    <span style={{ fontSize: '0.875rem', color: 'var(--text-primary)', fontWeight: 500 }}>{m.label}</span>
+                                </div>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{m.status}</span>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ flex: 1, height: 4, background: 'var(--border-color)', borderRadius: 2 }}>
+                                    <div style={{ width: `${m.score}%`, height: '100%', background: m.color, borderRadius: 2, transition: 'width 0.5s ease-in-out' }} />
+                                </div>
+                                <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)', width: '32px', textAlign: 'right' }}>{m.score}%</span>
+                            </div>
                         </div>
                     ))}
 
-                    <div style={{ background: '#18181b', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.06)', padding: '0.75rem', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem' }}><MessageCircle size={12} color="#a78bfa" /><h3 style={{ fontSize: '0.75rem', fontWeight: 800, margin: 0 }}>Live Transcript</h3></div>
-                        <div style={{ flex: 1, overflowY: 'auto', padding: '8px', background: 'rgba(0,0,0,0.2)', borderRadius: '8px', fontSize: '0.8rem', color: '#e4e4e7', lineHeight: 1.5 }}>
-                            {liveTranscript || <span style={{ color: '#71717a', fontStyle: 'italic' }}>Waiting for speech...</span>}
+                    <div style={{ background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-color)', padding: '1rem', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.75rem' }}>
+                            <MessageCircle size={14} color="var(--text-secondary)" />
+                            <h3 style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', margin: 0 }}>Live Transcript</h3>
+                        </div>
+                        <div style={{ flex: 1, overflowY: 'auto', fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                            {liveTranscript || <span style={{ fontStyle: 'italic', opacity: 0.7 }}>Waiting for speech...</span>}
                         </div>
                     </div>
 
-                    <button onClick={() => { if(currentQuestionIdx < questions.length - 1) { setCurrentQuestionIdx(i => i + 1); setTimeLeft(120); setLiveTranscript(''); } else endSession(); }} style={{ padding: '0.75rem', borderRadius: '12px', background: 'rgba(124,58,237,0.1)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', cursor: 'pointer', fontWeight: 700, flexShrink: 0 }}>
+                    <button onClick={() => { if(currentQuestionIdx < questions.length - 1) { setCurrentQuestionIdx(i => i + 1); setTimeLeft(120); setLiveTranscript(''); } else endSession(); }} style={{ padding: '0.875rem', borderRadius: '8px', background: 'var(--text-primary)', color: 'var(--bg-primary)', border: 'none', cursor: 'pointer', fontWeight: 500, fontSize: '0.875rem', flexShrink: 0 }}>
                         {currentQuestionIdx < questions.length - 1 ? 'Next Question' : 'Finish Interview'}
                     </button>
                     
-                    <div style={{ padding: '0.75rem', borderRadius: '12px', background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', color: 'white', flexShrink: 0 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.25rem' }}><Brain size={12} /><h3 style={{ fontSize: '0.75rem', fontWeight: 800, margin: 0 }}>AI Tip</h3></div>
-                        <p style={{ fontSize: '0.75rem', lineHeight: 1.4, opacity: 0.9, margin: 0 }}>
+                    <div style={{ padding: '1rem', borderRadius: '8px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', flexShrink: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.5rem' }}>
+                            <Brain size={14} color="var(--accent-color)" />
+                            <h3 style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', margin: 0 }}>AI Tip</h3>
+                        </div>
+                        <p style={{ fontSize: '0.875rem', lineHeight: 1.5, color: 'var(--text-secondary)', margin: 0 }}>
                             {bodyLanguage === 'Needs Work' ? "Try to maintain steady eye contact with the lens to convey confidence." 
                             : bodyLanguage === 'Silent' ? "Don't forget to verbally communicate your thoughts."
                             : paceStatus === 'Too slow' || paceStatus === 'Silent' ? "Try to speak a bit more."

@@ -274,29 +274,10 @@ const Sidebar = () => {
 
             {/* Pro Plan Card */}
             {isPremium ? (
-              /* Active Premium Plan Badge */
-              <div style={{ 
-                padding: '1rem', borderRadius: '16px', 
-                background: 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(251,191,36,0.08))',
-                border: '1px solid rgba(251,191,36,0.25)',
-                display: 'flex', alignItems: 'center', gap: '10px', marginTop: '0.75rem'
-              }}>
-                <div style={{
-                  width: 36, height: 36, borderRadius: '10px',
-                  background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
-                }}>
-                  <Crown size={18} color="white" />
-                </div>
-                <div>
-                  <div style={{ fontWeight: 800, fontSize: '0.85rem', color: '#fbbf24', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    Premium Member
-                    <Star size={12} fill="#fbbf24" color="#fbbf24" />
-                  </div>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', marginTop: '2px' }}>
-                    All AI Features Unlocked
-                  </div>
-                </div>
+              /* Very Subtle Premium Indicator */
+              <div style={{ padding: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', opacity: 0.8 }}>
+                <Star size={14} fill="#fbbf24" color="#fbbf24" />
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Premium Active</span>
               </div>
             ) : (
               /* Upgrade Card */

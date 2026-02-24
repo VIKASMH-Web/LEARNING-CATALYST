@@ -98,44 +98,45 @@ const WorkflowEngine = () => {
         </div>
 
         <div style={{ display: 'flex', gap: '3rem' }}>
-          {/* Vertical Stepper UI */}
-          <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative' }}>
+          {/* Vertical Stepper UI (Linear style) */}
+          <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '2rem', position: 'relative' }}>
             {/* Connecting line */}
             <div style={{ 
-              position: 'absolute', top: '15px', bottom: '15px', left: '15px',
-              width: '2px', background: 'rgba(255,255,255,0.05)', zIndex: 0
+              position: 'absolute', top: '10px', bottom: '20px', left: '9px',
+              width: '1px', background: 'var(--border-color)', zIndex: 0
             }} />
             
             {activeRecipe.steps.map((step, idx) => {
               const status = idx < currentStep ? 'completed' : idx === currentStep && !isCompleted ? 'active' : 'locked';
               
               const nodeColors = {
-                completed: { bg: '#eab308', border: '#ca8a04', text: '#fff' }, // Gold
-                active: { bg: '#3b82f6', border: '#2563eb', text: '#fff' },    // Blue
-                locked: { bg: '#1f2937', border: '#374151', text: '#9ca3af' }    // Grey
+                completed: { text: 'var(--text-primary)', icon: 'var(--text-secondary)' },
+                active: { text: 'var(--text-primary)', icon: 'var(--accent-color)' },
+                locked: { text: 'var(--text-tertiary)', icon: 'var(--border-color)' }
               };
               
               const colorConfig = nodeColors[status];
 
               return (
-                <div key={step.id} style={{ display: 'flex', gap: '16px', position: 'relative', zIndex: 1, opacity: status === 'locked' ? 0.6 : 1 }}>
+                <div key={step.id} style={{ display: 'flex', gap: '1rem', position: 'relative', zIndex: 1, opacity: status === 'locked' ? 0.5 : 1 }}>
                   <div style={{ 
-                    width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0,
-                    background: colorConfig.bg, border: `2px solid ${colorConfig.border}`,
+                    width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0,
+                    background: 'var(--bg-primary)', border: `1px solid ${status === 'locked' ? 'var(--border-color)' : 'transparent'}`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: status === 'active' ? '0 0 15px rgba(59, 130, 246, 0.5)' : status === 'completed' ? '0 0 10px rgba(234, 179, 8, 0.3)' : 'none',
-                    transition: 'all 0.3s'
+                    marginTop: '2px'
                   }}>
-                    {status === 'completed' ? <CheckCircle size={16} color="white" /> : <span style={{ fontSize: '0.8rem', fontWeight: 700, color: colorConfig.text }}>{idx + 1}</span>}
+                    {status === 'completed' ? <CheckCircle size={16} color="var(--text-secondary)" /> 
+                     : status === 'active' ? <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent-color)' }} /> 
+                     : <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--border-color)' }} />}
                   </div>
-                  <div style={{ paddingBottom: '0.5rem' }}>
+                  <div style={{ paddingBottom: '0.25rem' }}>
                     <h3 style={{ 
-                      fontSize: '1.05rem', fontWeight: 700, margin: '0 0 4px 0',
-                      color: status === 'active' ? '#fff' : status === 'completed' ? '#fde047' : '#9ca3af'
+                      fontSize: '0.95rem', fontWeight: 500, margin: '0 0 4px 0',
+                      color: colorConfig.text
                     }}>
                       {step.title}
                     </h3>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', margin: 0 }}>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>
                       {step.desc}
                     </p>
                   </div>
@@ -148,35 +149,35 @@ const WorkflowEngine = () => {
           <div style={{ flex: '1.5', display: 'flex', flexDirection: 'column' }}>
             {isCompleted ? (
               <div style={{
-                background: 'rgba(234, 179, 8, 0.1)', border: '1px solid rgba(234, 179, 8, 0.2)',
-                borderRadius: '16px', padding: '2rem', textAlign: 'center',
+                background: 'var(--bg-card)', border: '1px solid var(--border-color)',
+                borderRadius: '12px', padding: '2rem', textAlign: 'center',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 flex: 1
               }}>
-                <Award size={48} color="#eab308" style={{ marginBottom: '1rem' }} />
-                <h3 style={{ fontSize: '1.3rem', color: '#fde047', fontWeight: 800, marginBottom: '0.5rem' }}>Recipe Completed!</h3>
-                <p style={{ color: '#fef08a', opacity: 0.8, fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+                <Award size={40} color="var(--success)" style={{ marginBottom: '1rem' }} />
+                <h3 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', fontWeight: 600, marginBottom: '0.5rem' }}>Recipe Completed!</h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
                   Excellent work. You've successfully finished this study workflow.
                 </p>
-                <div style={{ padding: '8px 16px', background: 'rgba(234,179,8,0.2)', borderRadius: '20px', color: '#fde047', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ padding: '8px 16px', background: 'rgba(16,185,129,0.1)', borderRadius: '6px', color: 'var(--success)', fontWeight: 500, fontSize: '0.875rem', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                   +{activeRecipe.xp} XP Awarded
                 </div>
               </div>
             ) : (
               <div style={{
-                background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
-                borderRadius: '16px', padding: '2rem', display: 'flex', flexDirection: 'column', flex: 1
+                background: 'var(--bg-card)', border: '1px solid var(--border-color)',
+                borderRadius: '12px', padding: '2rem', display: 'flex', flexDirection: 'column', flex: 1
               }}>
                 <div style={{ marginBottom: 'auto' }}>
-                  <div style={{ display: 'inline-block', padding: '4px 10px', background: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '1rem' }}>
+                  <div style={{ display: 'inline-block', padding: '4px 8px', background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', color: 'var(--text-secondary)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 500, textTransform: 'uppercase', marginBottom: '1rem' }}>
                     Current Step
                   </div>
-                  <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'white', marginBottom: '1rem' }}>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '1rem' }}>
                     {activeRecipe.steps[currentStep].title}
                   </h3>
                   <div style={{ 
-                    padding: '1.5rem', background: '#11111a', borderRadius: '12px', border: '1px solid #1f1f2e',
-                    color: '#a1a1aa', fontSize: '0.9rem', lineHeight: 1.6, minHeight: '150px'
+                    padding: '1.25rem', background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: '8px',
+                    color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6, minHeight: '150px'
                   }}>
                     {/* Mock Content based on step */}
                     {currentStep === 0 && "Waiting for user input... Please provide the necessary data to begin this phase of the study recipe."}
@@ -189,21 +190,21 @@ const WorkflowEngine = () => {
                     onClick={handleNextStep} 
                     disabled={isProcessing}
                     style={{
-                      width: '100%', padding: '1rem', borderRadius: '12px', border: 'none',
-                      background: isProcessing ? '#1e3a8a' : 'linear-gradient(135deg, #3b82f6, #2563eb)',
-                      color: 'white', fontWeight: 700, fontSize: '1rem', cursor: isProcessing ? 'not-allowed' : 'pointer',
+                      width: '100%', padding: '0.875rem', borderRadius: '8px', border: '1px solid var(--border-color)',
+                      background: isProcessing ? 'var(--bg-elevated)' : 'var(--text-primary)',
+                      color: isProcessing ? 'var(--text-secondary)' : 'var(--bg-primary)', 
+                      fontWeight: 500, fontSize: '0.875rem', cursor: isProcessing ? 'not-allowed' : 'pointer',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                      boxShadow: isProcessing ? 'none' : '0 4px 15px rgba(59, 130, 246, 0.3)',
                       transition: 'all 0.2s'
                     }}
                   >
                     {isProcessing ? (
                       <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        Processing <div className="spin" style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%' }} />
+                        Processing ...
                       </span>
                     ) : (
                       <>
-                        {currentStep === activeRecipe.steps.length - 1 ? 'Complete Workflow' : 'Proceed to Next Step'} <ArrowRight size={18} />
+                        {currentStep === activeRecipe.steps.length - 1 ? 'Complete Workflow' : 'Proceed to Next Step'} <ArrowRight size={16} />
                       </>
                     )}
                   </button>
