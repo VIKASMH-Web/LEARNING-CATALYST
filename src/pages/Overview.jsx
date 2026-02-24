@@ -157,100 +157,75 @@ const Overview = () => {
     const strongestSkill = [...processedSkills].sort((a, b) => b.score - a.score)[0];
     const growingSkills = processedSkills.filter(s => s.growth > 3);
     const decliningSkills = processedSkills.filter(s => s.growth < -2);
-    
-    const aiInsightText = decliningSkills.length > 0
-        ? `Your ${decliningSkills[0].name} skills are declining. Prioritize ${decliningSkills[0].weakest} to reverse the trend. Meanwhile, ${strongestSkill.name} is your strongest area at ${strongestSkill.score}%.`
-        : `You're showing strong momentum in ${growingSkills.length > 0 ? growingSkills[0].name : strongestSkill.name}. Your weakest cluster is ${weakestSkill.name} — focus on ${weakestSkill.weakest} to balance your profile.`;
-
+    const bestGrower = [...processedSkills].sort((a, b) => b.growth - a.growth)[0];
     const primaryRoadmap = activeRoadmaps[0];
     const currentStageIndex = Math.floor((primaryRoadmap.percentage / 100) * 6) + 1;
     const estimatedWeeksLeft = primaryRoadmap.percentage > 0 ? Math.max(1, Math.round((100 - primaryRoadmap.percentage) / 8)) : 12;
+    const nextLevel = weakestSkill.score < 40 ? 'Intermediate' : 'Advanced';
 
     return (
-        <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingBottom: '3rem' }}
-        >
-            {/* Header Row */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                    <h1 className="h1" style={{ marginBottom: '0.25rem' }}>
-                        Overview
-                    </h1>
-                    <p className="body-sm">Welcome back, {displayName}</p>
-                </div>
-                <button 
-                    onClick={() => setShowReport(true)}
-                    className="btn btn-secondary"
-                    style={{ fontSize: '0.8125rem' }}
-                >
-                    <FileText size={14} />
-                    Weekly Report
-                    {!isPremium && <Lock size={11} style={{ opacity: 0.4 }} />}
-                </button>
-            </div>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: '2rem', paddingBottom: '2.5rem' }}>
 
-            {/* AI Insight Hero Card */}
-            <div style={{ 
-                border: '1px solid var(--border-color)', borderRadius: 8, 
-                padding: '1rem 1.25rem', display: 'flex', alignItems: 'flex-start', gap: '1rem',
-                background: 'rgba(99, 102, 241, 0.03)'
+            {/* ═══ SECTION 1 — AI HERO INTELLIGENCE ═══ */}
+            <div style={{
+                background: 'linear-gradient(135deg, #15171A 0%, #1a1c20 100%)',
+                border: '1px solid var(--border-color)', borderRadius: 12,
+                padding: '2rem 2.25rem', position: 'relative', overflow: 'hidden'
             }}>
-                <div style={{ 
-                    width: 28, height: 28, borderRadius: 6, flexShrink: 0, marginTop: 2,
-                    background: 'var(--accent-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center'
-                }}>
-                    <Zap size={14} color="var(--accent-color)" />
-                </div>
-                <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.25rem' }}>
-                        <span style={{ fontSize: '0.8125rem', fontWeight: 500, color: 'var(--text-primary)' }}>AI Insight</span>
-                        <span style={{ fontSize: '0.625rem', color: 'var(--text-tertiary)', fontWeight: 500, padding: '1px 6px', background: 'rgba(255,255,255,0.04)', borderRadius: 3 }}>Updated today</span>
+                <div style={{ position: 'absolute', top: 0, right: 0, width: 200, height: 200, background: 'radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)' }} />
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                    <div className="label" style={{ marginBottom: '0.75rem', color: 'var(--accent-color)' }}>AI Intelligence</div>
+                    <h1 style={{ fontSize: '1.375rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.025em', marginBottom: '0.75rem', lineHeight: 1.3 }}>
+                        Your Learning Intelligence Overview
+                    </h1>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: '640px', marginBottom: '0.375rem' }}>
+                        You improved {bestGrower.name} <span style={{ color: 'var(--success)', fontWeight: 500 }}>+{bestGrower.growth.toFixed(1)}%</span> this week. At this pace, you'll reach {nextLevel} in ~{estimatedWeeksLeft} weeks.
+                    </p>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', marginBottom: '1.5rem' }}>
+                        Consistency score increased by 12%. Focus on {weakestSkill.weakest} to close your biggest gap.
+                    </p>
+                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                        <Link to="/learning-hub" className="btn btn-primary" style={{ textDecoration: 'none', padding: '0.5rem 1.25rem', fontSize: '0.8125rem' }}>
+                            Continue Learning
+                        </Link>
+                        <button onClick={() => setShowReport(true)} className="btn btn-secondary" style={{ fontSize: '0.8125rem' }}>
+                            View Weekly Report {!isPremium && <Lock size={11} style={{ opacity: 0.4 }} />}
+                        </button>
                     </div>
-                    <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.55, margin: 0 }}>{aiInsightText}</p>
                 </div>
-                <Link to="/learning-hub" style={{ 
-                    flexShrink: 0, fontSize: '0.75rem', color: 'var(--accent-color)', textDecoration: 'none',
-                    fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px', marginTop: 4
-                }}>
-                    Act on this <ArrowRight size={12} />
-                </Link>
             </div>
 
-            {/* Dense Metrics Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '0', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)' }}>
+            {/* ═══ SECTION 2 — COMPACT METRIC BAR ═══ */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)' }}>
                 {[
-                    { label: 'XP', value: xp.toLocaleString(), change: '+120', changeColor: 'var(--success)' },
-                    { label: 'Streak', value: `${streak}d`, change: null },
-                    { label: 'Velocity', value: lvsScore, change: '+12%', changeColor: 'var(--success)' },
-                    { label: 'Focus', value: `${totalHours}h`, change: null },
-                    { label: 'Stages Done', value: completedStages, change: null },
-                    { label: 'Avg Score', value: `${avgScore}%`, change: null },
+                    { label: 'Total XP', value: xp.toLocaleString(), trend: '+120', up: true },
+                    { label: 'Streak', value: `${streak} days`, trend: null },
+                    { label: 'Learning Velocity', value: lvsScore, trend: '+12%', up: true },
+                    { label: 'Focus Hours', value: totalHours, trend: null },
                 ].map((m, i) => (
-                    <div key={i} style={{ 
-                        padding: '0.875rem 1rem', 
-                        borderRight: i < 5 ? '1px solid var(--border-color)' : 'none',
-                    }}>
-                        <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', marginBottom: '0.25rem', fontWeight: 500 }}>{m.label}</div>
-                        <div style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em', display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                            {m.value}
-                            {m.change && <span style={{ fontSize: '0.625rem', fontWeight: 500, color: m.changeColor }}>{m.change}</span>}
+                    <div key={i} style={{ padding: '0.75rem 1.25rem', borderRight: i < 3 ? '1px solid var(--border-color)' : 'none' }}>
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', fontWeight: 500, marginBottom: '0.1875rem' }}>{m.label}</div>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                            <span style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{m.value}</span>
+                            {m.trend && <span style={{ fontSize: '0.625rem', fontWeight: 500, color: 'var(--success)' }}>{m.trend}</span>}
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* Main Content: Chart (70%) + Skills (30%) */}
-            <div style={{ display: 'grid', gridTemplateColumns: '7fr 3fr', gap: '1.5rem' }}>
-                {/* Learning Activity Chart - 70% */}
+            {/* ═══ SECTION 3 — MAIN INTELLIGENCE GRID ═══ */}
+            <div style={{ display: 'grid', gridTemplateColumns: '65fr 35fr', gap: '2rem' }}>
+                {/* LEFT — Learning Activity Chart */}
                 <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                         <h3 className="h3">Learning Activity</h3>
-                        <span className="body-xs">{selectedPeriod}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <span style={{ fontSize: '0.6875rem', color: 'var(--success)', fontWeight: 500 }}>+18% vs last week</span>
+                            <span className="body-xs">{selectedPeriod}</span>
+                        </div>
                     </div>
-                    <div style={{ height: '260px', width: '100%' }}>
+                    <div style={{ height: '280px', width: '100%' }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={activityData}>
                                 <defs>
@@ -259,139 +234,94 @@ const Overview = () => {
                                         <stop offset="95%" stopColor="var(--accent-color)" stopOpacity={0}/>
                                     </linearGradient>
                                 </defs>
-                                <XAxis dataKey="day" tick={{fill: 'var(--text-tertiary)', fontSize: 11}} axisLine={false} tickLine={false} />
-                                <Tooltip 
-                                    contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, fontSize: '0.8125rem' }} 
-                                    itemStyle={{ color: 'var(--text-primary)' }} 
-                                    labelStyle={{ color: 'var(--text-secondary)' }}
-                                />
+                                <XAxis dataKey="day" tick={{ fill: 'var(--text-tertiary)', fontSize: 11 }} axisLine={false} tickLine={false} />
+                                <Tooltip contentStyle={{ background: '#15171A', border: '1px solid var(--border-color)', borderRadius: 6, fontSize: '0.8125rem' }} itemStyle={{ color: 'var(--text-primary)' }} labelStyle={{ color: 'var(--text-secondary)' }} />
                                 <Area type="monotone" dataKey="hours" stroke="var(--accent-color)" strokeWidth={2} fillOpacity={1} fill="url(#colorMeasure)" />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
-                {/* Skill Breakdown List - 30% */}
+                {/* RIGHT — Skill Intelligence Breakdown */}
                 <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-                        <h3 className="h3">Skills</h3>
-                        <span className="body-xs">Momentum</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <h3 className="h3">Skill Intelligence</h3>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
                         {processedSkills.map((skill, i) => (
-                            <div key={i} style={{ 
-                                display: 'flex', alignItems: 'center', gap: '0.625rem',
-                                padding: '0.5rem 0', borderBottom: '1px solid var(--border-subtle)',
-                            }}>
-                                {/* Score Circle */}
-                                <div style={{ 
-                                    width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-                                    border: `2px solid ${skill.score >= 70 ? 'var(--success)' : skill.score >= 40 ? 'var(--warning)' : 'var(--text-tertiary)'}`,
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    fontSize: '0.6875rem', fontWeight: 600, color: 'var(--text-primary)',
-                                    fontVariantNumeric: 'tabular-nums'
-                                }}>
-                                    {skill.score}
-                                </div>
-                                {/* Name + Weakness */}
-                                <div style={{ flex: 1, minWidth: 0 }}>
-                                    <div style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                        {skill.name}
-                                    </div>
-                                    <div style={{ fontSize: '0.625rem', color: 'var(--text-tertiary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                        Gap: {skill.weakest}
+                            <div key={i} style={{ padding: '0.625rem 0', borderBottom: '1px solid var(--border-subtle)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.375rem' }}>
+                                    <span style={{ fontSize: '0.8125rem', fontWeight: 500, color: 'var(--text-primary)' }}>{skill.name}</span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>{skill.score}%</span>
+                                        <span style={{ fontSize: '0.625rem', fontWeight: 600, color: skill.momentum.color, fontVariantNumeric: 'tabular-nums' }}>
+                                            {skill.growth > 0 ? '+' : ''}{skill.growth.toFixed(1)}%
+                                        </span>
                                     </div>
                                 </div>
-                                {/* Momentum Arrow */}
-                                <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: '2px' }}>
-                                    <TrendingUp size={12} color={skill.momentum.color} style={{ transform: skill.growth < 0 ? 'rotate(180deg)' : 'none' }} />
-                                    <span style={{ fontSize: '0.625rem', fontWeight: 600, color: skill.momentum.color, fontVariantNumeric: 'tabular-nums' }}>
-                                        {skill.growth > 0 ? '+' : ''}{skill.growth.toFixed(1)}%
-                                    </span>
+                                <div style={{ width: '100%', height: '3px', background: 'var(--border-color)', borderRadius: 2, overflow: 'hidden', marginBottom: '0.25rem' }}>
+                                    <motion.div initial={{ width: 0 }} animate={{ width: `${skill.score}%` }} transition={{ duration: 0.6, delay: i * 0.05 }}
+                                        style={{ height: '100%', background: skill.score >= 70 ? 'var(--success)' : skill.score >= 40 ? 'var(--accent-color)' : 'var(--text-tertiary)', borderRadius: 2 }} />
                                 </div>
+                                <div style={{ fontSize: '0.625rem', color: 'var(--text-tertiary)' }}>Focus: {skill.weakest}</div>
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
 
-            {/* Bottom Row: Roadmap Progress + Next Best Action */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-                {/* Active Roadmap - Prominent Progress Card */}
-                <div style={{ border: '1px solid var(--border-color)', borderRadius: 8, padding: '1.25rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                        <h3 className="h3">Active Roadmap</h3>
-                        <Link to="/learning-hub" style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                            All roadmaps <ArrowRight size={11} />
-                        </Link>
-                    </div>
-                    
-                    {/* Primary Roadmap */}
-                    <div style={{ marginBottom: '1rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.375rem' }}>
-                            <span style={{ fontSize: '0.9375rem', fontWeight: 500, color: 'var(--text-primary)' }}>{primaryRoadmap.title}</span>
-                            <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--accent-color)', fontVariantNumeric: 'tabular-nums' }}>{primaryRoadmap.percentage}%</span>
-                        </div>
-                        <div style={{ width: '100%', height: '4px', background: 'var(--border-color)', borderRadius: 2, overflow: 'hidden', marginBottom: '0.625rem' }}>
-                            <motion.div initial={{ width: 0 }} animate={{ width: `${primaryRoadmap.percentage}%` }} transition={{ duration: 0.8, ease: 'easeOut' }} style={{ height: '100%', background: 'var(--accent-color)', borderRadius: 2 }} />
-                        </div>
-                        <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.6875rem', color: 'var(--text-tertiary)' }}>
-                            <span>Stage {currentStageIndex} of 6</span>
-                            <span>·</span>
-                            <span>~{estimatedWeeksLeft} weeks remaining</span>
-                        </div>
-                    </div>
-
-                    {/* Secondary roadmaps */}
-                    {activeRoadmaps.slice(1).map((map, i) => (
-                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.4375rem 0', borderTop: '1px solid var(--border-subtle)' }}>
-                            <span style={{ flex: 1, fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{map.title}</span>
-                            <span style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', fontVariantNumeric: 'tabular-nums' }}>{map.percentage}%</span>
-                            <div style={{ width: 60, height: 2, background: 'var(--border-color)', borderRadius: 1, overflow: 'hidden' }}>
-                                <div style={{ width: `${map.percentage}%`, height: '100%', background: 'var(--text-tertiary)', borderRadius: 1 }} />
-                            </div>
-                        </div>
-                    ))}
+            {/* ═══ SECTION 4 — ACTIVE ROADMAP ═══ */}
+            <div style={{ background: '#15171A', border: '1px solid var(--border-color)', borderRadius: 12, padding: '1.5rem 1.75rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                    <h3 className="h3">Active Roadmap</h3>
+                    <Link to="/learning-hub" style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        All roadmaps <ArrowRight size={12} />
+                    </Link>
                 </div>
-
-                {/* Next Best Action Card */}
-                <div style={{ border: '1px solid var(--border-color)', borderRadius: 8, padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
-                        <h3 className="h3">Next Best Action</h3>
-                        <span style={{ fontSize: '0.5625rem', fontWeight: 600, color: 'var(--warning)', background: 'rgba(251,191,36,0.1)', padding: '2px 6px', borderRadius: 3, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Priority</span>
-                    </div>
-                    
-                    {/* Primary Action */}
-                    <div style={{ 
-                        padding: '0.75rem', borderRadius: 6, border: '1px solid var(--border-color)',
-                        marginBottom: '0.75rem', background: 'rgba(255,255,255,0.015)'
-                    }}>
-                        <div style={{ fontSize: '0.8125rem', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>
-                            {weakestSkill.nextAction}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+                    <div style={{ flex: 1 }}>
+                        <h2 style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>{primaryRoadmap.title}</h2>
+                        <div style={{ width: '100%', height: '6px', background: 'var(--border-color)', borderRadius: 3, overflow: 'hidden', marginBottom: '0.75rem' }}>
+                            <motion.div initial={{ width: 0 }} animate={{ width: `${primaryRoadmap.percentage}%` }} transition={{ duration: 0.8, ease: 'easeOut' }} style={{ height: '100%', background: 'var(--accent-color)', borderRadius: 3 }} />
                         </div>
-                        <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <Target size={10} /> {weakestSkill.name} · Weakness: {weakestSkill.weakest}
+                        <div style={{ display: 'flex', gap: '2rem', fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                            <span>Stage <strong style={{ color: 'var(--text-secondary)' }}>{currentStageIndex}</strong> of 6</span>
+                            <span>Progress <strong style={{ color: 'var(--text-secondary)' }}>{primaryRoadmap.percentage}%</strong></span>
+                            <span>ETA <strong style={{ color: 'var(--text-secondary)' }}>~{estimatedWeeksLeft} weeks</strong></span>
                         </div>
                     </div>
-
-                    {/* Quick Actions */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: 1 }}>
-                        {processedSkills.filter(s => s.name !== weakestSkill.name).slice(0, 2).map((s, i) => (
-                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.375rem 0' }}>
-                                <div style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--text-tertiary)', flexShrink: 0 }} />
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{s.nextAction}</span>
+                    <Link to="/learning-hub" className="btn btn-primary" style={{ textDecoration: 'none', padding: '0.5rem 1.5rem', fontSize: '0.8125rem', flexShrink: 0 }}>
+                        Continue →
+                    </Link>
+                </div>
+                {activeRoadmaps.length > 1 && (
+                    <div style={{ borderTop: '1px solid var(--border-color)', marginTop: '1.25rem', paddingTop: '0.75rem', display: 'flex', gap: '2rem' }}>
+                        {activeRoadmaps.slice(1).map((map, i) => (
+                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                                <span style={{ color: 'var(--text-secondary)' }}>{map.title}</span>
+                                <span style={{ fontVariantNumeric: 'tabular-nums' }}>{map.percentage}%</span>
+                                <div style={{ width: 48, height: 2, background: 'var(--border-color)', borderRadius: 1 }}>
+                                    <div style={{ width: `${map.percentage}%`, height: '100%', background: 'var(--text-tertiary)', borderRadius: 1 }} />
+                                </div>
                             </div>
                         ))}
                     </div>
+                )}
+            </div>
 
-                    {/* CTA */}
-                    <Link to="/learning-hub" className="btn btn-primary" style={{ 
-                        alignSelf: 'flex-start', marginTop: '0.75rem', textDecoration: 'none',
-                        padding: '0.4375rem 1rem', fontSize: '0.8125rem'
-                    }}>
-                        Start now →
-                    </Link>
-                </div>
+            {/* ═══ SECTION 5 — AI NEXT ACTION PANEL ═══ */}
+            <div style={{ background: '#15171A', border: '1px solid var(--border-color)', borderRadius: 12, padding: '1.5rem 1.75rem' }}>
+                <div className="label" style={{ color: 'var(--accent-color)', marginBottom: '0.5rem' }}>AI Recommendation</div>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Your Next Best Action</h3>
+                <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '0.375rem', maxWidth: '600px' }}>
+                    {weakestSkill.nextAction}. Your {weakestSkill.name} cluster is at {weakestSkill.score}% — improving {weakestSkill.weakest} yields the highest ROI based on your current trajectory.
+                </p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '1.25rem' }}>
+                    Estimated impact: +{(Math.random() * 3 + 2).toFixed(1)}% skill growth this week
+                </p>
+                <Link to="/learning-hub" className="btn btn-primary" style={{ textDecoration: 'none', padding: '0.5625rem 1.5rem', fontSize: '0.875rem' }}>
+                    Start Now →
+                </Link>
             </div>
 
             {/* WEEKLY REPORT MODAL */}
