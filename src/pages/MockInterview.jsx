@@ -7,17 +7,17 @@ import { useGame } from '../context/GameContext';
 import { Sparkles, Play, Zap, Video, Camera, VideoOff, Clock, Mic, MicOff, PhoneOff, Brain, CheckCircle, Eye, MessageCircle, Target, BarChart3, ChevronLeft } from 'lucide-react';
 
 const domains = [
-    { key: 'backend_developer', label: 'Backend Development', icon: '⚙️', color: '#60a5fa' },
-    { key: 'frontend_developer', label: 'Frontend Development', icon: '🎨', color: '#34d399' },
-    { key: 'data_scientist', label: 'Data Science', icon: '📊', color: '#fbbf24' },
-    { key: 'hr', label: 'HR / People Ops', icon: '👥', color: '#f472b6' },
-    { key: 'product_manager', label: 'Product Management', icon: '📱', color: '#a78bfa' },
-    { key: 'digital_marketing', label: 'Digital Marketing', icon: '📣', color: '#fb923c' },
-    { key: 'general', label: 'General / Behavioral', icon: '💬', color: '#94a3b8' },
+    { key: 'backend_developer', label: 'Backend Development', icon: '⚙️', color: '#60a5fa', image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80' },
+    { key: 'frontend_developer', label: 'Frontend Development', icon: '🎨', color: '#34d399', image: 'https://images.unsplash.com/photo-1547658719-da2b51159128?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80' },
+    { key: 'data_scientist', label: 'Data Science', icon: '📊', color: '#fbbf24', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80' },
+    { key: 'hr', label: 'HR / People Ops', icon: '👥', color: '#f472b6', image: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80' },
+    { key: 'product_manager', label: 'Product Management', icon: '📱', color: '#a78bfa', image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80' },
+    { key: 'digital_marketing', label: 'Digital Marketing', icon: '📣', color: '#fb923c', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80' },
+    { key: 'general', label: 'General / Behavioral', icon: '💬', color: '#94a3b8', image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80' },
 ];
 
 const MockInterview = () => {
-    const { addXP } = useProgress();
+    const { addXP, addInterviewSession } = useProgress();
     const [view, setView] = useState('lobby'); // lobby, domain, difficulty, permission, interview, feedback
     const [selectedDomain, setSelectedDomain] = useState('general');
     const [difficulty, setDifficulty] = useState('medium');
@@ -84,6 +84,7 @@ const MockInterview = () => {
         const finalScore = Math.round(((eyeScore || 85) + (clarityScore || 90) + (pacingScore || 72)) / 3);
         notifyInterviewComplete(finalScore);
         if (addXP) addXP(50);
+        if (addInterviewSession) addInterviewSession({ date: new Date().toISOString(), score: finalScore });
         setView('feedback');
     };
 
@@ -242,13 +243,16 @@ const MockInterview = () => {
                             </div>
                         </div>
                         <div style={{
-                            width: '280px', height: '200px', borderRadius: '16px', background: 'linear-gradient(145deg, rgba(30,30,60,0.8), rgba(15,15,30,0.9))',
-                            border: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative'
+                            width: '320px', height: '240px', borderRadius: '16px', overflow: 'hidden',
+                            position: 'relative', boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
                         }}>
-                            <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(124,58,237,0.15)', border: '2px solid rgba(124,58,237,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
-                                <Video size={28} color="#a78bfa" />
+                            <img src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Interview Practice" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #0f0f1e, transparent)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', paddingBottom: '1rem' }}>
+                                <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(124,58,237,0.8)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem', boxShadow: '0 4px 15px rgba(124,58,237,0.5)' }}>
+                                    <Video size={24} color="#fff" />
+                                </div>
+                                <div style={{ fontSize: '0.85rem', color: '#fff', fontWeight: 700, letterSpacing: '0.5px' }}>LIVE ANALYSIS</div>
                             </div>
-                            <div style={{ fontSize: '0.8rem', color: '#71717a', fontWeight: 600 }}>Camera Ready</div>
                         </div>
                     </div>
                 </div>
@@ -274,15 +278,21 @@ const MockInterview = () => {
         return (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ padding: '2rem', maxWidth: 900, margin: '0 auto' }}>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#f4f4f5', marginBottom: '1rem' }}>Select Interview Domain</h2>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 12 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.25rem' }}>
                     {domains.map(domain => (
                         <button key={domain.key} onClick={() => { setSelectedDomain(domain.key); setView('difficulty'); }} style={{
-                            display: 'flex', alignItems: 'center', gap: 14, padding: '18px 20px', borderRadius: 14, textAlign: 'left',
-                            background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', cursor: 'pointer'
-                        }}>
-                            <span style={{ fontSize: '1.5rem' }}>{domain.icon}</span>
-                            <div>
-                                <div style={{ fontWeight: 600, color: '#e2e8f0', fontSize: '0.95rem' }}>{domain.label}</div>
+                            display: 'flex', flexDirection: 'column', borderRadius: 16, overflow: 'hidden', textAlign: 'left',
+                            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', cursor: 'pointer',
+                            transition: 'all 0.2s', padding: 0, position: 'relative'
+                        }} className="domain-card-hover">
+                            <div style={{ height: '140px', width: '100%', position: 'relative' }}>
+                                <img src={domain.image} alt={domain.label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,15,30,1), transparent)' }} />
+                                <span style={{ position: 'absolute', bottom: '10px', left: '16px', fontSize: '2rem', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }}>{domain.icon}</span>
+                            </div>
+                            <div style={{ padding: '16px' }}>
+                                <div style={{ fontWeight: 700, color: '#f8fafc', fontSize: '1.05rem', marginBottom: '4px' }}>{domain.label}</div>
+                                <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>AI Mock Interview</div>
                             </div>
                         </button>
                     ))}

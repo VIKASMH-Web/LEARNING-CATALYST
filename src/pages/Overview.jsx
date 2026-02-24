@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 const Overview = () => {
-    const { focusMinutes, roadmapProgress, activeDays, getSkillLevel } = useProgress();
+    const { focusMinutes, roadmapProgress, activeDays, getSkillLevel, interviewHistory } = useProgress();
     const { user } = useAuth();
     const { isPremium, lvsScore } = useGame();
     const displayName = user?.name || user?.email?.split('@')[0] || 'Learner';
@@ -22,11 +22,12 @@ const Overview = () => {
     const [showPremiumModal, setShowPremiumModal] = useState(false);
 
     // --- 1. REAL DATA CALCULATION ---
-    const totalHours = focusMinutes > 0 ? (focusMinutes / 60).toFixed(1) : "34.5";
-    const completedStagesRaw = Object.values(roadmapProgress).filter(item => item.completed).length;
-    const completedStages = completedStagesRaw > 0 ? completedStagesRaw : 18;
-    const avgScore = 92; 
-    const rank = "#42";  
+    const totalHours = (focusMinutes / 60).toFixed(1);
+    const completedStages = Object.values(roadmapProgress).filter(item => item.completed).length;
+    const avgScore = interviewHistory && interviewHistory.length > 0 
+        ? Math.round(interviewHistory.reduce((acc, curr) => acc + curr.score, 0) / interviewHistory.length) 
+        : (lvsScore || 0);
+    const rank = "#42";
 
     // --- 2. ACTIVITY CHART DATA ---
     const activityData = [
@@ -168,21 +169,20 @@ const Overview = () => {
                     </h1>
                     <p className="body-sm">You've maintained a {activeDays.length} day streak! Keep it up!</p>
                 </div>
-                <button 
-                    onClick={() => setShowReport(true)}
-                    style={{
-                        padding: '0.75rem 1.25rem',
-                        background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
-                        color: 'white', border: 'none', borderRadius: '12px',
-                        fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer',
-                        display: 'flex', alignItems: 'center', gap: '8px',
-                        boxShadow: '0 4px 12px rgba(124, 58, 237, 0.3)'
-                    }}
-                >
-                    <FileText size={18} />
-                    View Weekly Report
-                    {!isPremium && <Lock size={14} style={{ opacity: 0.8 }} />}
-                </button>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                    <button 
+                        onClick={() => setShowReport(true)}
+                        style={{
+                            padding: '0.5rem 1rem', background: 'white', color: '#18181b', border: '1px solid rgba(255,255,255,0.1)', 
+                            borderRadius: '8px', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', gap: '8px', transition: 'background 0.2s'
+                        }}
+                    >
+                        <FileText size={16} />
+                        View Weekly Report
+                        {!isPremium && <Lock size={12} style={{ opacity: 0.6 }} />}
+                    </button>
+                </div>
             </div>
 
             {/* Stats Row */}
@@ -491,18 +491,23 @@ const Overview = () => {
 // --- Sub Components ---
 
 const StatsCard = ({ icon, label, value, trend, trendColor }) => (
-    <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative' }}>
+    <div style={{ 
+        padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'relative',
+        background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px'
+    }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 32, height: 32, borderRadius: '8px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {icon}
             </div>
-            <div style={{ padding: '2px 8px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', fontSize: '0.75rem', fontWeight: 700, color: trendColor }}>
-                {trend}
-            </div>
+            {trend && (
+                <div style={{ padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', fontSize: '0.75rem', fontWeight: 600, color: trendColor }}>
+                    {trend}
+                </div>
+            )}
         </div>
         <div>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>{label}</div>
-            <div style={{ fontSize: '1.75rem', fontWeight: 800 }}>{value}</div>
+            <div style={{ fontSize: '0.85rem', color: '#a1a1aa', marginBottom: '0.25rem', fontWeight: 500 }}>{label}</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f4f4f5' }}>{value}</div>
         </div>
     </div>
 );
