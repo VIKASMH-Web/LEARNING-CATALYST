@@ -29,16 +29,27 @@ export const ProgressProvider = ({ children }) => {
     // --- INITIALIZATION ---
     useEffect(() => {
         // Load from localStorage
-        const savedProgress = JSON.parse(localStorage.getItem('lc_progress') || '{}');
+        const safeParse = (key, fallback) => {
+            try {
+                const item = localStorage.getItem(key);
+                return item ? JSON.parse(item) : fallback;
+            } catch (e) {
+                console.error(`Error parsing localStorage key "${key}":`, e);
+                return fallback;
+            }
+        };
+
+        const savedProgress = safeParse('lc_progress', {});
         const savedFocus = parseInt(localStorage.getItem('lc_focusWait') || '0', 10);
         const savedCodeRuns = parseInt(localStorage.getItem('lc_codeRuns') || '0', 10);
-        const savedDays = JSON.parse(localStorage.getItem('lc_activeDays') || '[]');
-        const savedBadges = JSON.parse(localStorage.getItem('lc_badges') || '{}');
-        const savedCareer = JSON.parse(localStorage.getItem('lc_careerProfile') || 'null');
-        const savedInterviews = JSON.parse(localStorage.getItem('lc_interviewHistory') || '[]');
-        const savedDailyFocus = JSON.parse(localStorage.getItem('lc_dailyFocus') || '{}');
+        const savedDays = safeParse('lc_activeDays', []);
+        const savedBadges = safeParse('lc_badges', {});
+        const savedCareer = safeParse('lc_careerProfile', null);
+        const savedInterviews = safeParse('lc_interviewHistory', []);
+        const savedDailyFocus = safeParse('lc_dailyFocus', {});
+        
         let initialDailyFocus = savedDailyFocus;
-        if (Object.keys(savedDailyFocus).length === 0) {
+        if (!initialDailyFocus || Object.keys(initialDailyFocus).length === 0) {
             // Seed sample data for last 7 days to "WOW" the user
             const sampleData = {};
             const todayDate = new Date();

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Book, Target, Award, CheckCircle, ArrowRight, Brain, FileText, ChevronRight, Star, Lock } from 'lucide-react';
+import { Play, Book, Target, Award, CheckCircle, ArrowRight, Brain, FileText, ChevronRight, Star, Lock, Sparkles } from 'lucide-react';
 import { useGame } from '../../context/GameContext';
 
 const RECIPES = [

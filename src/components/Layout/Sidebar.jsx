@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  Layout, BookOpen, Code, Clock, User, Target, Mic, X, CheckCircle, Crown, Search, Flame, Star, Zap, Network, Briefcase, Users, Calendar, GraduationCap, Sparkles
+  Layout, Code, Clock, User, Target, Mic, CheckCircle, Crown, Search, Flame, Star, Network, Briefcase, Users, Calendar, GraduationCap, Sparkles
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useFocus } from '../../context/FocusContext';
 import { useGame } from '../../context/GameContext';
 import { requestNotificationPermission, notifyProUpgrade } from '../../utils/notifications';
 import PremiumModal from '../Shared/PremiumModal';
+import './Sidebar.css';
 
 
 const Sidebar = () => {

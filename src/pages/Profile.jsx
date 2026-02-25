@@ -579,11 +579,11 @@ const Profile = () => {
                                             </div>
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                            <div style={{ flex: 1, height: '6px', background: 'rgba(255,255,255,0.06)', borderRadius: '3px', overflow: 'hidden' }}>
+                                            <div style={{ flex: 1, height: '10px', background: 'rgba(255,255,255,0.06)', borderRadius: '5px', overflow: 'hidden' }}>
                                                 <motion.div
                                                     initial={{ width: 0 }} animate={{ width: `${percentage}%` }}
                                                     transition={{ duration: 0.8, ease: 'easeOut' }}
-                                                    style={{ height: '100%', borderRadius: '3px', background: isEarned ? 'linear-gradient(90deg,#50fa7b,#10b981)' : 'linear-gradient(90deg,#7c3aed,#a78bfa)' }}
+                                                    style={{ height: '100%', borderRadius: '5px', background: isEarned ? 'linear-gradient(90deg,#50fa7b,#10b981)' : 'linear-gradient(90deg,#7c3aed,#a78bfa)' }}
                                                 />
                                             </div>
                                             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: isEarned ? '#50fa7b' : 'var(--text-secondary)', minWidth: '80px', textAlign: 'right' }}>

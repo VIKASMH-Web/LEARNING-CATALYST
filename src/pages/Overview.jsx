@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Clock, Zap, Trophy, Target, Star,
   TrendingUp, BarChart2, MoreHorizontal, ArrowRight, Activity,
-  Lock, CheckCircle, AlertTriangle, FileText
+  Lock, CheckCircle, AlertTriangle, FileText, Sparkles
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
@@ -325,9 +325,9 @@ const Overview = () => {
                                         </span>
                                     </div>
                                 </div>
-                                <div style={{ width: '100%', height: '3px', background: 'var(--border-color)', borderRadius: 2, overflow: 'hidden', marginBottom: '0.25rem' }}>
+                                <div style={{ width: '100%', height: '8px', background: 'var(--border-color)', borderRadius: 4, overflow: 'hidden', marginBottom: '0.25rem' }}>
                                     <motion.div initial={{ width: 0 }} animate={{ width: `${skill.score}%` }} transition={{ duration: 0.6, delay: i * 0.05 }}
-                                        style={{ height: '100%', background: skill.score >= 70 ? 'var(--success)' : skill.score >= 40 ? 'var(--accent-color)' : 'var(--text-tertiary)', borderRadius: 2 }} />
+                                        style={{ height: '100%', background: skill.score >= 70 ? 'var(--success)' : skill.score >= 40 ? 'var(--accent-color)' : 'var(--text-tertiary)', borderRadius: 4 }} />
                                 </div>
                                 <div style={{ fontSize: '0.625rem', color: 'var(--text-tertiary)' }}>Focus: {skill.weakest}</div>
                             </div>
@@ -347,8 +347,9 @@ const Overview = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
                     <div style={{ flex: 1 }}>
                         <h2 style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>{primaryRoadmap.title}</h2>
-                        <div style={{ width: '100%', height: '6px', background: 'var(--border-color)', borderRadius: 3, overflow: 'hidden', marginBottom: '0.75rem' }}>
-                            <motion.div initial={{ width: 0 }} animate={{ width: `${primaryRoadmap.percentage}%` }} transition={{ duration: 0.8, ease: 'easeOut' }} style={{ height: '100%', background: 'var(--accent-color)', borderRadius: 3 }} />
+                        <div style={{ width: '100%', height: '10px', background: 'var(--border-color)', borderRadius: 5, overflow: 'hidden', marginBottom: '0.75rem' }}>
+                            <motion.div initial={{ width: 0 }} animate={{ width: `${primaryRoadmap.percentage}%` }} transition={{ duration: 1 }}
+                                style={{ height: '100%', background: 'linear-gradient(90deg, var(--accent-color), #818cf8)', borderRadius: 5 }} />
                         </div>
                         <div style={{ display: 'flex', gap: '2rem', fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
                             <span>Stage <strong style={{ color: 'var(--text-secondary)' }}>{currentStageIndex}</strong> of 6</span>
