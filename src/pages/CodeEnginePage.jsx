@@ -14,6 +14,7 @@ const CodeEnginePage = () => {
     const [explanationLanguage, setExplanationLanguage] = useState('English');
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [explanation, setExplanation] = useState(null);
+    const [output, setOutput] = useState('');
     const [error, setError] = useState('');
 
     const languages = [
@@ -143,6 +144,7 @@ const CodeEnginePage = () => {
         setIsAnalyzing(true);
         setError('');
         setExplanation(null);
+        setOutput('');
         setAnnouncement("Analyzing code logic...");
         
         try {
@@ -152,8 +154,10 @@ const CodeEnginePage = () => {
             if (data.error) {
                 setError(data.error);
                 setExplanation(null);
+                setOutput('');
             } else {
                 setExplanation(data.explanation || null);
+                setOutput(data.output || '');
                 setError('');
                 if (autoVoice) setTimeout(() => handleListenExplanation(), 500);
                 setAnnouncement("Analysis complete. Press Alt plus L to listen to explanation.");
@@ -162,6 +166,7 @@ const CodeEnginePage = () => {
             console.error(e);
             setError("Analysis engine encountered an unexpected error.");
             setExplanation(null);
+            setOutput('');
             setAnnouncement("Analysis failed.");
         }
         setIsAnalyzing(false);
@@ -254,122 +259,144 @@ const CodeEnginePage = () => {
                 </div>
 
                 {/* Explanation Panel */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', minHeight: 0 }}>
-                    <div className="card" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden', background: 'var(--bg-secondary)' }}>
-                        <div style={{ 
-                            padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)', 
-                            display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-card)' 
-                        }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                <BookOpen size={16} color="var(--warning)" />
-                                <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Narrative Explanation</span>
-                            </div>
-                            <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                <button 
-                                    onClick={() => setAutoVoice(!autoVoice)}
-                                    title="Auto-read explanation"
-                                    className="btn btn-ghost"
-                                    style={{ 
-                                        padding: '4px 8px', height: '28px', fontSize: '0.75rem',
-                                        color: autoVoice ? 'var(--success)' : 'var(--text-secondary)',
-                                        background: autoVoice ? 'rgba(16, 185, 129, 0.1)' : 'transparent'
-                                    }}
-                                >
-                                    <Volume2 size={14} /> {autoVoice ? 'Auto: ON' : 'Auto: OFF'}
-                                </button>
-                                
-                                {audioState.type === 'explanation' && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', minHeight: 0 }}>
+                        {/* Explanation Panel */}
+                        <div className="card" style={{ flex: 1.5, display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden', background: 'var(--bg-secondary)' }}>
+                            <div style={{ 
+                                padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)', 
+                                display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-card)' 
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                    <BookOpen size={16} color="var(--warning)" />
+                                    <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Narrative Explanation</span>
+                                </div>
+                                <div style={{ display: 'flex', gap: '0.5rem' }}>
                                     <button 
-                                        onClick={stopSpeaking} 
+                                        onClick={() => setAutoVoice(!autoVoice)}
+                                        title="Auto-read explanation"
                                         className="btn btn-ghost"
-                                        style={{ padding: '4px', height: '28px', color: 'var(--danger)' }}
-                                    >
-                                        <StopCircle size={16} />
-                                    </button>
-                                )}
-                                <button
-                                    onClick={triggerExplanation}
-                                    className="btn btn-secondary"
-                                    style={{ padding: '4px 12px', height: '28px', fontSize: '0.75rem' }}
-                                >
-                                    {audioState.type === 'explanation' && !audioState.isPaused ? <Pause size={12} /> : <Volume2 size={12} />}
-                                    {audioState.type === 'explanation' ? (audioState.isPaused ? "Resume" : "Pause") : "Listen"}
-                                </button>
-                            </div>
-                        </div>
-
-                        <div style={{ flex: 1, padding: '1.5rem', overflowY: 'auto', background: 'var(--bg-primary)' }}>
-                            <AnimatePresence mode="wait">
-                                {error ? (
-                                    <motion.div 
-                                        key="error-box"
-                                        initial={{ opacity: 0, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
                                         style={{ 
-                                            background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', 
-                                            padding: '1rem', borderRadius: 'var(--radius-md)', display: 'flex', gap: '12px', color: 'var(--danger)' 
+                                            padding: '4px 8px', height: '28px', fontSize: '0.75rem',
+                                            color: autoVoice ? 'var(--success)' : 'var(--text-secondary)',
+                                            background: autoVoice ? 'rgba(16, 185, 129, 0.1)' : 'transparent'
                                         }}
                                     >
-                                        <AlertCircle size={24} />
-                                        <div>
-                                            <div style={{ fontWeight: 600, marginBottom: '4px' }}>Validation Failed</div>
-                                            <div style={{ fontSize: '0.9rem', lineHeight: 1.4 }}>{error}</div>
-                                        </div>
-                                    </motion.div>
-                                ) : (explanation && explanation.titles) ? (
-                                    <motion.div 
-                                        key="explanation-box"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
+                                        <Volume2 size={14} /> {autoVoice ? 'Auto: ON' : 'Auto: OFF'}
+                                    </button>
+                                    
+                                    {audioState.type === 'explanation' && (
+                                        <button 
+                                            onClick={stopSpeaking} 
+                                            className="btn btn-ghost"
+                                            style={{ padding: '4px', height: '28px', color: 'var(--danger)' }}
+                                        >
+                                            <StopCircle size={16} />
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={triggerExplanation}
+                                        className="btn btn-secondary"
+                                        style={{ padding: '4px 12px', height: '28px', fontSize: '0.75rem' }}
                                     >
-                                        <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem', color: 'var(--warning)' }}>
-                                                <Lightbulb size={16} />
-                                                <h3 style={{ fontSize: '0.9rem', fontWeight: 600 }}>{explanation.titles.overview}</h3>
-                                            </div>
-                                            <p className="body-sm" style={{ color: 'var(--text-primary)' }}>{explanation.overview}</p>
-                                        </div>
+                                        {audioState.type === 'explanation' && !audioState.isPaused ? <Pause size={12} /> : <Volume2 size={12} />}
+                                        {audioState.type === 'explanation' ? (audioState.isPaused ? "Resume" : "Pause") : "Listen"}
+                                    </button>
+                                </div>
+                            </div>
 
-                                        <section>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem', color: 'var(--accent-color)' }}>
-                                                <Hash size={16} />
-                                                <h3 style={{ fontSize: '0.9rem', fontWeight: 600 }}>Line-by-Line Breakdown</h3>
+                            <div style={{ flex: 1, padding: '1.5rem', overflowY: 'auto', background: 'var(--bg-primary)' }}>
+                                <AnimatePresence mode="wait">
+                                    {error ? (
+                                        <motion.div 
+                                            key="error-box"
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            style={{ 
+                                                background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', 
+                                                padding: '1rem', borderRadius: 'var(--radius-md)', display: 'flex', gap: '12px', color: 'var(--danger)' 
+                                            }}
+                                        >
+                                            <AlertCircle size={24} />
+                                            <div>
+                                                <div style={{ fontWeight: 600, marginBottom: '4px' }}>Validation Failed</div>
+                                                <div style={{ fontSize: '0.9rem', lineHeight: 1.4 }}>{error}</div>
                                             </div>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                                {explanation.lines && explanation.lines.map((line, i) => (
-                                                    <div key={i} style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', overflow: 'hidden', background: 'var(--bg-card)' }}>
-                                                        <div style={{ padding: '0.5rem 1rem', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                            <span style={{ fontSize: '0.7rem', fontWeight: 600, opacity: 0.7, textTransform: 'uppercase' }}>
-                                                                {explanation.titles.line} {line.line_number}
-                                                            </span>
-                                                        </div>
-                                                        <div style={{ padding: '1rem' }}>
-                                                            <div style={{ marginBottom: '0.75rem', fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}>
-                                                                {line.explanation}
-                                                            </div>
-                                                            <div style={{ padding: '0.75rem', background: 'var(--bg-primary)', borderRadius: 'var(--radius-sm)', fontFamily: 'monospace', fontSize: '0.8rem', color: 'var(--accent-color)', marginBottom: '0.75rem' }}>
-                                                                {line.content}
-                                                            </div>
-                                                            <div style={{ padding: '0.75rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(16, 185, 129, 0.1)' }}>
-                                                                <div style={{ fontSize: '0.8rem', opacity: 0.9, color: 'var(--text-secondary)' }}>{line.reason}</div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))}
+                                        </motion.div>
+                                    ) : (explanation && explanation.titles) ? (
+                                        <motion.div 
+                                            key="explanation-box"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
+                                        >
+                                            <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem', color: 'var(--warning)' }}>
+                                                    <Lightbulb size={16} />
+                                                    <h3 style={{ fontSize: '0.9rem', fontWeight: 600 }}>{explanation.titles.overview}</h3>
+                                                </div>
+                                                <p className="body-sm" style={{ color: 'var(--text-primary)' }}>{explanation.overview}</p>
                                             </div>
-                                        </section>
-                                    </motion.div>
+
+                                            <section>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem', color: 'var(--accent-color)' }}>
+                                                    <Hash size={16} />
+                                                    <h3 style={{ fontSize: '0.9rem', fontWeight: 600 }}>Line-by-Line Breakdown</h3>
+                                                </div>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                                    {explanation.lines && explanation.lines.map((line, i) => (
+                                                        <div key={i} style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', overflow: 'hidden', background: 'var(--bg-card)' }}>
+                                                            <div style={{ padding: '0.5rem 1rem', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                                <span style={{ fontSize: '0.7rem', fontWeight: 600, opacity: 0.7, textTransform: 'uppercase' }}>
+                                                                    {explanation.titles.line} {line.line_number}
+                                                                </span>
+                                                            </div>
+                                                            <div style={{ padding: '1rem' }}>
+                                                                <div style={{ marginBottom: '0.75rem', fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}>
+                                                                    {line.explanation}
+                                                                </div>
+                                                                <div style={{ padding: '0.75rem', background: 'var(--bg-primary)', borderRadius: 'var(--radius-sm)', fontFamily: 'monospace', fontSize: '0.8rem', color: 'var(--accent-color)', marginBottom: '0.75rem' }}>
+                                                                    {line.content}
+                                                                </div>
+                                                                <div style={{ padding: '0.75rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(16, 185, 129, 0.1)' }}>
+                                                                    <div style={{ fontSize: '0.8rem', opacity: 0.9, color: 'var(--text-secondary)' }}>{line.reason}</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </section>
+                                        </motion.div>
+                                    ) : (
+                                        <motion.div key="placeholder" style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', opacity: 0.4, textAlign: 'center' }}>
+                                            <Cpu size={48} style={{ marginBottom: '1rem', color: 'var(--text-tertiary)' }} />
+                                            <p className="body-sm">Deep Logic Analysis Ready.</p>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        </div>
+
+                        {/* Output Panel */}
+                        <div className="card" style={{ flex: 0.5, display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden', minHeight: '150px' }}>
+                            <div style={{ 
+                                padding: '0.5rem 1rem', background: '#1e1e2e', borderBottom: '1px solid rgba(255,255,255,0.1)', 
+                                display: 'flex', alignItems: 'center', gap: '0.75rem' 
+                            }}>
+                                <TerminalSquare size={14} color="#50fa7b" />
+                                <span style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#94a3b8' }}>{explanation?.titles?.output || 'Execution Result'}</span>
+                            </div>
+                            <div style={{ 
+                                flex: 1, padding: '1rem', background: '#09090b', color: '#50fa7b', 
+                                fontFamily: "'SF Mono', monospace", fontSize: '0.85rem', overflowY: 'auto'
+                            }}>
+                                {output ? (
+                                    <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{output}</pre>
                                 ) : (
-                                    <motion.div key="placeholder" style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', opacity: 0.4, textAlign: 'center' }}>
-                                        <Cpu size={48} style={{ marginBottom: '1rem', color: 'var(--text-tertiary)' }} />
-                                        <p className="body-sm">Deep Logic Analysis Ready.</p>
-                                    </motion.div>
+                                    <span style={{ opacity: 0.4, fontStyle: 'italic' }}>Terminal idle...</span>
                                 )}
-                            </AnimatePresence>
+                            </div>
                         </div>
                     </div>
-                </div>
             </div>
 
             <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', alignItems: 'center', opacity: 0.5, fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>

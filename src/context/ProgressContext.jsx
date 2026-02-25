@@ -22,6 +22,7 @@ export const ProgressProvider = ({ children }) => {
     // Career & Interview
     const [careerProfile, setCareerProfile] = useState(null); // { targetRole, salaryGoal, timeline, dailyHours, currentLevel, roadmap: [...] }
     const [interviewHistory, setInterviewHistory] = useState([]); // [{ date, score, feedback: {...} }, ...]
+    const [dailyFocus, setDailyFocus] = useState({}); // { 'YYYY-MM-DD': minutes }
 
     const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -35,6 +36,7 @@ export const ProgressProvider = ({ children }) => {
         const savedBadges = JSON.parse(localStorage.getItem('lc_badges') || '{}');
         const savedCareer = JSON.parse(localStorage.getItem('lc_careerProfile') || 'null');
         const savedInterviews = JSON.parse(localStorage.getItem('lc_interviewHistory') || '[]');
+        const savedDailyFocus = JSON.parse(localStorage.getItem('lc_dailyFocus') || '{}');
         
         setRoadmapProgress(savedProgress);
         setFocusMinutes(savedFocus);
@@ -43,6 +45,7 @@ export const ProgressProvider = ({ children }) => {
         setBadges(savedBadges);
         setCareerProfile(savedCareer);
         setInterviewHistory(savedInterviews);
+        setDailyFocus(savedDailyFocus);
 
         // Check Daily Activity
         const today = new Date().toISOString().split('T')[0];
@@ -63,6 +66,7 @@ export const ProgressProvider = ({ children }) => {
     useEffect(() => { localStorage.setItem('lc_badges', JSON.stringify(badges)); }, [badges]);
     useEffect(() => { localStorage.setItem('lc_careerProfile', JSON.stringify(careerProfile)); }, [careerProfile]);
     useEffect(() => { localStorage.setItem('lc_interviewHistory', JSON.stringify(interviewHistory)); }, [interviewHistory]);
+    useEffect(() => { localStorage.setItem('lc_dailyFocus', JSON.stringify(dailyFocus)); }, [dailyFocus]);
 
     // --- BADGE LOGIC ---
     useEffect(() => {
@@ -155,6 +159,11 @@ export const ProgressProvider = ({ children }) => {
 
     const addFocusMinutes = (mins) => {
         setFocusMinutes(prev => prev + mins);
+        const today = new Date().toISOString().split('T')[0];
+        setDailyFocus(prev => ({
+            ...prev,
+            [today]: (prev[today] || 0) + mins
+        }));
     };
 
     const incrementCodeRuns = () => {
@@ -268,7 +277,8 @@ export const ProgressProvider = ({ children }) => {
             notifications, addNotification, clearNotifications,
             getSkillLevel, generateWeeklyReport, isPremium,
             careerProfile, updateCareerProfile,
-            interviewHistory, addInterviewSession
+            interviewHistory, addInterviewSession,
+            dailyFocus
         }}>
             {children}
         </ProgressContext.Provider>

@@ -58,9 +58,13 @@ export const GameProvider = ({ children }) => {
     return localStorage.getItem('lc_isPremium') === 'true';
   });
 
-  const [lvsScore, setLvsScore] = useState(() => {
-    return parseInt(localStorage.getItem('lc_lvsScore') || '78', 10);
-  });
+  const lvsScore = useMemo(() => {
+    // Dynamic Learning Velocity Score based on XP, Streak and Active Days
+    const base = 50;
+    const xpBonus = Math.min(30, xp / 100);
+    const streakBonus = Math.min(20, streak * 2);
+    return Math.min(100, Math.round(base + xpBonus + streakBonus));
+  }, [xp, streak]);
 
   // --- Phase 4: Career Marketplace States ---
   const [userRole, setUserRole] = useState(() => {
@@ -141,7 +145,6 @@ export const GameProvider = ({ children }) => {
     localStorage.setItem('lc_skillScores', JSON.stringify(skillScores));
     localStorage.setItem('lc_masteryLevels', JSON.stringify(masteryLevels));
     localStorage.setItem('lc_isPremium', isPremium.toString());
-    localStorage.setItem('lc_lvsScore', lvsScore.toString());
     localStorage.setItem('lc_weeklyReportData', JSON.stringify(weeklyReportData));
     localStorage.setItem('lc_skillHistory', JSON.stringify(skillHistory));
     
@@ -151,7 +154,7 @@ export const GameProvider = ({ children }) => {
     localStorage.setItem('lc_shortlist', JSON.stringify(shortlist));
     localStorage.setItem('lc_jobRoleFilter', jobRoleFilter);
 
-  }, [xp, streak, completedQuests, skillTreeState, skillScores, masteryLevels, isPremium, lvsScore, weeklyReportData, skillHistory, userRole, talentProfiles, shortlist, jobRoleFilter]);
+  }, [xp, streak, completedQuests, skillTreeState, skillScores, masteryLevels, isPremium, weeklyReportData, skillHistory, userRole, talentProfiles, shortlist, jobRoleFilter]);
 
   const addXP = (amount) => {
     setXP(prev => prev + amount);

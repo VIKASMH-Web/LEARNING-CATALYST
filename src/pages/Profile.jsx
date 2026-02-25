@@ -16,13 +16,10 @@ const BADGE_DEFINITIONS = [
 ];
 
 const Profile = () => {
-    const ctx = useProgress() || {};
+    const ctx = useProgress();
+    const { activeDays = [], focusMinutes = 0, codeRuns = 0, badges = {}, dailyFocus = {}, interviewHistory = [] } = ctx || {};
     const authCtx = useAuth() || {};
     const { isPremium } = useGame() || { isPremium: false };
-    const activeDays = ctx.activeDays || [];
-    const focusMinutes = ctx.focusMinutes || 0;
-    const codeRuns = ctx.codeRuns || 0;
-    const badges = ctx.badges || {};
 
     // --- EDITABLE PROFILE STATE ---
     const [isEditing, setIsEditing] = useState(false);
@@ -149,11 +146,32 @@ const Profile = () => {
         setProfile(prev => ({ ...prev, certifications: (prev.certifications || []).filter(c => c.id !== id) }));
     };
 
-    // --- CHART DATA ---
-    const performanceData = [
-        { day: 'Mon', score: 65 }, { day: 'Tue', score: 72 }, { day: 'Wed', score: 68 },
-        { day: 'Thu', score: 85 }, { day: 'Fri', score: 90 }, { day: 'Sat', score: 78 }, { day: 'Sun', score: 88 },
-    ];
+    // --- CHART DATA (DYNAMIC) ---
+    const performanceData = useMemo(() => {
+        const data = [];
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const today = new Date();
+        
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(today.getDate() - i);
+            const dateStr = d.toISOString().split('T')[0];
+            const dayName = days[d.getDay()];
+            
+            // Score based on focus + interview
+            const focusMins = dailyFocus?.[dateStr] || 0;
+            const dailyInterview = (interviewHistory || []).find(h => h.date === dateStr);
+            const interviewScore = dailyInterview ? (dailyInterview.score?.technical || dailyInterview.score || 0) : 0;
+            
+            const combinedScore = Math.min(100, (focusMins / 2) + (interviewScore / 2));
+            
+            data.push({ 
+                day: dayName, 
+                score: Math.max(30, Math.round(combinedScore)) // Base floor of 30 for visual
+            });
+        }
+        return data;
+    }, [dailyFocus, interviewHistory]);
 
     // Helpers
     const inputStyle = { background: 'rgba(255,255,255,0.06)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', padding: '8px 12px', borderRadius: '8px', outline: 'none', fontSize: '0.85rem', width: '100%', boxSizing: 'border-box' };
@@ -272,7 +290,7 @@ const Profile = () => {
                                 <>
                                     <h1 className="h2" style={{ marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.75rem' }}>
                                         {profile.name || 'Set Your Name'}
-                                        {isPremium && <Crown size={20} fill="var(--warning)" color="var(--warning)" style={{marginTop: '2px'}} />}
+                                        {isPremium && <Award size={20} fill="var(--warning)" color="var(--warning)" style={{marginTop: '2px'}} />}
                                     </h1>
                                     <p style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
                                         <Briefcase size={14} /> {profile.title || 'Add your title'}
