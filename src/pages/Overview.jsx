@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Clock, Zap, Trophy, Target, Star,
@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 const Overview = () => {
-    const { focusMinutes, roadmapProgress, activeDays, getSkillLevel, interviewHistory } = useProgress();
+    const { focusMinutes, roadmapProgress, activeDays, getSkillLevel, interviewHistory, dailyFocus } = useProgress();
     const { user } = useAuth();
     const { isPremium, lvsScore, xp, streak } = useGame();
     const displayName = user?.name || user?.email?.split('@')[0] || 'Learner';
@@ -24,31 +24,44 @@ const Overview = () => {
     // --- 1. REAL DATA CALCULATION ---
     const totalHours = (focusMinutes / 60).toFixed(1);
     const completedStages = Object.values(roadmapProgress).filter(item => item.completed).length;
-    const avgScore = interviewHistory && interviewHistory.length > 0 
-        ? Math.round(interviewHistory.reduce((acc, curr) => acc + curr.score, 0) / interviewHistory.length) 
-        : (lvsScore || 0);
-    const rank = "#42";
+    
+    // Average score from REAL interview history
+    const avgInterviewScore = interviewHistory && interviewHistory.length > 0 
+        ? Math.round(interviewHistory.reduce((acc, curr) => acc + (curr.score?.technical || curr.score || 0), 0) / interviewHistory.length) 
+        : 0;
 
-    // --- 2. ACTIVITY CHART DATA ---
-    const activityData = [
-        { day: 'Mon', hours: 2.5 },
-        { day: 'Tue', hours: 3.8 },
-        { day: 'Wed', hours: 1.5 },
-        { day: 'Thu', hours: 4.2 },
-        { day: 'Fri', hours: 5.0 },
-        { day: 'Sat', hours: 2.0 },
-        { day: 'Sun', hours: 3.5 },
-    ];
+    const avgScore = avgInterviewScore || lvsScore || 0;
+    const rank = xp > 5000 ? "#12" : xp > 2000 ? "#42" : xp > 500 ? "#128" : "#999+";
+
+    // --- 2. DYNAMIC ACTIVITY CHART DATA ---
+    const activityData = useMemo(() => {
+        const data = [];
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const today = new Date();
+        
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(today.getDate() - i);
+            const dateStr = d.toISOString().split('T')[0];
+            const dayName = days[d.getDay()];
+            const mins = dailyFocus?.[dateStr] || 0;
+            data.push({ day: dayName, hours: parseFloat((mins / 60).toFixed(1)) });
+        }
+        return data;
+    }, [dailyFocus]);
 
     // --- 3. SKILL INTELLIGENCE 2.0 LOGIC ---
     
     // Helper to calculate score
     const calculateSkillScore = (clusterName, roadmapKey, weights) => {
-        // Mocked inputs where real data represents 1.0 scale
         const roadmapVal = (getSkillLevel(roadmapKey).percentage || 0) / 100;
-        const codeAccuracy = 0.85; // Mock: 85% correct runs
-        const interviewScore = 0.75; // Mock: 75% interview performance
-        const focusConsistency = Math.min(activeDays.length / 5, 1); // Mock based on streak
+        
+        // Use real interview scores if available for this cluster
+        // For simplicity, we'll use avgInterviewScore/100 as a proxy
+        const interviewScore = avgInterviewScore / 100 || 0.5; 
+        
+        const codeAccuracy = Math.min(focusMinutes / 1000, 0.9); // Proxy based on focus if no real code stats
+        const focusConsistency = Math.min(activeDays.length / 10, 1); 
 
         const rawScore = (
             (weights.roadmap * roadmapVal) +
@@ -74,7 +87,7 @@ const Overview = () => {
             weights: { roadmap: 0.4, code: 0.3, interview: 0.1, focus: 0.2 },
             weakest: 'State Management',
             nextAction: 'Build a Redux toolkit project',
-            growth: 4.2 
+            growth: 2 + (focusMinutes / 500) 
         },
         { 
             name: 'Backend Engineering', 
@@ -82,15 +95,15 @@ const Overview = () => {
             weights: { roadmap: 0.4, code: 0.4, interview: 0.1, focus: 0.1 },
             weakest: 'Database Indexing',
             nextAction: 'Optimize SQL queries in Code Engine',
-            growth: 1.5 
+            growth: 1 + (focusMinutes / 1000) 
         },
         { 
             name: 'Problem Solving', 
-            roadmapKey: 'DSA', // Assuming DSA roadmap exists or maps to something
+            roadmapKey: 'DSA', 
             weights: { roadmap: 0.2, code: 0.6, interview: 0.1, focus: 0.1 },
             weakest: 'Dynamic Programming',
             nextAction: 'Solve 3 DP problems',
-            growth: 5.8 
+            growth: 3 + (activeDays.length / 5) 
         },
         { 
             name: 'System Design', 
@@ -98,7 +111,7 @@ const Overview = () => {
             weights: { roadmap: 0.3, code: 0.1, interview: 0.4, focus: 0.2 },
             weakest: 'Load Balancing',
             nextAction: 'Design a scalable chat app',
-            growth: -0.5 
+            growth: -0.5 + (avgInterviewScore / 50) 
         },
         { 
             name: 'AI / ML', 
@@ -106,7 +119,7 @@ const Overview = () => {
             weights: { roadmap: 0.5, code: 0.2, interview: 0.1, focus: 0.2 },
             weakest: 'Neural Networks',
             nextAction: 'Complete PyTorch basics',
-            growth: 2.1 
+            growth: 1 + (xp / 2000) 
         }
     ];
 
@@ -121,10 +134,9 @@ const Overview = () => {
     });
 
     // --- 4. WEEKLY GROWTH REPORT DATA ---
-    // Learning Velocity Score
-    const consistencyScore = 85; 
-    const skillImprovement = 4.2; 
-    const difficultyMultiplier = 1.2;
+    const consistencyScore = Math.min(100, Math.round((activeDays.length / 7) * 100)); 
+    const skillImprovement = parseFloat((processedSkills.reduce((acc, s) => acc + s.growth, 0) / processedSkills.length).toFixed(1)); 
+    const difficultyMultiplier = 1.0 + (xp / 10000);
     const lvs = lvsScore; // Pulled dynamically from premium context module
 
     const activeRoadmaps = Array.from(new Set(

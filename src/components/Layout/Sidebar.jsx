@@ -8,17 +8,22 @@ import { useAuth } from '../../context/AuthContext';
 import { useFocus } from '../../context/FocusContext';
 import { useGame } from '../../context/GameContext';
 import { requestNotificationPermission, notifyProUpgrade } from '../../utils/notifications';
+import PremiumModal from '../Shared/PremiumModal';
 
-const RAZORPAY_SCRIPT = "https://checkout.razorpay.com/v1/checkout.js";
 
 const Sidebar = () => {
   const { logout, user } = useAuth();
   const { isRunning, formattedTime } = useFocus();
   const { xp, level, streak, dailyQuests, completedQuests, completeQuest, isPremium, upgradeToPremium, userRole, setUserRole } = useGame();
+<<<<<<< HEAD
   const [showPayment, setShowPayment] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
 
+=======
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+  
+>>>>>>> 77930073cb272daddd9bba0d725bb9a2b1959aeb
   useEffect(() => {
     requestNotificationPermission();
   }, []);
@@ -48,6 +53,7 @@ const Sidebar = () => {
   };
 
   const handleUpgrade = () => {
+<<<<<<< HEAD
     const script = document.createElement("script");
     script.src = RAZORPAY_SCRIPT;
     script.onload = () => {
@@ -88,18 +94,11 @@ const Sidebar = () => {
       simulateMockPayment();
     };
     document.body.appendChild(script);
+=======
+    setShowPremiumModal(true);
+>>>>>>> 77930073cb272daddd9bba0d725bb9a2b1959aeb
   };
 
-  const simulateMockPayment = () => {
-    setVerifying(true);
-    setTimeout(() => {
-      setVerifying(false);
-      setVerified(true);
-      upgradeToPremium();
-      notifyProUpgrade();
-      setTimeout(() => { setShowPayment(false); setVerified(false); }, 2500);
-    }, 1500);
-  };
 
   return (
     <>
@@ -279,6 +278,7 @@ const Sidebar = () => {
         </div>
       </nav>
 
+<<<<<<< HEAD
       {/* Payment Verification Modal */}
       <AnimatePresence>
         {verifying && (
@@ -308,6 +308,13 @@ const Sidebar = () => {
           </motion.div>
         )}
       </AnimatePresence>
+=======
+      <PremiumModal 
+        isOpen={showPremiumModal} 
+        onClose={() => setShowPremiumModal(false)}
+        featureName="Pro Performance Package & Mentorship"
+      />
+>>>>>>> 77930073cb272daddd9bba0d725bb9a2b1959aeb
     </>
   );
 };
