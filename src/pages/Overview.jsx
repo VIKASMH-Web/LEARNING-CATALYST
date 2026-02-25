@@ -181,33 +181,60 @@ const Overview = () => {
                 padding: '2rem 2.25rem', position: 'relative', overflow: 'hidden'
             }}>
                 <div style={{ position: 'absolute', top: 0, right: 0, width: 200, height: 200, background: 'radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)' }} />
-                <div style={{ position: 'relative', zIndex: 1 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem' }}>
-                        <div>
-                            <div className="label" style={{ marginBottom: '0.375rem', color: 'var(--accent-color)' }}>{getGreeting()}</div>
-                            <h1 style={{ fontSize: '1.75rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.025em', lineHeight: 1.2 }}>
-                                Hello, {displayName}
-                            </h1>
+                <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem' }}>
+                            <div>
+                                <div className="label" style={{ marginBottom: '0.375rem', color: 'var(--accent-color)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    {getGreeting()} <Sparkles size={14} className="animate-pulse" />
+                                </div>
+                                <h1 style={{ fontSize: '1.75rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.025em', lineHeight: 1.2 }}>
+                                    Hello, {displayName}
+                                </h1>
+                            </div>
+                            <button 
+                                onClick={() => setShowReport(true)}
+                                className="btn btn-secondary"
+                                style={{ fontSize: '0.8125rem', background: 'rgba(255,255,255,0.02)' }}
+                            >
+                                <FileText size={14} /> Weekly Report
+                                {!isPremium && <Lock size={11} style={{ opacity: 0.4 }} />}
+                            </button>
                         </div>
-                        <button 
-                            onClick={() => setShowReport(true)}
-                            className="btn btn-secondary"
-                            style={{ fontSize: '0.8125rem', background: 'rgba(255,255,255,0.02)' }}
-                        >
-                            <FileText size={14} /> Weekly Report
-                            {!isPremium && <Lock size={11} style={{ opacity: 0.4 }} />}
-                        </button>
+                    
+                        <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: '640px', marginBottom: '0.375rem' }}>
+                            You improved {bestGrower.name} <span style={{ color: 'var(--success)', fontWeight: 500 }}>+{bestGrower.growth.toFixed(1)}%</span> this week. At this pace, you'll reach {nextLevel} in ~{estimatedWeeksLeft} weeks.
+                        </p>
+                        <p style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', marginBottom: '1.5rem' }}>
+                            Consistency score increased by 12%. Focus on {weakestSkill.weakest} to close your biggest gap.
+                        </p>
+                        <Link to="/learning-hub" className="btn btn-primary" style={{ textDecoration: 'none', padding: '0.625rem 1.5rem', fontSize: '0.875rem' }}>
+                            Continue Learning
+                        </Link>
                     </div>
-                   
-                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: '640px', marginBottom: '0.375rem' }}>
-                        You improved {bestGrower.name} <span style={{ color: 'var(--success)', fontWeight: 500 }}>+{bestGrower.growth.toFixed(1)}%</span> this week. At this pace, you'll reach {nextLevel} in ~{estimatedWeeksLeft} weeks.
-                    </p>
-                    <p style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', marginBottom: '1.5rem' }}>
-                        Consistency score increased by 12%. Focus on {weakestSkill.weakest} to close your biggest gap.
-                    </p>
-                    <Link to="/learning-hub" className="btn btn-primary" style={{ textDecoration: 'none', padding: '0.625rem 1.5rem', fontSize: '0.875rem' }}>
-                        Continue Learning
-                    </Link>
+
+                    {/* Study Goal Ring */}
+                    <div style={{ marginLeft: '2rem', textAlign: 'center' }}>
+                        <div style={{ position: 'relative', width: 100, height: 100 }}>
+                            <svg width="100" height="100">
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="8" />
+                                <motion.circle 
+                                    cx="50" cy="50" r="45" fill="none" stroke="var(--accent-color)" strokeWidth="8" 
+                                    strokeDasharray="283"
+                                    initial={{ strokeDashoffset: 283 }}
+                                    animate={{ strokeDashoffset: 283 - (Math.min(focusMinutes, 60) / 60) * 283 }}
+                                    transition={{ duration: 1, ease: 'easeOut' }}
+                                    strokeLinecap="round"
+                                    transform="rotate(-90 50 50)"
+                                />
+                            </svg>
+                            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                <span style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary)' }}>{focusMinutes}</span>
+                                <span style={{ fontSize: '0.625rem', color: 'var(--text-tertiary)', textTransform: 'uppercase' }}>Min/60</span>
+                            </div>
+                        </div>
+                        <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Daily Goal</div>
+                    </div>
                 </div>
             </div>
 
@@ -218,7 +245,8 @@ const Overview = () => {
                 gap: 0, 
                 borderTop: '2px solid rgba(255,255,255,0.12)', 
                 borderBottom: '2px solid rgba(255,255,255,0.12)',
-                background: 'rgba(255,255,255,0.01)'
+                background: 'rgba(255,255,255,0.02)',
+                backdropFilter: 'blur(10px)'
             }}>
                 {[
                     { label: 'Total XP', value: xp.toLocaleString(), trend: '+120', up: true },
@@ -226,13 +254,17 @@ const Overview = () => {
                     { label: 'Learning Velocity', value: lvsScore, trend: '+12%', up: true },
                     { label: 'Focus Hours', value: totalHours, trend: null },
                 ].map((m, i) => (
-                    <div key={i} style={{ padding: '1rem 1.25rem', borderRight: i < 3 ? '2px solid rgba(255,255,255,0.12)' : 'none' }}>
+                    <motion.div 
+                        key={i} 
+                        whileHover={{ background: 'rgba(255,255,255,0.04)' }}
+                        style={{ padding: '1.25rem 1.5rem', borderRight: i < 3 ? '2px solid rgba(255,255,255,0.12)' : 'none', cursor: 'default' }}
+                    >
                         <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', fontWeight: 600, marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{m.label}</div>
                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
                             <span style={{ fontSize: '1.375rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{m.value}</span>
                             {m.trend && <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--success)' }}>{m.trend}</span>}
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
             </div>
 
@@ -332,18 +364,35 @@ const Overview = () => {
             </div>
 
             {/* ═══ SECTION 5 — AI NEXT ACTION PANEL ═══ */}
-            <div style={{ background: '#15171A', border: '1px solid var(--border-color)', borderRadius: 12, padding: '1.5rem 1.75rem' }}>
-                <div className="label" style={{ color: 'var(--accent-color)', marginBottom: '0.5rem' }}>AI Recommendation</div>
-                <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Your Next Best Action</h3>
-                <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '0.375rem', maxWidth: '600px' }}>
-                    {weakestSkill.nextAction}. Your {weakestSkill.name} cluster is at {weakestSkill.score}% — improving {weakestSkill.weakest} yields the highest ROI based on your current trajectory.
-                </p>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '1.25rem' }}>
-                    Estimated impact: +{(Math.random() * 3 + 2).toFixed(1)}% skill growth this week
-                </p>
-                <Link to="/learning-hub" className="btn btn-primary" style={{ textDecoration: 'none', padding: '0.5625rem 1.5rem', fontSize: '0.875rem' }}>
-                    Start Now →
-                </Link>
+            <div style={{ 
+                background: '#15171A', border: '1px solid var(--border-color)', borderRadius: 12, padding: '1.5rem 1.75rem',
+                display: 'grid', gridTemplateColumns: '1fr 200px', gap: '2rem'
+            }}>
+                <div>
+                    <div className="label" style={{ color: 'var(--accent-color)', marginBottom: '0.5rem' }}>AI Recommendation</div>
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Your Next Best Action</h3>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '0.375rem', maxWidth: '600px' }}>
+                        {weakestSkill.nextAction}. Your {weakestSkill.name} cluster is at {weakestSkill.score}% — improving {weakestSkill.weakest} yields the highest ROI based on your current trajectory.
+                    </p>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '1.25rem' }}>
+                        Estimated impact: +{(Math.random() * 3 + 2).toFixed(1)}% skill growth this week
+                    </p>
+                    <Link to="/learning-hub" className="btn btn-primary" style={{ textDecoration: 'none', padding: '0.5625rem 1.5rem', fontSize: '0.875rem' }}>
+                        Start Now →
+                    </Link>
+                </div>
+                <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    <div className="label" style={{ fontSize: '0.625rem', marginBottom: '0.5rem', textAlign: 'center' }}>ROI Prediction</div>
+                    <div style={{ height: 80, width: '100%' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={[
+                                { x: 0, y: 10 }, { x: 1, y: 15 }, { x: 2, y: 12 }, { x: 3, y: 25 }, { x: 4, y: 35 }, { x: 5, y: 45 }
+                            ]}>
+                                <Area type="monotone" dataKey="y" stroke="var(--success)" fill="var(--success)" fillOpacity={0.1} strokeWidth={2} />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
             </div>
 
             {/* WEEKLY REPORT MODAL */}

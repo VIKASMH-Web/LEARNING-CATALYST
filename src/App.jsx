@@ -20,11 +20,11 @@ import CareerMarketplace from './pages/CareerMarketplace';
 // Auth Gate: shows login if not authenticated
 const AuthGate = ({ children }) => {
     const { isAuthenticated, isLoading } = useAuth();
-    
+
     if (isLoading) {
         return (
-            <div style={{ 
-                minHeight: '100vh', background: '#09090b', 
+            <div style={{
+                minHeight: '100vh', background: '#09090b',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 color: '#71717a', fontFamily: "'Inter', sans-serif"
             }}>
@@ -32,13 +32,16 @@ const AuthGate = ({ children }) => {
             </div>
         );
     }
-    
+
     if (!isAuthenticated) {
         return <LoginPage />;
     }
-    
+
     return children;
 };
+
+import ProjectReviewer from './pages/ProjectReviewer';
+import AcademicPlanner from './pages/AcademicPlanner';
 
 function App() {
     return (
@@ -61,6 +64,8 @@ function App() {
                                         <Route path="mock-interview" element={<MockInterview />} />
                                         <Route path="skill-tree" element={<SkillTreePage />} />
                                         <Route path="marketplace" element={<CareerMarketplace />} />
+                                        <Route path="presentation-booster" element={<ProjectReviewer />} />
+                                        <Route path="academic-planner" element={<AcademicPlanner />} />
                                         <Route path="focus" element={<FocusMode />} />
                                         <Route path="profile" element={<Profile />} />
                                         <Route path="*" element={<Navigate to="/" replace />} />

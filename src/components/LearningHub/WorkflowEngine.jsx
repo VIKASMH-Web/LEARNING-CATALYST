@@ -47,12 +47,12 @@ const WorkflowEngine = () => {
 
   const handleNextStep = () => {
     if (!activeRecipe) return;
-    
+
     setIsProcessing(true);
     // Mock processing delay for realism
     setTimeout(() => {
       setIsProcessing(false);
-      
+
       if (currentStep < activeRecipe.steps.length - 1) {
         setCurrentStep(prev => prev + 1);
       } else {
@@ -101,36 +101,41 @@ const WorkflowEngine = () => {
           {/* Vertical Stepper UI (Linear style) */}
           <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '2rem', position: 'relative' }}>
             {/* Connecting line */}
-            <div style={{ 
+            <div style={{
               position: 'absolute', top: '10px', bottom: '20px', left: '9px',
               width: '1px', background: 'var(--border-color)', zIndex: 0
             }} />
-            
+
             {activeRecipe.steps.map((step, idx) => {
               const status = idx < currentStep ? 'completed' : idx === currentStep && !isCompleted ? 'active' : 'locked';
-              
+
               const nodeColors = {
                 completed: { text: 'var(--text-primary)', icon: 'var(--text-secondary)' },
                 active: { text: 'var(--text-primary)', icon: 'var(--accent-color)' },
                 locked: { text: 'var(--text-tertiary)', icon: 'var(--border-color)' }
               };
-              
+
               const colorConfig = nodeColors[status];
 
               return (
                 <div key={step.id} style={{ display: 'flex', gap: '1rem', position: 'relative', zIndex: 1, opacity: status === 'locked' ? 0.5 : 1 }}>
-                  <div style={{ 
+                  <div style={{
                     width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0,
                     background: 'var(--bg-primary)', border: `1px solid ${status === 'locked' ? 'var(--border-color)' : 'transparent'}`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     marginTop: '2px'
                   }}>
-                    {status === 'completed' ? <CheckCircle size={16} color="var(--text-secondary)" /> 
-                     : status === 'active' ? <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent-color)' }} /> 
-                     : <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--border-color)' }} />}
+                    {status === 'completed' ? <CheckCircle size={16} color="var(--text-secondary)" />
+                      : status === 'active' ? (
+                        <motion.div
+                          animate={{ scale: [1, 1.2, 1], opacity: [1, 0.6, 1] }}
+                          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                          style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent-color)' }}
+                        />
+                      ) : <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--border-color)' }} />}
                   </div>
                   <div style={{ paddingBottom: '0.25rem' }}>
-                    <h3 style={{ 
+                    <h3 style={{
                       fontSize: '0.95rem', fontWeight: 500, margin: '0 0 4px 0',
                       color: colorConfig.text
                     }}>
@@ -148,21 +153,44 @@ const WorkflowEngine = () => {
           {/* Action Area */}
           <div style={{ flex: '1.5', display: 'flex', flexDirection: 'column' }}>
             {isCompleted ? (
-              <div style={{
-                background: 'var(--bg-card)', border: '1px solid var(--border-color)',
-                borderRadius: '12px', padding: '2rem', textAlign: 'center',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                flex: 1
-              }}>
-                <Award size={40} color="var(--success)" style={{ marginBottom: '1rem' }} />
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: 'spring', damping: 12 }}
+                style={{
+                  background: 'var(--bg-card)', border: '1px solid var(--border-color)',
+                  borderRadius: '12px', padding: '2rem', textAlign: 'center',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  flex: 1, position: 'relative', overflow: 'hidden'
+                }}
+              >
+                {/* Background Celebration Effect */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: [0, 0.1, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, var(--success) 0%, transparent 70%)' }}
+                />
+
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <Award size={40} color="var(--success)" style={{ marginBottom: '1rem' }} />
+                </motion.div>
+
                 <h3 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', fontWeight: 600, marginBottom: '0.5rem' }}>Recipe Completed!</h3>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
                   Excellent work. You've successfully finished this study workflow.
                 </p>
-                <div style={{ padding: '8px 16px', background: 'rgba(16,185,129,0.1)', borderRadius: '6px', color: 'var(--success)', fontWeight: 500, fontSize: '0.875rem', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                  +{activeRecipe.xp} XP Awarded
-                </div>
-              </div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  style={{ padding: '8px 16px', background: 'rgba(16,185,129,0.1)', borderRadius: '6px', color: 'var(--success)', fontWeight: 500, fontSize: '0.875rem', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                >
+                  <Sparkles size={14} /> +{activeRecipe.xp} XP Awarded
+                </motion.div>
+              </motion.div>
             ) : (
               <div style={{
                 background: 'var(--bg-card)', border: '1px solid var(--border-color)',
@@ -175,7 +203,7 @@ const WorkflowEngine = () => {
                   <h3 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '1rem' }}>
                     {activeRecipe.steps[currentStep].title}
                   </h3>
-                  <div style={{ 
+                  <div style={{
                     padding: '1.25rem', background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: '8px',
                     color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6, minHeight: '150px'
                   }}>
@@ -186,13 +214,13 @@ const WorkflowEngine = () => {
                 </div>
 
                 <div style={{ marginTop: '2rem' }}>
-                  <button 
-                    onClick={handleNextStep} 
+                  <button
+                    onClick={handleNextStep}
                     disabled={isProcessing}
                     style={{
                       width: '100%', padding: '0.875rem', borderRadius: '8px', border: '1px solid var(--border-color)',
                       background: isProcessing ? 'var(--bg-elevated)' : 'var(--text-primary)',
-                      color: isProcessing ? 'var(--text-secondary)' : 'var(--bg-primary)', 
+                      color: isProcessing ? 'var(--text-secondary)' : 'var(--bg-primary)',
                       fontWeight: 500, fontSize: '0.875rem', cursor: isProcessing ? 'not-allowed' : 'pointer',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
                       transition: 'all 0.2s'
@@ -230,8 +258,8 @@ const WorkflowEngine = () => {
             position: 'relative',
             boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
           }}
-          onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(124,58,237,0.4)'}
-          onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
+            onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(124,58,237,0.4)'}
+            onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
           >
             <div style={{ padding: '1.5rem', flex: 1 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
@@ -246,18 +274,18 @@ const WorkflowEngine = () => {
               <p style={{ fontSize: '0.85rem', color: '#94a3b8', lineHeight: 1.5, margin: 0 }}>
                 {recipe.description}
               </p>
-              
+
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '1rem' }}>
                 {recipe.steps.slice(0, 3).map((step, i) => (
-                   <span key={i} style={{ fontSize: '0.7rem', color: '#64748b', background: 'rgba(255,255,255,0.02)', padding: '2px 8px', borderRadius: '4px' }}>
-                     {i+1}. {step.title}
-                   </span>
+                  <span key={i} style={{ fontSize: '0.7rem', color: '#64748b', background: 'rgba(255,255,255,0.02)', padding: '2px 8px', borderRadius: '4px' }}>
+                    {i + 1}. {step.title}
+                  </span>
                 ))}
                 {recipe.steps.length > 3 && <span style={{ fontSize: '0.7rem', color: '#64748b', padding: '2px' }}>+{recipe.steps.length - 3} more</span>}
               </div>
             </div>
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '1rem 1.5rem', background: 'rgba(0,0,0,0.2)' }}>
-              <button 
+              <button
                 onClick={() => handleStartRecipe(recipe)}
                 style={{
                   width: '100%', padding: '0.8rem', borderRadius: '10px', border: 'none',

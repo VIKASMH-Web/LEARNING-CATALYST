@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Layout, BookOpen, Code, Clock, User, Target, Mic, X, CheckCircle, Crown, Search, Flame, Star, Zap, Network, Briefcase, Users
+import {
+  Layout, BookOpen, Code, Clock, User, Target, Mic, X, CheckCircle, Crown, Search, Flame, Star, Zap, Network, Briefcase, Users, Calendar, GraduationCap
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useFocus } from '../../context/FocusContext';
@@ -18,7 +18,7 @@ const Sidebar = () => {
   const [showPayment, setShowPayment] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
-  
+
   useEffect(() => {
     requestNotificationPermission();
   }, []);
@@ -30,6 +30,8 @@ const Sidebar = () => {
     { path: '/mock-interview', name: 'Mock Interview', icon: Mic },
     { path: '/career-planner', name: 'Career Planner', icon: Target },
     { path: '/marketplace', name: 'Marketplace', icon: Briefcase },
+    { path: '/presentation-booster', name: 'Pres. Booster', icon: Sparkles },
+    { path: '/academic-planner', name: 'Academic Planner', icon: GraduationCap },
     { path: '/code-engine', name: 'Code Engine', icon: Code },
     { path: '/focus', name: 'Focus Mode', icon: Clock },
     { path: '/profile', name: 'Profile', icon: User },
@@ -42,7 +44,7 @@ const Sidebar = () => {
   const menuItems = userRole === 'recruiter' ? recruiterMenuItems : studentMenuItems;
 
   const handleRoleToggle = () => {
-     setUserRole(prev => prev === 'student' ? 'recruiter' : 'student');
+    setUserRole(prev => prev === 'student' ? 'recruiter' : 'student');
   };
 
   const handleUpgrade = () => {
@@ -57,33 +59,33 @@ const Sidebar = () => {
         description: "Premium Member Upgrade",
         theme: { color: "#6366f1" },
         handler: function (response) {
-            setVerifying(true);
-            setTimeout(() => {
-              setVerifying(false);
-              setVerified(true);
-              upgradeToPremium();
-              notifyProUpgrade();
-              setTimeout(() => { setShowPayment(false); setVerified(false); }, 2500);
-            }, 1000);
+          setVerifying(true);
+          setTimeout(() => {
+            setVerifying(false);
+            setVerified(true);
+            upgradeToPremium();
+            notifyProUpgrade();
+            setTimeout(() => { setShowPayment(false); setVerified(false); }, 2500);
+          }, 1000);
         },
         prefill: {
-            name: user?.name || "Premium Learner",
-            email: user?.email || "learner@example.com",
+          name: user?.name || "Premium Learner",
+          email: user?.email || "learner@example.com",
         }
       };
-      
+
       try {
-         const rzp = new window.Razorpay(options);
-         rzp.on('payment.failed', function (response){
-            alert("Payment failed: " + response.error.description);
-         });
-         rzp.open();
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (response) {
+          alert("Payment failed: " + response.error.description);
+        });
+        rzp.open();
       } catch (err) {
-         simulateMockPayment();
+        simulateMockPayment();
       }
     };
     script.onerror = () => {
-        simulateMockPayment();
+      simulateMockPayment();
     };
     document.body.appendChild(script);
   };
@@ -103,7 +105,7 @@ const Sidebar = () => {
     <>
       <nav className="sidebar">
         <div style={{ padding: '1.25rem 1rem', display: 'flex', flexDirection: 'column', height: '100%' }}>
-          
+
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '1.75rem', paddingLeft: '0.5rem' }}>
             <div style={{
@@ -138,23 +140,23 @@ const Sidebar = () => {
 
           {/* Role Toggle */}
           <div style={{
-             display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
-             padding: '0.375rem 0.625rem',
-             borderRadius: 6, border: '1px solid var(--border-color)', marginBottom: '1.25rem'
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '0.375rem 0.625rem',
+            borderRadius: 6, border: '1px solid var(--border-color)', marginBottom: '1.25rem'
           }}>
-             <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-tertiary)' }}>
-                 {userRole === 'student' ? 'Student' : 'Recruiter'}
-             </span>
-             <button onClick={handleRoleToggle} style={{
-                 background: userRole === 'recruiter' ? 'var(--success)' : 'rgba(255,255,255,0.08)', border: 'none',
-                 width: '32px', height: '18px', borderRadius: '9px', position: 'relative', cursor: 'pointer', transition: 'all 0.2s'
-             }}>
-                 <div style={{
-                     width: '14px', height: '14px', background: 'white', borderRadius: '50%',
-                     position: 'absolute', top: '2px', left: userRole === 'recruiter' ? '16px' : '2px',
-                     transition: 'left 0.2s ease'
-                 }} />
-             </button>
+            <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-tertiary)' }}>
+              {userRole === 'student' ? 'Student' : 'Recruiter'}
+            </span>
+            <button onClick={handleRoleToggle} style={{
+              background: userRole === 'recruiter' ? 'var(--success)' : 'rgba(255,255,255,0.08)', border: 'none',
+              width: '32px', height: '18px', borderRadius: '9px', position: 'relative', cursor: 'pointer', transition: 'all 0.2s'
+            }}>
+              <div style={{
+                width: '14px', height: '14px', background: 'white', borderRadius: '50%',
+                position: 'absolute', top: '2px', left: userRole === 'recruiter' ? '16px' : '2px',
+                transition: 'left 0.2s ease'
+              }} />
+            </button>
           </div>
 
           {/* Section Label */}
@@ -180,13 +182,13 @@ const Sidebar = () => {
               >
                 {({ isActive }) => (
                   <>
-                     <item.icon size={15} color={isActive ? "var(--text-primary)" : "var(--text-tertiary)"} strokeWidth={isActive ? 2 : 1.5} />
-                     <span>{item.name}</span>
-                     {item.path === '/focus' && isRunning && (
-                        <span style={{ marginLeft: 'auto', fontSize: '0.6875rem', color: 'var(--success)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
-                          {formattedTime}
-                        </span>
-                     )}
+                    <item.icon size={15} color={isActive ? "var(--text-primary)" : "var(--text-tertiary)"} strokeWidth={isActive ? 2 : 1.5} />
+                    <span>{item.name}</span>
+                    {item.path === '/focus' && isRunning && (
+                      <span style={{ marginLeft: 'auto', fontSize: '0.6875rem', color: 'var(--success)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {formattedTime}
+                      </span>
+                    )}
                   </>
                 )}
               </NavLink>
@@ -202,7 +204,7 @@ const Sidebar = () => {
               {dailyQuests?.map((q) => {
                 const isCompleted = completedQuests.includes(q.id);
                 return (
-                  <div key={q.id} 
+                  <div key={q.id}
                     onClick={() => !isCompleted && completeQuest(q.id, q.reward)}
                     style={{
                       display: 'flex', alignItems: 'center', gap: '8px',
@@ -221,7 +223,7 @@ const Sidebar = () => {
                     }}>
                       {isCompleted && <CheckCircle size={10} color="white" />}
                     </div>
-                    <span style={{ 
+                    <span style={{
                       fontSize: '0.75rem', fontWeight: 400,
                       color: isCompleted ? 'var(--text-tertiary)' : 'var(--text-secondary)',
                       textDecoration: isCompleted ? 'line-through' : 'none',
@@ -241,7 +243,7 @@ const Sidebar = () => {
           {/* Bottom Area */}
           <div style={{ marginTop: 'auto', padding: '0 0.5rem' }}>
             {!isPremium && (
-              <button 
+              <button
                 onClick={handleUpgrade}
                 style={{
                   width: '100%', padding: '0.75rem', borderRadius: 10,
@@ -253,11 +255,11 @@ const Sidebar = () => {
                   boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)',
                   position: 'relative', overflow: 'hidden'
                 }}
-                onMouseEnter={(e) => { 
+                onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-2px)';
                   e.currentTarget.style.boxShadow = '0 6px 16px rgba(99, 102, 241, 0.4)';
                 }}
-                onMouseLeave={(e) => { 
+                onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
                   e.currentTarget.style.boxShadow = '0 4px 12px rgba(99, 102, 241, 0.3)';
                 }}
@@ -290,19 +292,19 @@ const Sidebar = () => {
               backdropFilter: 'blur(4px)'
             }}
           >
-             <div style={{ padding: '2.5rem', background: 'var(--bg-elevated)', borderRadius: 12, textAlign: 'center', border: '1px solid var(--border-color)', minWidth: 280 }}>
-                 {!verified ? (
-                   <>
-                     <div className="spin" style={{ width: 36, height: 36, border: '2px solid var(--border-color)', borderTopColor: 'var(--accent-color)', borderRadius: '50%', margin: '0 auto 1.25rem' }} />
-                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Processing...</p>
-                   </>
-                 ) : (
-                   <>
-                     <CheckCircle size={40} color="var(--success)" style={{ margin: '0 auto 1rem', display: 'block' }} />
-                     <p style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 500 }}>Premium Activated</p>
-                   </>
-                 )}
-             </div>
+            <div style={{ padding: '2.5rem', background: 'var(--bg-elevated)', borderRadius: 12, textAlign: 'center', border: '1px solid var(--border-color)', minWidth: 280 }}>
+              {!verified ? (
+                <>
+                  <div className="spin" style={{ width: 36, height: 36, border: '2px solid var(--border-color)', borderTopColor: 'var(--accent-color)', borderRadius: '50%', margin: '0 auto 1.25rem' }} />
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Processing...</p>
+                </>
+              ) : (
+                <>
+                  <CheckCircle size={40} color="var(--success)" style={{ margin: '0 auto 1rem', display: 'block' }} />
+                  <p style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 500 }}>Premium Activated</p>
+                </>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
