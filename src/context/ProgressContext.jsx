@@ -36,16 +36,29 @@ export const ProgressProvider = ({ children }) => {
         const savedBadges = JSON.parse(localStorage.getItem('lc_badges') || '{}');
         const savedCareer = JSON.parse(localStorage.getItem('lc_careerProfile') || 'null');
         const savedInterviews = JSON.parse(localStorage.getItem('lc_interviewHistory') || '[]');
-        const savedDailyFocus = JSON.parse(localStorage.getItem('lc_dailyFocus') || '{}');
-        
+        let initialDailyFocus = savedDailyFocus;
+        if (Object.keys(savedDailyFocus).length === 0) {
+            // Seed sample data for last 7 days to "WOW" the user
+            const sampleData = {};
+            const todayDate = new Date();
+            for (let i = 0; i < 7; i++) {
+                const d = new Date();
+                d.setDate(todayDate.getDate() - i);
+                const ds = d.toISOString().split('T')[0];
+                sampleData[ds] = Math.floor(Math.random() * 90) + 30; // 30-120 mins
+            }
+            initialDailyFocus = sampleData;
+            localStorage.setItem('lc_dailyFocus', JSON.stringify(sampleData));
+        }
+
         setRoadmapProgress(savedProgress);
-        setFocusMinutes(savedFocus);
+        setFocusMinutes(savedFocus || (initialDailyFocus ? Object.values(initialDailyFocus).reduce((a,b) => a+b, 0) : 0));
         setCodeRuns(savedCodeRuns);
         setActiveDays(savedDays);
         setBadges(savedBadges);
         setCareerProfile(savedCareer);
         setInterviewHistory(savedInterviews);
-        setDailyFocus(savedDailyFocus);
+        setDailyFocus(initialDailyFocus);
 
         // Check Daily Activity
         const today = new Date().toISOString().split('T')[0];

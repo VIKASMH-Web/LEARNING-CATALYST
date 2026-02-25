@@ -8,16 +8,14 @@ import { useAuth } from '../../context/AuthContext';
 import { useFocus } from '../../context/FocusContext';
 import { useGame } from '../../context/GameContext';
 import { requestNotificationPermission, notifyProUpgrade } from '../../utils/notifications';
+import PremiumModal from '../Shared/PremiumModal';
 
-const RAZORPAY_SCRIPT = "https://checkout.razorpay.com/v1/checkout.js";
 
 const Sidebar = () => {
   const { logout, user } = useAuth();
   const { isRunning, formattedTime } = useFocus();
   const { xp, level, streak, dailyQuests, completedQuests, completeQuest, isPremium, upgradeToPremium, userRole, setUserRole } = useGame();
-  const [showPayment, setShowPayment] = useState(false);
-  const [verifying, setVerifying] = useState(false);
-  const [verified, setVerified] = useState(false);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
   
   useEffect(() => {
     requestNotificationPermission();
@@ -46,58 +44,9 @@ const Sidebar = () => {
   };
 
   const handleUpgrade = () => {
-    const script = document.createElement("script");
-    script.src = RAZORPAY_SCRIPT;
-    script.onload = () => {
-      const options = {
-        key: "rzp_test_dummykey",
-        amount: "19900",
-        currency: "INR",
-        name: "Learning Catalyst",
-        description: "Premium Member Upgrade",
-        theme: { color: "#6366f1" },
-        handler: function (response) {
-            setVerifying(true);
-            setTimeout(() => {
-              setVerifying(false);
-              setVerified(true);
-              upgradeToPremium();
-              notifyProUpgrade();
-              setTimeout(() => { setShowPayment(false); setVerified(false); }, 2500);
-            }, 1000);
-        },
-        prefill: {
-            name: user?.name || "Premium Learner",
-            email: user?.email || "learner@example.com",
-        }
-      };
-      
-      try {
-         const rzp = new window.Razorpay(options);
-         rzp.on('payment.failed', function (response){
-            alert("Payment failed: " + response.error.description);
-         });
-         rzp.open();
-      } catch (err) {
-         simulateMockPayment();
-      }
-    };
-    script.onerror = () => {
-        simulateMockPayment();
-    };
-    document.body.appendChild(script);
+    setShowPremiumModal(true);
   };
 
-  const simulateMockPayment = () => {
-    setVerifying(true);
-    setTimeout(() => {
-      setVerifying(false);
-      setVerified(true);
-      upgradeToPremium();
-      notifyProUpgrade();
-      setTimeout(() => { setShowPayment(false); setVerified(false); }, 2500);
-    }, 1500);
-  };
 
   return (
     <>
@@ -277,35 +226,11 @@ const Sidebar = () => {
         </div>
       </nav>
 
-      {/* Payment Verification Modal */}
-      <AnimatePresence>
-        {verifying && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            style={{
-              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)',
-              zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              backdropFilter: 'blur(4px)'
-            }}
-          >
-             <div style={{ padding: '2.5rem', background: 'var(--bg-elevated)', borderRadius: 12, textAlign: 'center', border: '1px solid var(--border-color)', minWidth: 280 }}>
-                 {!verified ? (
-                   <>
-                     <div className="spin" style={{ width: 36, height: 36, border: '2px solid var(--border-color)', borderTopColor: 'var(--accent-color)', borderRadius: '50%', margin: '0 auto 1.25rem' }} />
-                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Processing...</p>
-                   </>
-                 ) : (
-                   <>
-                     <CheckCircle size={40} color="var(--success)" style={{ margin: '0 auto 1rem', display: 'block' }} />
-                     <p style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 500 }}>Premium Activated</p>
-                   </>
-                 )}
-             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <PremiumModal 
+        isOpen={showPremiumModal} 
+        onClose={() => setShowPremiumModal(false)}
+        featureName="Pro Performance Package & Mentorship"
+      />
     </>
   );
 };
