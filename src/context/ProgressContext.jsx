@@ -36,6 +36,7 @@ export const ProgressProvider = ({ children }) => {
         const savedBadges = JSON.parse(localStorage.getItem('lc_badges') || '{}');
         const savedCareer = JSON.parse(localStorage.getItem('lc_careerProfile') || 'null');
         const savedInterviews = JSON.parse(localStorage.getItem('lc_interviewHistory') || '[]');
+        const savedDailyFocus = JSON.parse(localStorage.getItem('lc_dailyFocus') || '{}');
         let initialDailyFocus = savedDailyFocus;
         if (Object.keys(savedDailyFocus).length === 0) {
             // Seed sample data for last 7 days to "WOW" the user
