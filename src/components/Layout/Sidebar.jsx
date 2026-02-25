@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Layout, BookOpen, Code, Clock, User, Target, Mic, X, CheckCircle, Crown, Search, Flame, Star, Zap, Network, Briefcase, Users, Calendar, GraduationCap, Sparkles
 } from 'lucide-react';
