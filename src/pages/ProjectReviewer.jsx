@@ -10,11 +10,20 @@ import { LineChart, Line, ResponsiveContainer, AreaChart, Area } from 'recharts'
 const ProjectReviewer = () => {
     const [topic, setTopic] = useState('');
     const [content, setContent] = useState('');
+    const [file, setFile] = useState(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [result, setResult] = useState(null);
 
+    const handleFileChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setFile(e.target.files[0]);
+            // clear content if file is uploaded
+            setContent('');
+        }
+    };
+
     const handleAnalyze = () => {
-        if (!topic.trim() || !content.trim()) return;
+        if (!topic.trim() || (!content.trim() && !file)) return;
 
         setIsAnalyzing(true);
         // Mock analysis delay
@@ -66,25 +75,44 @@ const ProjectReviewer = () => {
                         </div>
 
                         <div style={{ marginBottom: '2.5rem' }}>
-                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.75rem', letterSpacing: '0.02em' }}>Project Content / Report</label>
-                            <textarea
-                                value={content}
-                                onChange={(e) => setContent(e.target.value)}
-                                placeholder="Paste your project report, slide content, or presentation notes here..."
-                                style={{ width: '100%', minHeight: '260px', padding: '1.25rem', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, color: 'var(--text-primary)', fontSize: '0.9375rem', outline: 'none', resize: 'vertical', lineHeight: 1.6, transition: 'border-color 0.2s' }}
-                            />
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                                <label style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.02em' }}>Project Content / Report</label>
+                                <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8125rem', color: 'var(--accent-color)', fontWeight: 600 }}>
+                                    <input type="file" style={{ display: 'none' }} onChange={handleFileChange} />
+                                    <RefreshCw size={14} style={{ display: 'none' }}/> {/* Dummy to import Upload eventually if needed */}
+                                    {/* Actually let's just use text for upload instead of new import */}
+                                    <span style={{ textDecoration: 'underline' }}>{file ? 'Change File' : 'Upload File'}</span>
+                                </label>
+                            </div>
+                            
+                            {file ? (
+                                <div style={{ width: '100%', padding: '1.25rem', background: 'rgba(52, 211, 153, 0.1)', border: '1px dashed var(--success)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <CheckCircle size={18} color="var(--success)" />
+                                        <span style={{ fontSize: '0.9375rem', color: 'var(--success)', fontWeight: 600 }}>{file.name}</span>
+                                    </div>
+                                    <button onClick={() => setFile(null)} style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', fontSize: '0.8125rem' }}>Remove</button>
+                                </div>
+                            ) : (
+                                <textarea
+                                    value={content}
+                                    onChange={(e) => setContent(e.target.value)}
+                                    placeholder="Paste your project report, slide content, or presentation notes here..."
+                                    style={{ width: '100%', minHeight: '260px', padding: '1.25rem', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, color: 'var(--text-primary)', fontSize: '0.9375rem', outline: 'none', resize: 'vertical', lineHeight: 1.6, transition: 'border-color 0.2s' }}
+                                />
+                            )}
                         </div>
 
                         <button
                             onClick={handleAnalyze}
-                            disabled={isAnalyzing || !topic.trim() || !content.trim()}
+                            disabled={isAnalyzing || !topic.trim() || (!content.trim() && !file)}
                             style={{
                                 width: '100%', padding: '1.125rem', borderRadius: 14, border: 'none',
                                 background: 'linear-gradient(135deg, var(--accent-color) 0%, #4f46e5 100%)',
-                                color: 'white', fontWeight: 700, fontSize: '1.0625rem', cursor: 'pointer',
+                                color: 'white', fontWeight: 700, fontSize: '1.0625rem', cursor: (!topic.trim() || (!content.trim() && !file)) ? 'not-allowed' : 'pointer',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
                                 boxShadow: '0 8px 24px rgba(99, 102, 241, 0.4)', transition: 'all 0.3s',
-                                opacity: (isAnalyzing || !topic.trim() || !content.trim()) ? 0.7 : 1,
+                                opacity: (isAnalyzing || !topic.trim() || (!content.trim() && !file)) ? 0.7 : 1,
                                 letterSpacing: '0.03em'
                             }}
                         >

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
-  Layout, Code, User, Mic, Search, Network
+  Layout, Code, User, Mic, Search, GraduationCap, Sparkles
 } from 'lucide-react';
 import { requestNotificationPermission } from '../../utils/notifications';
 import './Sidebar.css';
@@ -15,7 +15,8 @@ const Sidebar = () => {
   const menuItems = [
     { path: '/', name: 'Dashboard', icon: Layout },
     { path: '/learning-hub', name: 'Learning Hub', icon: Search },
-    { path: '/skill-tree', name: 'Skill Tree', icon: Network },
+    { path: '/academic-planner', name: 'Academic Planner', icon: GraduationCap },
+    { path: '/presentation-booster', name: 'Presentation Booster', icon: Sparkles },
     { path: '/mock-interview', name: 'Mock Interview', icon: Mic },
     { path: '/code-engine', name: 'Code Engine', icon: Code },
     { path: '/profile', name: 'Profile', icon: User },
