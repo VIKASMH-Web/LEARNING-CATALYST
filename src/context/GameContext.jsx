@@ -54,10 +54,6 @@ export const GameProvider = ({ children }) => {
     }
   });
 
-  const [isPremium, setIsPremium] = useState(() => {
-    return localStorage.getItem('lc_isPremium') === 'true';
-  });
-
   const lvsScore = useMemo(() => {
     // Dynamic Learning Velocity Score based on XP, Streak and Active Days
     const base = 50;
@@ -66,36 +62,12 @@ export const GameProvider = ({ children }) => {
     return Math.min(100, Math.round(base + xpBonus + streakBonus));
   }, [xp, streak]);
 
-  // --- Phase 4: Career Marketplace States ---
-  const [userRole, setUserRole] = useState(() => {
-    return localStorage.getItem('lc_userRole') || 'student'; // 'student' or 'recruiter'
-  });
-
-  const [talentProfiles, setTalentProfiles] = useState(() => {
-    try {
-      const stored = localStorage.getItem('lc_talentProfiles');
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
-    }
-  });
-
-  const [shortlist, setShortlist] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem('lc_shortlist') || '[]');
-    } catch {
-      return [];
-    }
-  });
-
-  const [jobRoleFilter, setJobRoleFilter] = useState(() => {
-    return localStorage.getItem('lc_jobRoleFilter') || 'all';
-  });
   // ------------------------------------------
 
   const [weeklyReportData, setWeeklyReportData] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('lc_weeklyReportData') || 'null');
+
     } catch {
       return null;
     }
@@ -144,17 +116,10 @@ export const GameProvider = ({ children }) => {
     localStorage.setItem('lc_skillTreeState', JSON.stringify(skillTreeState));
     localStorage.setItem('lc_skillScores', JSON.stringify(skillScores));
     localStorage.setItem('lc_masteryLevels', JSON.stringify(masteryLevels));
-    localStorage.setItem('lc_isPremium', isPremium.toString());
     localStorage.setItem('lc_weeklyReportData', JSON.stringify(weeklyReportData));
     localStorage.setItem('lc_skillHistory', JSON.stringify(skillHistory));
-    
-    // Phase 4 persistence
-    localStorage.setItem('lc_userRole', userRole);
-    if(talentProfiles) localStorage.setItem('lc_talentProfiles', JSON.stringify(talentProfiles));
-    localStorage.setItem('lc_shortlist', JSON.stringify(shortlist));
-    localStorage.setItem('lc_jobRoleFilter', jobRoleFilter);
 
-  }, [xp, streak, completedQuests, skillTreeState, skillScores, masteryLevels, isPremium, weeklyReportData, skillHistory, userRole, talentProfiles, shortlist, jobRoleFilter]);
+  }, [xp, streak, completedQuests, skillTreeState, skillScores, masteryLevels, weeklyReportData, skillHistory]);
 
   const addXP = (amount) => {
     setXP(prev => prev + amount);
@@ -190,10 +155,6 @@ export const GameProvider = ({ children }) => {
     setMasteryLevels(prev => ({ ...prev, [domain]: level }));
   };
 
-  const upgradeToPremium = () => {
-    setIsPremium(true);
-  };
-
   const value = {
     xp,
     level,
@@ -203,25 +164,15 @@ export const GameProvider = ({ children }) => {
     skillTreeState,
     skillScores,
     masteryLevels,
-    isPremium,
     lvsScore,
     weeklyReportData,
     skillHistory,
-    userRole,
-    setUserRole,
-    talentProfiles,
-    setTalentProfiles,
-    shortlist,
-    setShortlist,
-    jobRoleFilter,
-    setJobRoleFilter,
     addXP,
     updateStreak,
     completeQuest,
     updateSkillTreeState,
     updateSkillScore,
-    updateMasteryLevel,
-    upgradeToPremium
+    updateMasteryLevel
   };
 
   return (

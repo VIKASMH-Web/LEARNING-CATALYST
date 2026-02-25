@@ -38,7 +38,7 @@ const WorkflowEngine = () => {
   const [activeRecipe, setActiveRecipe] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
-  const { addXP, updateStreak, isPremium } = useGame();
+  const { addXP, updateStreak } = useGame();
 
   const handleStartRecipe = (recipe) => {
     setActiveRecipe(recipe);

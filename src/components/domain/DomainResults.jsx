@@ -3,15 +3,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, ChevronRight, Zap, Trophy, Bell, ExternalLink, PlayCircle, Lock } from 'lucide-react';
 import DomainCard from './DomainCard';
 
-const DomainResults = ({ domainData, isPremium }) => {
+const DomainResults = ({ domainData }) => {
   const [notified, setNotified] = useState(false);
 
   if (!domainData) return null;
 
   const { title, description, roadmap, resources, interviewPrep, skills, action } = domainData;
   
-  // Free tier limits
-  const visibleResources = isPremium ? resources : resources.slice(0, 2);
+  // All resources are visible
+  const visibleResources = resources;
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -28,10 +28,6 @@ const DomainResults = ({ domainData, isPremium }) => {
   };
 
   const handleCreateNotification = () => {
-    if (!isPremium) {
-      alert("Domain Updates are a Premium Feature. Upgrade to unlock.");
-      return;
-    }
     setNotified(true);
   };
 
@@ -68,7 +64,7 @@ const DomainResults = ({ domainData, isPremium }) => {
               onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
             >
               <Bell size={16} />
-              {isPremium ? 'Get Updates' : 'Enable Updates (Pro)'}
+              Get Updates
             </button>
            ) : (
              <button disabled style={{
@@ -134,44 +130,29 @@ const DomainResults = ({ domainData, isPremium }) => {
                  </div>
                ))}
              </div>
-
-             {!isPremium && (
-               <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', border: '1px dashed rgba(255,255,255,0.1)' }}>
-                 <p style={{ fontSize: '0.75rem', color: '#9ca3af', textAlign: 'center', marginBottom: '0.5rem' }}>
-                   Unlock AI-Powered Predictions & Custom Action Plans
-                 </p>
-                 <button style={{ width: '100%', padding: '0.5rem', fontSize: '0.75rem', fontWeight: 600, color: '#facc15', background: 'rgba(250, 204, 21, 0.1)', border: '1px solid rgba(250, 204, 21, 0.2)', borderRadius: '8px', cursor: 'pointer' }}>
-                   Unlock Full Intelligence
-                 </button>
-               </div>
-             )}
-
-             {isPremium && (
-               <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div style={{ 
-                    display: 'flex', alignItems: 'flex-start', gap: '0.75rem', 
-                    background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', 
-                    borderRadius: '12px', padding: '1rem' 
-                  }}>
-                    <ShieldCheck size={20} color="#f87171" style={{ marginTop: '2px' }} />
-                    <div>
-                      <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#fca5a5', marginBottom: '0.25rem' }}>Recommended Action</h4>
-                      <p style={{ fontSize: '0.75rem', color: 'rgba(254, 202, 202, 0.8)', lineHeight: 1.5 }}>
-                        {action}
-                      </p>
-                    </div>
+             <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ 
+                  display: 'flex', alignItems: 'flex-start', gap: '0.75rem', 
+                  background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', 
+                  borderRadius: '12px', padding: '1rem' 
+                }}>
+                  <ShieldCheck size={20} color="#f87171" style={{ marginTop: '2px' }} />
+                  <div>
+                    <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#fca5a5', marginBottom: '0.25rem' }}>Recommended Action</h4>
+                    <p style={{ fontSize: '0.75rem', color: 'rgba(254, 202, 202, 0.8)', lineHeight: 1.5 }}>
+                      {action}
+                    </p>
                   </div>
-               </div>
-             )}
+                </div>
+             </div>
           </motion.div>
 
           {/* Interview Prep List */}
           <motion.div variants={itemVariants} className="dr-skill-card">
             <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: 'white', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               Interview Focus
-              {!isPremium && <Lock size={16} color="#9ca3af" />}
             </h3>
-            <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: 0, margin: 0, listStyle: 'none', filter: isPremium ? 'none' : 'blur(4px)', pointerEvents: isPremium ? 'auto' : 'none', opacity: isPremium ? 1 : 0.5 }}>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: 0, margin: 0, listStyle: 'none' }}>
               {interviewPrep.map((topic, i) => (
                 <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.875rem', color: '#9ca3af', padding: '0.5rem', borderRadius: '8px', background: 'rgba(255,255,255,0.02)' }}>
                   <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#a855f7' }}></div>
@@ -179,16 +160,13 @@ const DomainResults = ({ domainData, isPremium }) => {
                 </li>
               ))}
             </ul>
-             {!isPremium && <div style={{ textAlign: 'center', marginTop: '-2rem', position: 'relative', zIndex: 10 }}>
-                <span style={{ fontSize: '0.8rem', color: '#c084fc', background: '#121214', padding: '0.25rem 0.75rem', borderRadius: '99px', border: '1px solid rgba(192, 132, 252, 0.3)' }}>Premium Content</span>
-             </div>}
              <button style={{ 
                width: '100%', marginTop: '1.5rem', padding: '0.75rem', 
                fontSize: '0.875rem', fontWeight: 500, color: '#c084fc', 
                background: 'rgba(168, 85, 247, 0.1)', border: '1px solid rgba(168, 85, 247, 0.2)', 
                borderRadius: '12px', cursor: 'pointer', transition: 'background 0.2s'
-             }} onClick={() => !isPremium && alert("Upgrade to unlock!")}>
-               {isPremium ? 'Download Interview Pack' : 'Unlock Interview Pack'}
+             }}>
+               Download Interview Pack
              </button>
           </motion.div>
         </div>
@@ -245,16 +223,6 @@ const DomainResults = ({ domainData, isPremium }) => {
               {visibleResources.map((res, i) => (
                 <DomainCard key={i} resource={res} index={i} />
               ))}
-               {!isPremium && (
-                 <div style={{ 
-                   border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '12px', 
-                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                   cursor: 'pointer', padding: '1.25rem', color: '#6b7280', minHeight: '160px'
-                 }} onClick={() => alert("Upgrade to unlock more resources!")}>
-                   <Lock size={24} style={{ marginBottom: '0.5rem', opacity: 0.5 }} />
-                   <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>Unlock {resources.length - 2} More</span>
-                 </div>
-               )}
             </div>
              
              <button style={{ 
@@ -263,7 +231,7 @@ const DomainResults = ({ domainData, isPremium }) => {
                background: 'transparent', border: 'none', borderTop: '1px solid rgba(255,255,255,0.05)', 
                cursor: 'pointer' 
              }}>
-               {isPremium ? 'Show more resources...' : 'Upgrade to see all resources'}
+               Show more resources...
              </button>
           </motion.div>
 

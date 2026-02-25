@@ -3,23 +3,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Clock, Zap, Trophy, Target, Star,
   TrendingUp, BarChart2, MoreHorizontal, ArrowRight, Activity,
-  Lock, CheckCircle, AlertTriangle, FileText, Sparkles
+  Lock, CheckCircle, AlertTriangle, FileText, Sparkles, Flame
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
 import { useGame } from '../context/GameContext';
-import PremiumModal from '../components/Shared/PremiumModal';
 import { Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 const Overview = () => {
     const { focusMinutes, roadmapProgress, activeDays, getSkillLevel, interviewHistory, dailyFocus } = useProgress();
     const { user } = useAuth();
-    const { isPremium, lvsScore, xp, streak } = useGame();
+    const { lvsScore, xp, streak } = useGame();
     const displayName = user?.name || user?.email?.split('@')[0] || 'Learner';
     const [selectedPeriod, setSelectedPeriod] = useState('Last 7 days');
     const [showReport, setShowReport] = useState(false);
-    const [showPremiumModal, setShowPremiumModal] = useState(false);
 
     // --- 1. REAL DATA CALCULATION ---
     const totalHours = (focusMinutes / 60).toFixed(1);
@@ -204,14 +202,6 @@ const Overview = () => {
                                     Hello, {displayName}
                                 </h1>
                             </div>
-                            <button 
-                                onClick={() => setShowReport(true)}
-                                className="btn btn-secondary"
-                                style={{ fontSize: '0.8125rem', background: 'rgba(255,255,255,0.02)' }}
-                            >
-                                <FileText size={14} /> Weekly Report
-                                {!isPremium && <Lock size={11} style={{ opacity: 0.4 }} />}
-                            </button>
                         </div>
                     
                         <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: '640px', marginBottom: '0.375rem' }}>
@@ -250,35 +240,72 @@ const Overview = () => {
                 </div>
             </div>
 
-            {/* ═══ SECTION 2 — COMPACT METRIC BAR ═══ */}
+            {/* ═══ SECTION 2 — ENHANCED METRICS ═══ */}
             <div style={{ 
                 display: 'grid', 
                 gridTemplateColumns: 'repeat(4, 1fr)', 
-                gap: 0, 
-                borderTop: '2px solid rgba(255,255,255,0.12)', 
-                borderBottom: '2px solid rgba(255,255,255,0.12)',
-                background: 'rgba(255,255,255,0.02)',
-                backdropFilter: 'blur(10px)'
+                gap: '1.5rem', 
             }}>
-                {[
-                    { label: 'Total XP', value: xp.toLocaleString(), trend: '+120', up: true },
-                    { label: 'Streak', value: `${streak} days`, trend: null },
-                    { label: 'Learning Velocity', value: lvsScore, trend: '+12%', up: true },
-                    { label: 'Focus Hours', value: totalHours, trend: null },
-                ].map((m, i) => (
-                    <motion.div 
-                        key={i} 
-                        whileHover={{ background: 'rgba(255,255,255,0.04)' }}
-                        style={{ padding: '1.25rem 1.5rem', borderRight: i < 3 ? '2px solid rgba(255,255,255,0.12)' : 'none', cursor: 'default' }}
-                    >
-                        <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', fontWeight: 600, marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{m.label}</div>
-                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                            <span style={{ fontSize: '1.375rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{m.value}</span>
-                            {m.trend && <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--success)' }}>{m.trend}</span>}
-                        </div>
-                    </motion.div>
-                ))}
+                {/* Total XP Card */}
+                <motion.div 
+                    whileHover={{ y: -4, boxShadow: '0 8px 30px rgba(99,102,241,0.1)' }}
+                    style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 16, padding: '1.5rem', position: 'relative', overflow: 'hidden' }}
+                >
+                    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'radial-gradient(circle at top right, rgba(99,102,241,0.05), transparent 70%)', pointerEvents: 'none' }} />
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontWeight: 600, marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total XP</div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '1rem' }}>
+                        <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{xp.toLocaleString()}</span>
+                    </div>
+                    {/* XP Progress Bar */}
+                    <div style={{ width: '100%', height: '6px', background: 'var(--border-color)', borderRadius: 3, overflow: 'hidden' }}>
+                        <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(100, (xp % 1000) / 10)}%` }} transition={{ duration: 1 }}
+                            style={{ height: '100%', background: 'linear-gradient(90deg, var(--accent-color), #818cf8)', borderRadius: 3 }} />
+                    </div>
+                </motion.div>
+
+                {/* Streak Card */}
+                <motion.div 
+                    whileHover={{ y: -4, boxShadow: '0 8px 30px rgba(245,158,11,0.1)' }}
+                    style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 16, padding: '1.5rem', position: 'relative', overflow: 'hidden' }}
+                >
+                    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'radial-gradient(circle at top right, rgba(245,158,11,0.05), transparent 70%)', pointerEvents: 'none' }} />
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontWeight: 600, marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        Streak
+                        {streak > 0 && <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 1.5, repeat: Infinity }}><Flame size={14} color="#f59e0b" fill="#f59e0b" /></motion.div>}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                        <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{streak}</span>
+                        <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>days</span>
+                    </div>
+                </motion.div>
+
+                {/* Learning Velocity Card */}
+                <motion.div 
+                    whileHover={{ y: -4, boxShadow: '0 8px 30px rgba(52,211,153,0.1)' }}
+                    style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 16, padding: '1.5rem', position: 'relative', overflow: 'hidden' }}
+                >
+                    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'radial-gradient(circle at top right, rgba(52,211,153,0.05), transparent 70%)', pointerEvents: 'none' }} />
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontWeight: 600, marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Learning Velocity</div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                        <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{lvsScore}</span>
+                        <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--success)' }}>+12%</span>
+                    </div>
+                </motion.div>
+
+                {/* Weekly Report Action */}
+                <motion.div 
+                    whileHover={{ y: -4, boxShadow: '0 8px 30px rgba(255,255,255,0.05)' }}
+                    onClick={() => setShowReport(true)}
+                    style={{ background: 'var(--bg-elevated)', border: '1px dashed var(--border-hover)', borderRadius: 16, padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s ease' }}
+                >
+                    <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.75rem' }}>
+                        <FileText size={20} color="var(--text-secondary)" />
+                    </div>
+                    <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>Weekly Report</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--accent-color)', marginTop: '4px' }}>View Insights &rarr;</span>
+                </motion.div>
             </div>
+
 
             {/* ═══ SECTION 3 — MAIN INTELLIGENCE GRID ═══ */}
             <div style={{ display: 'grid', gridTemplateColumns: '65fr 35fr', gap: '2rem' }}>
@@ -455,8 +482,9 @@ const Overview = () => {
                             </div>
 
                             <div style={{ position: 'relative' }}>
-                                <div style={{ filter: isPremium ? 'none' : 'blur(6px)', opacity: isPremium ? 1 : 0.4, pointerEvents: isPremium ? 'auto' : 'none' }}>
+                                <div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
+
                                         <div style={{ padding: '1.25rem', border: '1px solid var(--border-color)', borderRadius: 8 }}>
                                             <div className="label" style={{ marginBottom: '0.75rem' }}>Learning Velocity</div>
                                             <div style={{ fontSize: '2rem', fontWeight: 600, lineHeight: 1 }}>{lvs}</div>
@@ -491,34 +519,13 @@ const Overview = () => {
                                         </div>
                                     </div>
                                 </div>
-                                {!isPremium && (
-                                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
-                                        <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 12, padding: '2rem', textAlign: 'center', maxWidth: '360px' }}>
-                                            <Lock size={24} color="var(--text-tertiary)" style={{ marginBottom: '1rem' }} />
-                                            <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '0.375rem' }}>Unlock Intelligence</h3>
-                                            <p className="body-sm" style={{ marginBottom: '1.25rem' }}>Get velocity tracking, projections, and AI action plans.</p>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem', marginBottom: '1.5rem', textAlign: 'left' }}>
-                                                {['Weakness Detection', 'AI Action Plans', 'Skill Projections'].map(f => (
-                                                    <div key={f} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
-                                                        <CheckCircle size={13} color="var(--success)" /> {f}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                            <button onClick={() => setShowPremiumModal(true)} className="btn btn-primary" style={{ width: '100%' }}>Upgrade to Pro</button>
-                                        </div>
-                                    </div>
-                                )}
                             </div>
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
-            <PremiumModal 
-                isOpen={showPremiumModal} 
-                onClose={() => setShowPremiumModal(false)}
-                featureName="Advanced AI Intelligence"
-            />
         </motion.div>
+
     );
 };
 

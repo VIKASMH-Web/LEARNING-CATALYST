@@ -17,7 +17,6 @@ export const ProgressProvider = ({ children }) => {
     // Derived/Meta
     const [badges, setBadges] = useState({}); // { badgeId: unlockedBoolean }
     const [notifications, setNotifications] = useState([]);
-    const [isPremium, setIsPremium] = useState(false); // Simulate premium status
     
     // Career & Interview
     const [careerProfile, setCareerProfile] = useState(null); // { targetRole, salaryGoal, timeline, dailyHours, currentLevel, roadmap: [...] }
@@ -300,7 +299,7 @@ export const ProgressProvider = ({ children }) => {
             activeDays,
             badges,
             notifications, addNotification, clearNotifications,
-            getSkillLevel, generateWeeklyReport, isPremium,
+            getSkillLevel, generateWeeklyReport,
             careerProfile, updateCareerProfile,
             interviewHistory, addInterviewSession,
             dailyFocus

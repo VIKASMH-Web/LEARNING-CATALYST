@@ -19,7 +19,7 @@ const Profile = () => {
     const ctx = useProgress();
     const { activeDays = [], focusMinutes = 0, codeRuns = 0, badges = {}, dailyFocus = {}, interviewHistory = [] } = ctx || {};
     const authCtx = useAuth() || {};
-    const { isPremium } = useGame() || { isPremium: false };
+    const { xp, streak } = useGame() || { xp: 0, streak: 0 };
 
     // --- EDITABLE PROFILE STATE ---
     const [isEditing, setIsEditing] = useState(false);
@@ -290,7 +290,6 @@ const Profile = () => {
                                 <>
                                     <h1 className="h2" style={{ marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.75rem' }}>
                                         {profile.name || 'Set Your Name'}
-                                        {isPremium && <Award size={20} fill="var(--warning)" color="var(--warning)" style={{marginTop: '2px'}} />}
                                     </h1>
                                     <p style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
                                         <Briefcase size={14} /> {profile.title || 'Add your title'}

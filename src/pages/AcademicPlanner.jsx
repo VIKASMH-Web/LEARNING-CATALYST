@@ -59,86 +59,99 @@ const AcademicPlanner = () => {
         exit: { opacity: 0, x: -20, transition: { duration: 0.2 } }
     };
 
-    return (
-        <div style={{ padding: '2rem 2.5rem', maxWidth: 1200, margin: '0 auto' }}>
-            <header style={{ marginBottom: '3rem' }}>
-                <div style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px',
-                    borderRadius: 20, background: 'rgba(99,102,241,0.1)',
-                    border: '1px solid rgba(99,102,241,0.2)', marginBottom: 16,
-                    fontSize: '0.8rem', color: 'var(--accent-color)', fontWeight: 600
-                }}>
-                    <GraduationCap size={14} /> Comprehensive Study Planner
-                </div>
-                <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.03em', marginBottom: '0.5rem' }}>
-                    Academic Excellence AI
-                </h1>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', maxWidth: 600 }}>
-                    Upload your materials and your college name. We'll crawl your college database and personalize your study path.
-                </p>
-            </header>
+        const handleFileChange = (type, e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                setUploadStatus(prev => ({ ...prev, [type]: true }));
+            }
+        };
 
-            {!result ? (
-                <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    style={{
-                        background: 'var(--bg-elevated)', border: '1px solid var(--border-color)',
-                        borderRadius: 24, padding: '3rem', boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-                        display: 'flex', flexDirection: 'column', gap: '2.5rem'
-                    }}
-                >
-                    {/* College Input */}
-                    <div>
-                        <label style={{ display: 'block', fontSize: '0.9375rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-                            Your College / University Name
-                        </label>
-                        <div style={{ position: 'relative' }}>
-                            <Search size={20} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
-                            <input
-                                type="text"
-                                value={college}
-                                onChange={(e) => setCollege(e.target.value)}
-                                placeholder="e.g., Stanford University, IIT Bombay..."
-                                style={{
-                                    width: '100%', padding: '1.25rem 1rem 1.25rem 3rem', background: 'var(--bg-primary)',
-                                    border: '1px solid var(--border-color)', borderRadius: 12,
-                                    color: 'var(--text-primary)', fontSize: '1.0625rem', outline: 'none',
-                                    transition: 'border-color 0.2s', focus: { borderColor: 'var(--accent-color)' }
-                                }}
-                            />
-                        </div>
+        return (
+            <div style={{ padding: '2rem 2.5rem', maxWidth: 1200, margin: '0 auto' }}>
+                <header style={{ marginBottom: '3rem' }}>
+                    <div style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px',
+                        borderRadius: 20, background: 'rgba(99,102,241,0.1)',
+                        border: '1px solid rgba(99,102,241,0.2)', marginBottom: 16,
+                        fontSize: '0.8rem', color: 'var(--accent-color)', fontWeight: 600
+                    }}>
+                        <GraduationCap size={14} /> Comprehensive Study Planner
                     </div>
+                    <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.03em', marginBottom: '0.5rem' }}>
+                        Academic Excellence AI
+                    </h1>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', maxWidth: 600 }}>
+                        Upload your materials and your college name. We'll crawl your college database and personalize your study path.
+                    </p>
+                </header>
 
-                    {/* Upload Grid */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
-                        {[
-                            { id: 'timetable', label: 'College Timetable', icon: Calendar },
-                            { id: 'syllabus', label: 'Portion / Syllabus', icon: BookOpen },
-                            { id: 'modelPapers', label: 'Model Papers', icon: FileText },
-                            { id: 'pyqs', label: 'Previous Year Questions', icon: Scroll }
-                        ].map(field => (
-                            <div
-                                key={field.id}
-                                onClick={() => handleUpload(field.id)}
-                                style={{
-                                    padding: '1.5rem', background: 'var(--bg-primary)',
-                                    border: `1px dashed ${uploadStatus[field.id] ? 'var(--success)' : 'var(--border-color)'}`,
-                                    borderRadius: 16, cursor: 'pointer', textAlign: 'center', transition: 'all 0.2s',
-                                    position: 'relative'
-                                }}
-                            >
-                                <field.icon size={24} color={uploadStatus[field.id] ? "var(--success)" : "var(--text-tertiary)"} style={{ marginBottom: '0.75rem' }} />
-                                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: uploadStatus[field.id] ? 'var(--success)' : 'var(--text-primary)' }}>
-                                    {field.label}
-                                </div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: '0.25rem' }}>
-                                    {uploadStatus[field.id] ? 'Uploaded' : 'Click to Upload'}
-                                </div>
-                                {uploadStatus[field.id] && <CheckCircle size={14} style={{ position: 'absolute', top: 12, right: 12, color: 'var(--success)' }} />}
+                {!result ? (
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        style={{
+                            background: 'var(--bg-elevated)', border: '1px solid var(--border-color)',
+                            borderRadius: 24, padding: '3rem', boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                            display: 'flex', flexDirection: 'column', gap: '2.5rem'
+                        }}
+                    >
+                        {/* College Input */}
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.9375rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                                Your College / University Name
+                            </label>
+                            <div style={{ position: 'relative' }}>
+                                <Search size={20} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
+                                <input
+                                    type="text"
+                                    value={college}
+                                    onChange={(e) => setCollege(e.target.value)}
+                                    placeholder="e.g., Stanford University, IIT Bombay..."
+                                    style={{
+                                        width: '100%', padding: '1.25rem 1rem 1.25rem 3rem', background: 'var(--bg-primary)',
+                                        border: '1px solid var(--border-color)', borderRadius: 12,
+                                        color: 'var(--text-primary)', fontSize: '1.0625rem', outline: 'none',
+                                        transition: 'border-color 0.2s', focus: { borderColor: 'var(--accent-color)' }
+                                    }}
+                                />
                             </div>
-                        ))}
+                        </div>
+
+                        {/* Upload Grid */}
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
+                            {[
+                                { id: 'timetable', label: 'College Timetable', icon: Calendar },
+                                { id: 'syllabus', label: 'Portion / Syllabus', icon: BookOpen },
+                                { id: 'modelPapers', label: 'Model Papers', icon: FileText },
+                                { id: 'pyqs', label: 'Previous Year Questions', icon: Scroll }
+                            ].map(field => (
+                                <div
+                                    key={field.id}
+                                    onClick={() => document.getElementById(`file-upload-${field.id}`).click()}
+                                    style={{
+                                        padding: '1.5rem', background: 'var(--bg-primary)',
+                                        border: `1px dashed ${uploadStatus[field.id] ? 'var(--success)' : 'var(--border-color)'}`,
+                                        borderRadius: 16, cursor: 'pointer', textAlign: 'center', transition: 'all 0.2s',
+                                        position: 'relative'
+                                    }}
+                                >
+                                    <input 
+                                        id={`file-upload-${field.id}`}
+                                        type="file" 
+                                        style={{ display: 'none' }} 
+                                        onChange={(e) => handleFileChange(field.id, e)} 
+                                    />
+                                    <field.icon size={24} color={uploadStatus[field.id] ? "var(--success)" : "var(--text-tertiary)"} style={{ marginBottom: '0.75rem' }} />
+                                    <div style={{ fontSize: '0.875rem', fontWeight: 600, color: uploadStatus[field.id] ? 'var(--success)' : 'var(--text-primary)' }}>
+                                        {field.label}
+                                    </div>
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: '0.25rem' }}>
+                                        {uploadStatus[field.id] ? 'Uploaded' : 'Click or Drag to Upload'}
+                                    </div>
+                                    {uploadStatus[field.id] && <CheckCircle size={14} style={{ position: 'absolute', top: 12, right: 12, color: 'var(--success)' }} />}
+                                </div>
+                            ))}
+
                     </div>
 
                     <button

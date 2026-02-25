@@ -53,25 +53,25 @@ const ProjectReviewer = () => {
             <div style={{ display: 'grid', gridTemplateColumns: result ? '1fr 1fr' : '1fr', gap: '2rem' }}>
                 {/* Input Section */}
                 <motion.div layout>
-                    <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 16, padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
+                    <div style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 24, padding: '2.5rem', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
                         <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>Project Topic</label>
+                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.75rem', letterSpacing: '0.02em' }}>Project Topic</label>
                             <input
                                 type="text"
                                 value={topic}
                                 onChange={(e) => setTopic(e.target.value)}
                                 placeholder="e.g., Cloud Computing Architecture, Marketing Strategy 2024"
-                                style={{ width: '100%', padding: '0.875rem 1rem', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: 10, color: 'var(--text-primary)', fontSize: '0.9375rem', outline: 'none' }}
+                                style={{ width: '100%', padding: '1rem 1.25rem', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, color: 'var(--text-primary)', fontSize: '0.9375rem', outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s', focus: { borderColor: 'var(--accent-color)' } }}
                             />
                         </div>
 
-                        <div style={{ marginBottom: '2rem' }}>
-                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>Project Content / Report</label>
+                        <div style={{ marginBottom: '2.5rem' }}>
+                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.75rem', letterSpacing: '0.02em' }}>Project Content / Report</label>
                             <textarea
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
                                 placeholder="Paste your project report, slide content, or presentation notes here..."
-                                style={{ width: '100%', minHeight: '260px', padding: '1rem', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: 10, color: 'var(--text-primary)', fontSize: '0.9375rem', outline: 'none', resize: 'vertical', lineHeight: 1.6 }}
+                                style={{ width: '100%', minHeight: '260px', padding: '1.25rem', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, color: 'var(--text-primary)', fontSize: '0.9375rem', outline: 'none', resize: 'vertical', lineHeight: 1.6, transition: 'border-color 0.2s' }}
                             />
                         </div>
 
@@ -79,12 +79,13 @@ const ProjectReviewer = () => {
                             onClick={handleAnalyze}
                             disabled={isAnalyzing || !topic.trim() || !content.trim()}
                             style={{
-                                width: '100%', padding: '1rem', borderRadius: 12, border: 'none',
+                                width: '100%', padding: '1.125rem', borderRadius: 14, border: 'none',
                                 background: 'linear-gradient(135deg, var(--accent-color) 0%, #4f46e5 100%)',
-                                color: 'white', fontWeight: 600, fontSize: '1rem', cursor: 'pointer',
+                                color: 'white', fontWeight: 700, fontSize: '1.0625rem', cursor: 'pointer',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
-                                boxShadow: '0 4px 15px rgba(99, 102, 241, 0.3)', transition: 'all 0.2s',
-                                opacity: (isAnalyzing || !topic.trim() || !content.trim()) ? 0.7 : 1
+                                boxShadow: '0 8px 24px rgba(99, 102, 241, 0.4)', transition: 'all 0.3s',
+                                opacity: (isAnalyzing || !topic.trim() || !content.trim()) ? 0.7 : 1,
+                                letterSpacing: '0.03em'
                             }}
                         >
                             {isAnalyzing ? (
@@ -102,13 +103,14 @@ const ProjectReviewer = () => {
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
+                            style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', height: '100%' }}
                         >
                             {/* Summary Card */}
-                            <div style={{ background: '#15171A', border: '1px solid var(--border-color)', borderRadius: 16, padding: '1.5rem' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                                    <div className="label" style={{ color: result.statusColor }}>{result.status}</div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                            <div style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 24, padding: '2rem', position: 'relative', overflow: 'hidden' }}>
+                                <div style={{ position: 'absolute', top: 0, right: 0, width: 150, height: 150, background: 'radial-gradient(circle, rgba(251,191,36,0.1) 0%, transparent 70%)', pointerEvents: 'none' }} />
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', position: 'relative', zIndex: 1 }}>
+                                    <div className="label" style={{ color: result.statusColor, background: 'rgba(251,191,36,0.1)', padding: '6px 14px', borderRadius: 14, letterSpacing: '0.05em' }}>{result.status}</div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.05)', padding: '6px 14px', borderRadius: 14, fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
                                         {result.confidence}% Match
                                     </div>
                                 </div>
@@ -119,25 +121,25 @@ const ProjectReviewer = () => {
                             </div>
 
                             {/* Detailed Analysis */}
-                            <div style={{ background: '#15171A', border: '1px solid var(--border-color)', borderRadius: 16, padding: '1.5rem' }}>
-                                <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <Target size={18} color="var(--accent-color)" /> Assessment Summary
+                            <div style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 24, padding: '2rem', flex: 1 }}>
+                                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <Target size={20} color="var(--accent-color)" /> Assessment Summary
                                 </h3>
-                                <p style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)', lineHeight: 1.5, marginBottom: '1.5rem' }}>
+                                <p style={{ fontSize: '0.9375rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '2rem' }}>
                                     {result.summary}
                                 </p>
 
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                     {result.suggestions.map((s) => (
-                                        <div key={s.id} style={{ display: 'flex', gap: '12px', padding: '1rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 10 }}>
-                                            <div style={{ flexShrink: 0, marginTop: '2px' }}>
+                                        <div key={s.id} style={{ display: 'flex', gap: '14px', padding: '1.25rem', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 14, transition: 'transform 0.2s', ':hover': { transform: 'translateX(4px)' } }}>
+                                            <div style={{ flexShrink: 0, width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                 {s.type === 'Content' ? <MessageSquare size={16} color="#60a5fa" /> :
                                                     s.type === 'Design' ? <Lightbulb size={16} color="#fbbf24" /> :
                                                         <User size={16} color="#34d399" />}
                                             </div>
                                             <div>
-                                                <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-tertiary)', marginBottom: '2px' }}>{s.type}</div>
-                                                <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{s.text}</div>
+                                                <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-tertiary)', marginBottom: '4px' }}>{s.type} Improvement</div>
+                                                <div style={{ fontSize: '0.9375rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{s.text}</div>
                                             </div>
                                         </div>
                                     ))}
@@ -146,9 +148,9 @@ const ProjectReviewer = () => {
 
                             <button
                                 onClick={() => setResult(null)}
-                                style={{ background: 'none', border: '1px solid var(--border-color)', color: 'var(--text-secondary)', padding: '0.75rem', borderRadius: 10, cursor: 'pointer', fontSize: '0.875rem' }}
+                                style={{ width: '100%', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-secondary)', padding: '1.125rem', borderRadius: 14, cursor: 'pointer', fontSize: '0.9375rem', fontWeight: 600, transition: 'all 0.2s', ':hover': { background: 'rgba(255,255,255,0.03)' } }}
                             >
-                                Clear Analysis
+                                Start New Analysis
                             </button>
                         </motion.div>
                     )}
