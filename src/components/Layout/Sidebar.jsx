@@ -1,25 +1,28 @@
 import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
-  Layout, Code, User, Mic, Search, GraduationCap, Sparkles
+  Layout, Code, User, Mic, Search, GraduationCap, Sparkles, LifeBuoy, Globe
 } from 'lucide-react';
 import { requestNotificationPermission } from '../../utils/notifications';
+import { useTranslation } from '../../utils/i18n';
 import './Sidebar.css';
 
 
 const Sidebar = () => {
+  const { t, lang, changeLanguage, languages } = useTranslation();
   useEffect(() => {
     requestNotificationPermission();
   }, []);
 
   const menuItems = [
-    { path: '/', name: 'Dashboard', icon: Layout },
-    { path: '/learning-hub', name: 'Learning Hub', icon: Search },
-    { path: '/academic-planner', name: 'Academic Planner', icon: GraduationCap },
-    { path: '/presentation-booster', name: 'Presentation Booster', icon: Sparkles },
-    { path: '/mock-interview', name: 'Mock Interview', icon: Mic },
-    { path: '/code-engine', name: 'Code Engine', icon: Code },
-    { path: '/profile', name: 'Profile', icon: User },
+    { path: '/', name: t('dashboard'), icon: Layout },
+    { path: '/learning-hub', name: t('learning_hub'), icon: Search },
+    { path: '/academic-planner', name: t('academic_planner'), icon: GraduationCap },
+    { path: '/presentation-booster', name: t('presentation_booster'), icon: Sparkles },
+    { path: '/mock-interview', name: t('mock_interview'), icon: Mic },
+    { path: '/code-engine', name: t('code_engine'), icon: Code },
+    { path: '/profile', name: t('profile'), icon: User },
+    { path: '/help', name: t('help_centre'), icon: LifeBuoy },
   ];
 
   return (
@@ -44,7 +47,7 @@ const Sidebar = () => {
 
         {/* Section Label */}
         <div className="label" style={{ paddingLeft: '0.75rem', marginBottom: '0.5rem' }}>
-          Navigation
+          {t('navigation')}
         </div>
 
         {/* Navigation */}
@@ -71,6 +74,31 @@ const Sidebar = () => {
               )}
             </NavLink>
           ))}
+        </div>
+
+        {/* Language Selector */}
+        <div style={{ marginTop: 'auto', padding: '1rem 0.75rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          <div className="label" style={{ marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.7rem' }}>
+             <Globe size={12} /> Language
+          </div>
+          <select 
+            value={lang} 
+            onChange={(e) => changeLanguage(e.target.value)}
+            style={{
+              width: '100%', padding: '8px', background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.1)', borderRadius: 6,
+              color: 'var(--text-secondary)', fontSize: '0.75rem', outline: 'none',
+              cursor: 'pointer'
+            }}
+          >
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="kn">ಕನ್ನಡ</option>
+            <option value="ta">தமிழ்</option>
+            <option value="te">తెలుగు</option>
+            <option value="mr">मराठी</option>
+            <option value="ml">മലയാളം</option>
+          </select>
         </div>
 
       </div>

@@ -39,6 +39,8 @@ const AuthGate = ({ children }) => {
 import ProjectReviewer from './pages/ProjectReviewer';
 import AcademicPlanner from './pages/AcademicPlanner';
 
+import HelpCentre from './pages/HelpCentre';
+
 function App() {
     return (
         <AuthProvider>
@@ -60,6 +62,7 @@ function App() {
                                     <Route path="presentation-booster" element={<ProjectReviewer />} />
                                     <Route path="academic-planner" element={<AcademicPlanner />} />
                                     <Route path="profile" element={<Profile />} />
+                                    <Route path="help" element={<HelpCentre />} />
                                     <Route path="*" element={<Navigate to="/" replace />} />
                                 </Route>
                             </Routes>

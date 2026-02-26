@@ -156,9 +156,16 @@ const VoiceControl = () => {
         'profile': '/profile',
         'account': '/profile',
         'career': '/career-planner',
-        'planner': '/career-planner',
+        'academic planner': '/academic-planner',
+        'planner': '/academic-planner',
+        'presentation booster': '/presentation-booster',
+        'booster': '/presentation-booster',
+        'presentation': '/presentation-booster',
         'interview': '/mock-interview',
-        'mock': '/mock-interview'
+        'mock': '/mock-interview',
+        'help': '/help',
+        'support': '/help',
+        'centre': '/help'
     };
 
     let targetPath = null;

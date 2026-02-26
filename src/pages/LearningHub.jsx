@@ -7,13 +7,16 @@ import {
   GraduationCap, Layers, Target
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
-import WorkflowEngine from '../components/LearningHub/WorkflowEngine';
+
 import { fullSearch, popularSearches, generateRoadmap, getResourcesForDomain, getToolsForDomain } from '../utils/roadmapEngine';
+
+import { useTranslation } from '../utils/i18n';
 
 // ============================================
 // LEARNING HUB — Dynamic Search Engine
 // ============================================
 const LearningHub = () => {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [searchResult, setSearchResult] = useState(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -128,7 +131,7 @@ const LearningHub = () => {
               <Sparkles size={14} /> AI-Powered Learning Engine
             </div>
             <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: 8, background: 'linear-gradient(135deg, #e2e8f0, #a78bfa)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent', letterSpacing: '-0.03em' }}>
-              What do you want to learn?
+              {t('search_placeholder')}
             </h1>
             <p style={{ color: 'var(--text-tertiary)', fontSize: '1.05rem', maxWidth: 500, margin: '0 auto' }}>
               Search any skill, role, or technology — get an instant roadmap with resources
@@ -253,16 +256,7 @@ const LearningHub = () => {
         </motion.div>
       )}
 
-      {/* Study Recipes Dashboard */}
-      {!searchResult && !isSearching && (
-        <div style={{ marginTop: '4rem' }}>
-            <div style={{ textAlign: 'center', marginBottom: 30 }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'white', marginBottom: '0.5rem' }}>Automated Study Workflows</h2>
-                <p style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem' }}>One-click recipes to accomplish specific learning goals.</p>
-            </div>
-            <WorkflowEngine />
-        </div>
-      )}
+
 
       {/* ============================================ */}
       {/* SEARCH RESULTS */}

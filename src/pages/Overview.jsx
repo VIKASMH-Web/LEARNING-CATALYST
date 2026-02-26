@@ -11,7 +11,10 @@ import { useGame } from '../context/GameContext';
 import { Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
+import { useTranslation } from '../utils/i18n';
+
 const Overview = () => {
+    const { t } = useTranslation();
     const { focusMinutes, roadmapProgress, activeDays, getSkillLevel, interviewHistory, dailyFocus } = useProgress();
     const { user } = useAuth();
     const { lvsScore, xp, streak } = useGame();
@@ -205,13 +208,13 @@ const Overview = () => {
                         </div>
                     
                         <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: '640px', marginBottom: '0.375rem' }}>
-                            You improved {bestGrower.name} <span style={{ color: 'var(--success)', fontWeight: 500 }}>+{bestGrower.growth.toFixed(1)}%</span> this week. At this pace, you'll reach {nextLevel} in ~{estimatedWeeksLeft} weeks.
+                            You improved {bestGrower.name} <span style={{ color: 'var(--success)', fontWeight: 500 }}>+{bestGrower.growth.toFixed(1)}%</span> this week. {t('navigating_to')} your next goal.
                         </p>
                         <p style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', marginBottom: '1.5rem' }}>
                             Consistency score increased by 12%. Focus on {weakestSkill.weakest} to close your biggest gap.
                         </p>
                         <Link to="/learning-hub" className="btn btn-primary" style={{ textDecoration: 'none', padding: '0.625rem 1.5rem', fontSize: '0.875rem' }}>
-                            Continue Learning
+                            {t('learning_hub')} →
                         </Link>
                     </div>
 

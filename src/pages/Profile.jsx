@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { User, Award, Edit2, Save, X, Mail, Calendar, MapPin, Briefcase, Camera, Image, Plus, Trophy, Zap, Target, Clock, Code, BookOpen, Trash2, LogOut, Star } from 'lucide-react';
+import { User, Award, Edit2, Save, X, Mail, Calendar, MapPin, Briefcase, Camera, Image, Plus, Trophy, Zap, Target, Clock, Code, BookOpen, Trash2, LogOut, Star, Linkedin, ExternalLink, ShieldCheck } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
 import { useGame } from '../context/GameContext';
@@ -37,6 +37,7 @@ const Profile = () => {
         focusAreas: ['C', 'Data Structures', 'React'],
         experiences: [],
         certifications: [],
+        linkedin: '',
         lastSyncedUser: null 
     };
 
@@ -285,15 +286,39 @@ const Profile = () => {
                                         onChange={(e) => setProfile({ ...profile, title: e.target.value })}
                                         placeholder="Your Role (e.g. Software Engineer)"
                                         style={{ ...inputStyle, width: '300px', background: 'var(--bg-secondary)' }} />
+                                    <input 
+                                        value={profile.linkedin} 
+                                        onChange={(e) => setProfile({ ...profile, linkedin: e.target.value })}
+                                        placeholder="LinkedIn Profile URL"
+                                        style={{ ...inputStyle, width: '300px', background: 'var(--bg-secondary)' }} />
                                 </div>
                             ) : (
                                 <>
                                     <h1 className="h2" style={{ marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.75rem' }}>
                                         {profile.name || 'Set Your Name'}
+                                        {authCtx.user?.method === 'google' && !isEditing && (
+                                            <span title="Verified Google Account" style={{ color: '#60a5fa' }}><ShieldCheck size={18} /></span>
+                                        )}
                                     </h1>
-                                    <p style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
-                                        <Briefcase size={14} /> {profile.title || 'Add your title'}
-                                    </p>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                        <p style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
+                                            <Briefcase size={14} /> {profile.title || 'Add your title'}
+                                        </p>
+                                        {profile.linkedin && (
+                                            <a 
+                                                href={profile.linkedin.startsWith('http') ? profile.linkedin : `https://${profile.linkedin}`} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                style={{ 
+                                                    display: 'flex', alignItems: 'center', gap: '8px', 
+                                                    color: '#60a5fa', fontSize: '0.85rem', textDecoration: 'none',
+                                                    fontWeight: 500, width: 'fit-content'
+                                                }}
+                                            >
+                                                <Linkedin size={14} /> View LinkedIn Profile <ExternalLink size={12} />
+                                            </a>
+                                        )}
+                                    </div>
                                 </>
                             )}
                         </div>
