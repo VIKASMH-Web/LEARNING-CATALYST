@@ -127,7 +127,6 @@ export const useTranslation = () => {
 
     useEffect(() => {
         localStorage.setItem('lc_lang', lang);
-        // Trigger global event if needed, but for now state is enough in components that use it
     }, [lang]);
 
     const t = (key) => {
@@ -137,6 +136,19 @@ export const useTranslation = () => {
     const changeLanguage = (newLang) => {
         if (translations[newLang]) {
             setLang(newLang);
+            localStorage.setItem('lc_lang', newLang);
+            
+            // Set Google Translate cookie to handle FULL APP translation automatically
+            if (newLang === 'en') {
+                document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=" + window.location.hostname + "; path=/;";
+            } else {
+                document.cookie = `googtrans=/en/${newLang}; path=/`;
+                document.cookie = `googtrans=/en/${newLang}; domain=${window.location.hostname}; path=/`;
+            }
+            
+            // Reload to apply the Google translation instantly across the whole DOM
+            window.location.reload();
         }
     };
 
