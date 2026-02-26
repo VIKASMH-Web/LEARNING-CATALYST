@@ -66,10 +66,16 @@ const HelpCentre = () => {
 
     const handleBugSubmit = (e) => {
         e.preventDefault();
+        // Open mailto with BOTH support emails, pre-fill subject & body
+        const emails = 'bankadamanig@gmail.com,dhirajkadam964@gmail.com';
+        const subject = encodeURIComponent(`[Bug Report] ${bugSubject}`);
+        const body = encodeURIComponent(`Bug Description:\n\n${bugDesc}\n\n---\nReported via Learning Catalyst Help Centre`);
+        window.location.href = `mailto:${emails}?subject=${subject}&body=${body}`;
+        
         setShowBugToast(true);
         setBugSubject('');
         setBugDesc('');
-        setTimeout(() => setShowBugToast(false), 3000);
+        setTimeout(() => setShowBugToast(false), 4000);
     };
 
     const handleContact = () => {

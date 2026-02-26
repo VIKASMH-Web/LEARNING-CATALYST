@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { User, Award, Edit2, Save, X, Mail, Calendar, MapPin, Briefcase, Camera, Image, Plus, Trophy, Zap, Target, Clock, Code, BookOpen, Trash2, LogOut, Star, Linkedin, ExternalLink, ShieldCheck } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
@@ -23,6 +23,7 @@ const Profile = () => {
 
     // --- EDITABLE PROFILE STATE ---
     const [isEditing, setIsEditing] = useState(false);
+    const [showSignOutWarning, setShowSignOutWarning] = useState(false);
     const bannerInputRef = useRef(null);
     const avatarInputRef = useRef(null);
 
@@ -185,6 +186,7 @@ const Profile = () => {
     };
 
     return (
+        <>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ display: 'flex', flexDirection: 'column', gap: '2rem', paddingBottom: '3rem' }}>
 
             {/* ====== BANNER + HEADER ====== */}
@@ -341,7 +343,7 @@ const Profile = () => {
                             {isEditing ? <><Save size={16} /> Save Changes</> : <><Edit2 size={16} /> Edit Profile</>}
                         </button>
                         <button
-                            onClick={authCtx.logout}
+                            onClick={() => setShowSignOutWarning(true)}
                             className="btn"
                             style={{
                                 padding: '0.625rem 1.5rem', borderRadius: '10px',
@@ -640,6 +642,69 @@ const Profile = () => {
                 </div>
             </div>
         </motion.div>
+
+            {/* Sign Out Confirmation Modal */}
+            <AnimatePresence>
+                {showSignOutWarning && (
+                    <motion.div
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        onClick={() => setShowSignOutWarning(false)}
+                        style={{
+                            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
+                            backdropFilter: 'blur(6px)', zIndex: 1000,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        }}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+                            onClick={e => e.stopPropagation()}
+                            style={{
+                                background: 'var(--bg-elevated)', border: '1px solid var(--border-color)',
+                                borderRadius: 16, padding: '2rem', width: '90%', maxWidth: '420px', textAlign: 'center'
+                            }}
+                        >
+                            <div style={{
+                                width: 56, height: 56, borderRadius: '50%',
+                                background: 'rgba(239, 68, 68, 0.1)', display: 'flex',
+                                alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem'
+                            }}>
+                                <LogOut size={24} color="#ef4444" />
+                            </div>
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Do you want to sign out?</h3>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.5 }}>
+                                You will be logged out of your Learning Catalyst account.
+                            </p>
+                            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                                <button
+                                    onClick={() => setShowSignOutWarning(false)}
+                                    className="btn"
+                                    style={{
+                                        padding: '0.625rem 1.75rem', borderRadius: 10,
+                                        background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)',
+                                        border: '1px solid var(--border-color)', fontWeight: 600,
+                                        fontSize: '0.875rem', cursor: 'pointer'
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => { setShowSignOutWarning(false); authCtx.logout(); }}
+                                    className="btn"
+                                    style={{
+                                        padding: '0.625rem 1.75rem', borderRadius: 10,
+                                        background: '#ef4444', color: 'white',
+                                        border: '1px solid #ef4444', fontWeight: 600,
+                                        fontSize: '0.875rem', cursor: 'pointer'
+                                    }}
+                                >
+                                    Sign Out
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </>
     );
 };
 
