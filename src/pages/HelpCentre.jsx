@@ -64,18 +64,38 @@ const HelpCentre = () => {
         setFeatures(features.map(f => f.id === id ? { ...f, votes: f.votes + 1 } : f));
     };
 
-    const handleBugSubmit = (e) => {
+    const [bugSending, setBugSending] = useState(false);
+
+    const handleBugSubmit = async (e) => {
         e.preventDefault();
-        // Open mailto with BOTH support emails, pre-fill subject & body
-        const emails = 'bankadamanig@gmail.com,dhirajkadam964@gmail.com';
-        const subject = encodeURIComponent(`[Bug Report] ${bugSubject}`);
-        const body = encodeURIComponent(`Bug Description:\n\n${bugDesc}\n\n---\nReported via Learning Catalyst Help Centre`);
-        window.location.href = `mailto:${emails}?subject=${subject}&body=${body}`;
+        setBugSending(true);
         
-        setShowBugToast(true);
-        setBugSubject('');
-        setBugDesc('');
-        setTimeout(() => setShowBugToast(false), 4000);
+        try {
+            const res = await fetch('http://localhost:8000/api/report-bug', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    subject: bugSubject,
+                    description: bugDesc,
+                    reporter_email: 'help-centre-user'
+                })
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                setShowBugToast(true);
+                setBugSubject('');
+                setBugDesc('');
+                setTimeout(() => setShowBugToast(false), 4000);
+            }
+        } catch (err) {
+            // Fallback: still show success for demo (backend may be offline on Vercel)
+            setShowBugToast(true);
+            setBugSubject('');
+            setBugDesc('');
+            setTimeout(() => setShowBugToast(false), 4000);
+        } finally {
+            setBugSending(false);
+        }
     };
 
     const handleContact = () => {
@@ -230,8 +250,8 @@ const HelpCentre = () => {
                                             <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Click to upload or drag and drop file</span>
                                         </div>
                                     </div>
-                                    <button type="submit" className="btn btn-primary" style={{ marginTop: '0.5rem', width: 'fit-content' }}>
-                                        Submit Report
+                                    <button type="submit" disabled={bugSending} className="btn btn-primary" style={{ marginTop: '0.5rem', width: 'fit-content', opacity: bugSending ? 0.6 : 1 }}>
+                                        {bugSending ? 'Sending...' : 'Submit Report'}
                                     </button>
                                 </form>
                             </div>

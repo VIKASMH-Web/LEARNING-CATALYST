@@ -386,6 +386,50 @@ function initSystem() {{
     except Exception as e:
         print(f"Email Error: {e}")
         return {"status": "error", "message": "Failed to send email. Check server logs."}
+class BugReportRequest(BaseModel):
+    subject: str
+    description: str
+    reporter_email: str = "anonymous"
+
+@app.post("/api/report-bug")
+async def report_bug(request: BugReportRequest):
+    SUPPORT_EMAILS = ["bankadamanig@gmail.com", "dhirajkadam964@gmail.com"]
+    
+    subject = f"[Bug Report] {request.subject}"
+    body_content = f"""
+    <h2>🐛 Bug Report - Learning Catalyst</h2>
+    <hr>
+    <p><strong>Subject:</strong> {request.subject}</p>
+    <p><strong>Reported by:</strong> {request.reporter_email}</p>
+    <br>
+    <h3>Description</h3>
+    <p>{request.description}</p>
+    <br>
+    <p style="font-size:0.8em;color:#888;">Sent automatically from Learning Catalyst Help Centre.</p>
+    """
+
+    try:
+        msg = EmailMessage()
+        msg['Subject'] = subject
+        msg['From'] = GMAIL_USER
+        msg['To'] = ", ".join(SUPPORT_EMAILS)
+        msg.set_content(f"Bug Report: {request.subject}\n\n{request.description}\n\nReported by: {request.reporter_email}")
+        msg.add_alternative(body_content, subtype='html')
+
+        if "xxxx" in GMAIL_PASS:
+            print(f"[MOCK BUG REPORT] To: {SUPPORT_EMAILS} | Subject: {subject}")
+            return {"status": "success", "message": "Bug report submitted successfully."}
+
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+            smtp.login(GMAIL_USER, GMAIL_PASS)
+            smtp.send_message(msg)
+        
+        return {"status": "success", "message": "Bug report submitted successfully."}
+
+    except Exception as e:
+        print(f"Bug Report Email Error: {e}")
+        return {"status": "error", "message": "Failed to send bug report. Please try again."}
 
 if __name__ == "__main__":
     import uvicorn
