@@ -30,8 +30,8 @@ const LearningVelocityGraph = () => {
     return (
         <section style={{ 
             background: 'linear-gradient(145deg, #0f172a, #1e293b)', 
-            borderRadius: '32px', 
-            padding: '2.5rem', 
+            borderRadius: '24px', 
+            padding: '1.75rem', 
             border: '1px solid rgba(255,255,255,0.1)',
             boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
             color: '#FFFFFF',
@@ -64,11 +64,11 @@ const LearningVelocityGraph = () => {
                                 MAXIMUM THROUGHPUT
                             </motion.div>
                         </div>
-                        <h2 style={{ fontSize: '2rem', fontWeight: 950, letterSpacing: '-0.05em', margin: 0, textTransform: 'uppercase', lineHeight: 1 }}>
+                        <h2 style={{ fontSize: '1.5rem', fontWeight: 950, letterSpacing: '-0.05em', margin: 0, textTransform: 'uppercase', lineHeight: 1 }}>
                             THE <span style={{ color: '#818cf8' }}>LEARNING VELOCITY</span> <br />
                             MUST BE HIGH
                         </h2>
-                        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', marginTop: '0.75rem', fontWeight: 600, maxWidth: '400px' }}>
+                        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', marginTop: '0.5rem', fontWeight: 600, maxWidth: '400px' }}>
                             Hardware-accelerated progress tracking. Your current orbital trajectory is 12% above baseline.
                         </p>
                     </div>
@@ -98,7 +98,7 @@ const LearningVelocityGraph = () => {
                                 key={lvsScore}
                                 initial={{ scale: 1.2, color: '#818cf8' }}
                                 animate={{ scale: 1, color: '#FFFFFF' }}
-                                style={{ fontSize: '4.5rem', fontWeight: 950, lineHeight: 1 }}>
+                                style={{ fontSize: '3.2rem', fontWeight: 950, lineHeight: 1 }}>
                                 {lvsScore}
                             </motion.span>
                             <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#10b981', display: 'flex', alignItems: 'center' }}>
@@ -111,7 +111,7 @@ const LearningVelocityGraph = () => {
                     </div>
                 </div>
 
-                <div style={{ height: 320, width: '100%', position: 'relative', marginTop: '1rem' }}>
+                <div style={{ height: 240, width: '100%', position: 'relative', marginTop: '0.5rem' }}>
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={data}>
                             <defs>
@@ -175,7 +175,7 @@ const LearningVelocityGraph = () => {
                     </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', marginTop: '2.5rem', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '2rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.25rem' }}>
                     {[
                         { label: 'Neural Adaptation', val: '+4.2x', sub: 'Baseline comparison' },
                         { label: 'Attention Density', val: 'Maximum', sub: 'Distraction-free mode' },
