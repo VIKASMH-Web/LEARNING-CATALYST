@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
-  Layout, Code, User, Mic, Search, GraduationCap, Sparkles, LifeBuoy, Globe
+  Layout, Code, User, Mic, Search, GraduationCap, Sparkles, LifeBuoy, Globe, Clock, Compass, ShieldCheck, Zap
 } from 'lucide-react';
 import { requestNotificationPermission } from '../../utils/notifications';
 import { useTranslation } from '../../utils/i18n';
 import './Sidebar.css';
-
 
 const Sidebar = () => {
   const { t, lang, changeLanguage, languages } = useTranslation();
@@ -15,90 +14,89 @@ const Sidebar = () => {
   }, []);
 
   const menuItems = [
-    { path: '/', name: t('dashboard'), icon: Layout },
-    { path: '/learning-hub', name: t('learning_hub'), icon: Search },
-    { path: '/academic-planner', name: t('academic_planner'), icon: GraduationCap },
-    { path: '/presentation-booster', name: t('presentation_booster'), icon: Sparkles },
-    { path: '/mock-interview', name: t('mock_interview'), icon: Mic },
-    { path: '/code-engine', name: t('code_engine'), icon: Code },
+    { path: '/', name: 'Analytics', icon: Layout },
+    { path: '/practice', name: 'Intelligence Hub', icon: Zap },
+    { path: '/reviews', name: 'Mastery Board', icon: ShieldCheck },
+    { path: '/roadmap', name: 'Growth Path', icon: Compass },
+    { path: '/career-simulator', name: 'Simulation', icon: Sparkles },
     { path: '/profile', name: t('profile'), icon: User },
     { path: '/help', name: t('help_centre'), icon: LifeBuoy },
   ];
 
   return (
-    <nav className="sidebar">
-      <div style={{ padding: '1.25rem 1rem', display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <nav className="sidebar" style={{ background: '#FFFFFF', borderRight: '1px solid #F1F5F9', width: '260px' }}>
+      <div style={{ padding: '2.5rem 1.5rem', display: 'flex', flexDirection: 'column', height: '100%' }}>
 
-        {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '2.5rem', paddingLeft: '0.5rem' }}>
+        {/* Brand Identity */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '3.5rem', paddingLeft: '0.25rem' }}>
           <div style={{
-            width: 28, height: 28, borderRadius: 7,
-            background: 'var(--accent-color)',
+            width: 36, height: 36, borderRadius: '12px',
+            background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'white', fontWeight: 700, fontSize: '0.75rem', flexShrink: 0,
-            letterSpacing: '-0.02em'
+            color: 'white', fontWeight: 900, fontSize: '0.9rem', flexShrink: 0,
+            boxShadow: '0 4px 12px rgba(99, 102, 241, 0.2)'
           }}>
             LC
           </div>
-          <span style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
+          <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#1E293B', letterSpacing: '-0.04em' }}>
             Catalyst
           </span>
         </div>
 
-        {/* Section Label */}
-        <div className="label" style={{ paddingLeft: '0.75rem', marginBottom: '0.5rem' }}>
+        {/* Main Navigation */}
+        <div className="label" style={{ paddingLeft: '0.5rem', marginBottom: '1rem', color: '#94A3B8', fontSize: '0.7rem', fontWeight: 800 }}>
           {t('navigation')}
         </div>
 
-        {/* Navigation */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', marginBottom: '1.5rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '2rem' }}>
           {menuItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               style={({ isActive }) => ({
-                display: 'flex', alignItems: 'center', gap: '10px',
-                padding: '0.4375rem 0.75rem', borderRadius: 6,
+                display: 'flex', alignItems: 'center', gap: '12px',
+                padding: '12px 14px', borderRadius: '16px',
                 textDecoration: 'none',
-                color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-                background: isActive ? 'rgba(255,255,255,0.05)' : 'transparent',
-                fontWeight: isActive ? 500 : 400, fontSize: '0.8125rem',
-                transition: 'all 0.1s ease',
+                color: isActive ? '#4F46E5' : '#64748B',
+                background: isActive ? '#F5F3FF' : 'transparent',
+                fontWeight: isActive ? 800 : 500, fontSize: '0.9rem',
+                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
               })}
             >
-              {({ isActive }) => (
-                <>
-                  <item.icon size={15} color={isActive ? "var(--text-primary)" : "var(--text-tertiary)"} strokeWidth={isActive ? 2 : 1.5} />
-                  <span>{item.name}</span>
-                </>
-              )}
+              <item.icon size={18} strokeWidth={2.5} />
+              <span>{item.name}</span>
             </NavLink>
           ))}
         </div>
 
-        {/* Language Selector */}
-        <div style={{ marginTop: 'auto', padding: '1rem 0.75rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-          <div className="label" style={{ marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.7rem' }}>
-             <Globe size={12} /> Language
+        {/* Global Localisation */}
+        <div style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid #F1F5F9' }}>
+          <div className="label" style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#94A3B8' }}>
+             <Globe size={14} /> Global Access
           </div>
-          <select 
-            value={lang} 
-            onChange={(e) => changeLanguage(e.target.value)}
-            style={{
-              width: '100%', padding: '8px', background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.1)', borderRadius: 6,
-              color: 'var(--text-secondary)', fontSize: '0.75rem', outline: 'none',
-              cursor: 'pointer'
-            }}
-          >
-            <option value="en">English</option>
-            <option value="hi">हिन्दी</option>
-            <option value="kn">ಕನ್ನಡ</option>
-            <option value="ta">தமிழ்</option>
-            <option value="te">తెలుగు</option>
-            <option value="mr">मराठी</option>
-            <option value="ml">മലയാളം</option>
-          </select>
+          <div style={{ position: 'relative' }}>
+            <select 
+              value={lang} 
+              onChange={(e) => changeLanguage(e.target.value)}
+              style={{
+                width: '100%', padding: '10px 14px', background: '#F8FAFC',
+                border: '1px solid #E2E8F0', borderRadius: '12px',
+                color: '#475569', fontSize: '0.85rem', fontWeight: 600, outline: 'none',
+                appearance: 'none', cursor: 'pointer'
+              }}
+            >
+              <option value="en">English (US)</option>
+              <option value="hi">हिन्दी</option>
+              <option value="kn">ಕನ್ನಡ</option>
+              <option value="ta">தமிழ்</option>
+              <option value="te">తెలుగు</option>
+              <option value="mr">मराठी</option>
+              <option value="ml">മലയാളം</option>
+            </select>
+            <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: '#94A3B8' }}>
+              <ChevronRight size={14} style={{ transform: 'rotate(90deg)' }} />
+            </div>
+          </div>
         </div>
 
       </div>

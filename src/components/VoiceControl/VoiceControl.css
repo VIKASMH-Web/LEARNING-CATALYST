@@ -1,203 +1,108 @@
-/* VoiceControl.css */
+/* VoiceControl.css (Premium Light Theme) */
 
 .voice-control-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 6px 10px;
-    border-radius: 99px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-    width: fit-content;
+    position: relative;
+    z-index: 1000;
 }
 
-.voice-control-container.active {
-    background: rgba(130, 87, 229, 0.12);
-    border-color: rgba(130, 87, 229, 0.35);
-    box-shadow: 
-        0 0 20px rgba(130, 87, 229, 0.15),
-        0 0 60px rgba(130, 87, 229, 0.05);
-}
-
-/* ── Toggle Button ── */
 .voice-toggle-btn {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
+    gap: 12px;
+    padding: 8px 16px;
+    border-radius: 16px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
     cursor: pointer;
-    padding: 6px 14px;
-    border-radius: 20px;
-    transition: all 0.25s ease;
-    font-size: 0.82rem;
-    font-weight: 600;
-    font-family: 'Inter', sans-serif;
-    letter-spacing: 0.01em;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
 
 .voice-toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-primary);
+    border-color: #CBD5E1;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+
+.mic-icon-wrapper {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F8FAFC;
+    color: #64748B;
+    transition: all 0.2s;
 }
 
 .voice-toggle-btn.listening {
-    color: var(--text-primary);
-    background: rgba(130, 87, 229, 0.1);
+    border-color: #4F46E5;
+    background: #FFFFFF;
+}
+
+.voice-toggle-btn.listening .mic-icon-wrapper {
+    background: #4F46E5;
+    color: #FFFFFF;
+    box-shadow: 0 0 16px rgba(79, 70, 229, 0.4);
 }
 
 .voice-btn-label {
-    display: none;
-}
-
-@media (min-width: 768px) {
-    .voice-btn-label {
-        display: inline-block;
-    }
-}
-
-/* ── Shortcut Badge ── */
-.voice-shortcut-badge {
-    display: none;
-    font-size: 0.65rem;
+    font-size: 0.85rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
-    color: rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 2px 6px;
-    border-radius: 5px;
-    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    color: #334155;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-@media (min-width: 768px) {
-    .voice-shortcut-badge {
-        display: inline-block;
-    }
+.voice-shortcut-hint {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #94A3B8;
+    background: #F1F5F9;
+    padding: 2px 6px;
+    border-radius: 6px;
+    text-transform: uppercase;
 }
 
-/* ── Pulse Animation (Mic Icon) ── */
 .pulse-anim {
-    animation: micPulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    color: #a78bfa;
-    filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.5));
+    animation: micPulse 1.5s infinite;
 }
 
 @keyframes micPulse {
-    0%, 100% { 
-        transform: scale(1); 
-        opacity: 1;
-        filter: drop-shadow(0 0 4px rgba(139, 92, 246, 0.4));
-    }
-    50% { 
-        transform: scale(1.15); 
-        opacity: 0.85;
-        filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.7));
-    }
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
-/* ── Toast Notification ── */
+/* ── Toast ── */
 .voice-toast {
     position: fixed;
-    bottom: 2rem;
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 10000;
-    animation: toastSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-               toastFadeOut 0.4s ease 2.1s forwards;
+    z-index: 99999;
     pointer-events: none;
 }
 
 .voice-toast-content {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 22px;
-    border-radius: 14px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    font-family: 'Inter', sans-serif;
-    letter-spacing: 0.01em;
-    backdrop-filter: blur(20px);
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.35),
-        0 0 0 1px rgba(255, 255, 255, 0.06);
-    white-space: nowrap;
+    gap: 12px;
+    padding: 14px 24px;
+    background: #1E293B;
+    color: white;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    box-shadow: 0 20px 48px rgba(0,0,0,0.15);
 }
 
-/* Toast variants */
 .voice-toast-activated .voice-toast-content {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(99, 102, 241, 0.15));
-    color: #c4b5fd;
-    border: 1px solid rgba(139, 92, 246, 0.25);
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.35),
-        0 0 40px rgba(139, 92, 246, 0.1),
-        0 0 0 1px rgba(139, 92, 246, 0.1);
-}
-
-.voice-toast-disabled .voice-toast-content {
-    background: rgba(30, 30, 35, 0.85);
-    color: rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #4F46E5;
 }
 
 .voice-toast-error .voice-toast-content {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
-    color: #fca5a5;
-    border: 1px solid rgba(239, 68, 68, 0.2);
-}
-
-@keyframes toastSlideUp {
-    from {
-        opacity: 0;
-        transform: translateX(-50%) translateY(20px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0) scale(1);
-    }
-}
-
-@keyframes toastFadeOut {
-    from {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0) scale(1);
-    }
-    to {
-        opacity: 0;
-        transform: translateX(-50%) translateY(-8px) scale(0.97);
-    }
-}
-
-/* ── Listening Ring Glow (on container when active) ── */
-.voice-control-container.active::before {
-    content: '';
-    position: absolute;
-    inset: -3px;
-    border-radius: 99px;
-    background: conic-gradient(
-        from 0deg,
-        transparent,
-        rgba(139, 92, 246, 0.3),
-        transparent,
-        rgba(99, 102, 241, 0.2),
-        transparent
-    );
-    z-index: -1;
-    animation: ringRotate 3s linear infinite;
-    opacity: 0.6;
-}
-
-@keyframes ringRotate {
-    to { transform: rotate(360deg); }
-}
-
-.voice-control-container {
-    position: relative;
+    background: #EF4444;
 }

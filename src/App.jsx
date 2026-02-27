@@ -11,7 +11,7 @@ import ProgressProvider from './context/ProgressContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { GameProvider } from './context/GameContext';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
-import SkillTreePage from './pages/SkillTreePage';
+
 
 // Auth Gate: shows login if not authenticated
 const AuthGate = ({ children }) => {
@@ -20,11 +20,14 @@ const AuthGate = ({ children }) => {
     if (isLoading) {
         return (
             <div style={{
-                minHeight: '100vh', background: '#09090b',
+                minHeight: '100vh', background: '#FFFFFF',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#71717a', fontFamily: "'Inter', sans-serif"
+                color: '#94A3B8', fontFamily: "'Inter', sans-serif"
             }}>
-                Loading...
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                    <div className="spin" style={{ width: '40px', height: '40px', border: '3px solid #F1F5F9', borderTopColor: '#4F46E5', borderRadius: '50%' }} />
+                    <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>Initializing Analytics...</span>
+                </div>
             </div>
         );
     }
@@ -51,16 +54,15 @@ function App() {
                             <Routes>
                                 <Route path="/" element={<MainLayout />}>
                                     <Route index element={<Overview />} />
-                                    <Route path="learning-hub" element={<LearningHub />} />
+                                    <Route path="practice" element={<LearningHub />} />
+                                    <Route path="reviews" element={<ProjectReviewer />} />
+                                    <Route path="roadmap" element={<AcademicPlanner />} />
+                                    <Route path="career-simulator" element={<MockInterview />} />
                                     <Route path="code-engine" element={
                                         <ErrorBoundary>
                                             <CodeEnginePage />
                                         </ErrorBoundary>
                                     } />
-                                    <Route path="mock-interview" element={<MockInterview />} />
-                                    <Route path="skill-tree" element={<SkillTreePage />} />
-                                    <Route path="presentation-booster" element={<ProjectReviewer />} />
-                                    <Route path="academic-planner" element={<AcademicPlanner />} />
                                     <Route path="profile" element={<Profile />} />
                                     <Route path="help" element={<HelpCentre />} />
                                     <Route path="*" element={<Navigate to="/" replace />} />

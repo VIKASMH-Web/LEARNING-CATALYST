@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mic, MicOff, Command, Keyboard } from 'lucide-react';
+import { Mic, MicOff, Command, Keyboard, Zap, ChevronRight, Search, Layout, Compass, ShieldCheck, Sparkles } from 'lucide-react';
 import './VoiceControl.css';
 
 const VoiceControl = () => {
@@ -15,32 +15,28 @@ const VoiceControl = () => {
   const toastTimerRef = useRef(null);
   const navigate = useNavigate();
 
-  // Toast helper
   const showToast = useCallback((message, type = 'info') => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     setToast({ message, type });
     toastTimerRef.current = setTimeout(() => setToast(null), 2500);
   }, []);
 
-  // Toggle function (used by both button click and keyboard shortcut)
   const toggleListening = useCallback(() => {
     setIsListening(prev => {
       const newState = !prev;
       if (newState) {
-        showToast('🎙 Voice Mode Activated', 'activated');
+        showToast('🎙 Intelligence Engine Active', 'activated');
       } else {
-        showToast('Voice Mode Disabled', 'disabled');
+        showToast('Voice Interface Disabled', 'disabled');
       }
       return newState;
     });
   }, [showToast]);
 
-  // Sync ref with state
   useEffect(() => {
     isListeningRef.current = isListening;
   }, [isListening]);
 
-  // Listen for global toggleVoiceMode event (from Cmd+K / Ctrl+K)
   useEffect(() => {
     const handler = () => toggleListening();
     window.addEventListener('toggleVoiceMode', handler);
@@ -48,30 +44,21 @@ const VoiceControl = () => {
   }, [toggleListening]);
 
   useEffect(() => {
-    // Browser Support Check
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
       setIsSupported(false);
       return;
     }
-
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
-    
-    // IMPORTANT: Continuous FALSE for single command mode
-    // "Speak once -> Navigate -> Disable voice mode"
     recognition.continuous = false; 
     recognition.interimResults = true;
     recognition.lang = 'en-US';
 
-    recognition.onstart = () => {
-      setStatusMessage('Listening...');
-    };
-
+    recognition.onstart = () => setStatusMessage('Listening...');
     recognition.onend = () => {
         if (isListeningRef.current) {
             setIsListening(false);
             setStatusMessage('');
-            showToast('Voice Mode Disabled', 'disabled');
         }
     };
 
@@ -87,44 +74,22 @@ const VoiceControl = () => {
       }
     };
     
-    recognition.onerror = (event) => {
-       console.error("Speech recognition error", event.error);
-       if(event.error === 'not-allowed') {
-           setIsListening(false);
-           setStatusMessage('Microphone access denied');
-           showToast('❌ Microphone access denied', 'error');
-       }
-       if (event.error === 'no-speech') {
-           setIsListening(false);
-           setStatusMessage('No speech detected');
-           showToast('No speech detected', 'disabled');
-       }
+    recognition.onerror = (e) => {
+       setIsListening(false);
+       showToast(e.error === 'not-allowed' ? '❌ Microphone permission denied' : 'No speech detected', 'error');
     };
-
     recognitionRef.current = recognition;
-
-    return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-    };
+    return () => { if (recognitionRef.current) recognitionRef.current.stop(); };
   }, []); 
 
   useEffect(() => {
-      if (!recognitionRef.current) return;
-      
-      if (isListening) {
-          try {
-              recognitionRef.current.start();
-          } catch (e) {
-              // already started
-          }
-      } else {
-          try {
-            recognitionRef.current.stop();
-          } catch(e) {}
-          setTranscript('');
-      }
+    if (!recognitionRef.current) return;
+    if (isListening) {
+      try { recognitionRef.current.start(); } catch (e) {}
+    } else {
+      try { recognitionRef.current.stop(); } catch(e) {}
+      setTranscript('');
+    }
   }, [isListening]);
 
   const speak = (text) => {
@@ -137,42 +102,32 @@ const VoiceControl = () => {
 
   const handleCommand = (cmd) => {
     const lowerCmd = cmd.toLowerCase().trim();
-    console.log('Voice Command:', lowerCmd);
-    
     const commandMap = {
+        'analytics': '/',
         'dashboard': '/',
         'home': '/',
-        'roadmap': '/roadmaps',
-        'road map': '/roadmaps',
-        'resources': '/resources',
-        'learning hub': '/learning-hub',
-        'learning': '/learning-hub',
-        'hub': '/learning-hub',
-        'skill tree': '/skill-tree',
-        'skill': '/skill-tree',
+        'practice': '/practice',
+        'intelligence': '/practice',
+        'reviews': '/reviews',
+        'mastery': '/reviews',
+        'board': '/reviews',
+        'roadmap': '/roadmap',
+        'growth': '/roadmap',
+        'path': '/roadmap',
+        'simulation': '/career-simulator',
+        'interview': '/career-simulator',
+        'career': '/career-simulator',
         'code': '/code-engine',
         'engine': '/code-engine',
-        'focus': '/focus',
         'profile': '/profile',
         'account': '/profile',
-        'career': '/career-planner',
-        'academic planner': '/academic-planner',
-        'planner': '/academic-planner',
-        'presentation booster': '/presentation-booster',
-        'booster': '/presentation-booster',
-        'presentation': '/presentation-booster',
-        'interview': '/mock-interview',
-        'mock': '/mock-interview',
         'help': '/help',
-        'support': '/help',
-        'centre': '/help'
+        'support': '/help'
     };
 
     let targetPath = null;
     let targetLabel = '';
-
     const keys = Object.keys(commandMap).sort((a, b) => b.length - a.length);
-    
     for (const key of keys) {
         if (lowerCmd.includes(key)) {
             targetPath = commandMap[key];
@@ -182,75 +137,61 @@ const VoiceControl = () => {
     }
 
     if (targetPath) {
-        // 1. Stop recognition immediately
-        if (recognitionRef.current) recognitionRef.current.stop();
-        
-        // 2. Set state to false so it doesn't restart
-        isListeningRef.current = false;
         setIsListening(false);
-
-        setStatusMessage(`Open ${targetLabel}`);
-        showToast(`✅ Navigating to ${targetLabel}`, 'activated');
-        
-        // 3. One-time feedback
+        showToast(`✅ Initializing ${targetLabel}`, 'activated');
         speak(`Opening ${targetLabel}`);
-        
         setTimeout(() => {
             navigate(targetPath);
             setTranscript('');
             setStatusMessage('');
         }, 500);
-        
     } else {
          setIsListening(false); 
-         setStatusMessage("Command not recognized");
-         showToast("Command not recognized", 'error');
-         speak("Sorry, I didn't catch that.");
+         showToast("Command unrecognized", 'error');
+         speak("Could you repeat that?");
     }
   };
 
   if (!isSupported) return null;
-
   const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
   return (
     <>
-      {/* Voice Control Button */}
       <div className={`voice-control-container ${isListening ? 'active' : ''}`}>
         <button 
           className={`voice-toggle-btn ${isListening ? 'listening' : ''}`}
           onClick={toggleListening}
-          title={isListening ? "Stop Listening (⌘K)" : "Start Voice Navigation (⌘K)"}
-          style={{ width: isListening ? '200px' : '160px' }}
+          style={{ width: isListening ? '220px' : 'auto' }}
         >
-          {isListening ? (
-            <Mic size={18} className="pulse-anim" />
-          ) : (
-            <MicOff size={18} />
-          )}
+          <div className="mic-icon-wrapper">
+            {isListening ? <Mic size={16} className="pulse-anim" /> : <Mic size={16} />}
+          </div>
           <span className="voice-btn-label">
-            {isListening ? (transcript || 'Listening...') : 'Voice Mode'}
+            {isListening ? (transcript || 'Listening...') : 'Voice Interface'}
           </span>
-          {/* Keyboard shortcut badge */}
           {!isListening && (
-            <span className="voice-shortcut-badge">
+            <div className="voice-shortcut-hint">
               {isMac ? '⌘' : 'Ctrl'} K
-            </span>
+            </div>
           )}
         </button>
       </div>
 
-      {/* Toast Notification */}
-      {toast && (
-        <div className={`voice-toast voice-toast-${toast.type}`}>
-          <div className="voice-toast-content">
-            {toast.type === 'activated' && <Mic size={16} className="pulse-anim" />}
-            {toast.type === 'disabled' && <MicOff size={16} />}
-            {toast.type === 'error' && <MicOff size={16} />}
-            <span>{toast.message}</span>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {toast && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className={`voice-toast voice-toast-${toast.type}`}
+          >
+            <div className="voice-toast-content">
+              {toast.type === 'activated' ? <Zap size={16} fill="white" /> : <ShieldCheck size={16} />}
+              <span>{toast.message}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
