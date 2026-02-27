@@ -16,6 +16,7 @@ const Sidebar = () => {
   const menuItems = [
     { path: '/', name: 'Analytics', icon: Layout },
     { path: '/practice', name: 'Learning Hub', icon: Zap },
+    { path: '/code-engine', name: 'Code Engine', icon: Code },
     { path: '/reviews', name: 'Project Reviewer', icon: ShieldCheck },
     { path: '/roadmap', name: 'Academic Planner', icon: Compass },
     { path: '/career-simulator', name: 'AI Mock Interview', icon: Sparkles },
