@@ -12,11 +12,11 @@ import {
 } from 'lucide-react';
 
 const domains = [
-    { key: 'backend_developer', label: 'Backend Development', icon: '⚙️', color: '#6366f1', image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80' },
-    { key: 'frontend_developer', label: 'Frontend Development', icon: '🎨', color: '#10b981', image: 'https://images.unsplash.com/photo-1547658719-da2b51159128?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80' },
-    { key: 'data_scientist', label: 'Data Science', icon: '📊', color: '#f59e0b', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80' },
-    { key: 'product_manager', label: 'Product Design', icon: '📱', color: '#a78bfa', image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80' },
-    { key: 'general', label: 'Behavioral', icon: '💬', color: '#94a3b8', image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80' },
+    { key: 'backend_developer', label: 'Backend Development', icon: '⚙️', color: '#6366f1', image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80' },
+    { key: 'frontend_developer', label: 'Frontend Development', icon: '🎨', color: '#10b981', image: 'https://images.unsplash.com/photo-1593720213428-28a5b9e94613?auto=format&fit=crop&w=600&q=80' },
+    { key: 'data_scientist', label: 'Data Science', icon: '📊', color: '#f59e0b', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80' },
+    { key: 'product_manager', label: 'Product Design', icon: '📱', color: '#a78bfa', image: 'https://images.unsplash.com/photo-1586717791821-3f44a563fc4c?auto=format&fit=crop&w=600&q=80' },
+    { key: 'general', label: 'Behavioral', icon: '💬', color: '#94a3b8', image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80' },
 ];
 
 const MockInterview = () => {
@@ -131,7 +131,7 @@ const MockInterview = () => {
                             </div>
                         </div>
                         <h1 style={{ fontSize: '3.5rem', fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.04em', margin: 0, lineHeight: 1.1 }}>
-                            Intelligence-Led <br/>Mock Interviews
+                            AI Mock <br/>Interview
                         </h1>
                         <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', marginTop: '2rem', lineHeight: 1.6, maxWidth: 600 }}>
                             Harness real-time behavioral diagnostics. We analyze your focus, micro-expressions, and linguistic clarity to perfect your performance.

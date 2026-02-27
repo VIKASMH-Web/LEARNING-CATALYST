@@ -91,7 +91,7 @@ const Overview = () => {
                         <Link to="/practice" style={{ padding: '14px 28px', background: 'var(--text-primary)', color: '#FFFFFF', borderRadius: '18px', fontWeight: 800, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
                             Resume Practice <ArrowRight size={18} />
                         </Link>
-                        <Link to="/academic-planner" style={{ padding: '14px 28px', background: '#FFFFFF', color: 'var(--text-primary)', borderRadius: '18px', fontWeight: 800, textDecoration: 'none', border: '1px solid var(--border-color)' }}>
+                        <Link to="/roadmap" style={{ padding: '14px 28px', background: '#FFFFFF', color: 'var(--text-primary)', borderRadius: '18px', fontWeight: 800, textDecoration: 'none', border: '1px solid var(--border-color)' }}>
                             View Schedule
                         </Link>
                     </div>
@@ -115,7 +115,7 @@ const Overview = () => {
                     { label: 'Total Experience', val: xp.toLocaleString(), icon: <Star size={20} color="#f59e0b" />, sub: 'XP Points' },
                     { label: 'Cognitive Score', val: '862', icon: <Brain size={20} color="var(--accent-color)" />, sub: '+12% this week' },
                     { label: 'Efficiency', val: '94%', icon: <Activity size={20} color="#10b981" />, sub: 'Steady growth' },
-                    { label: 'World Rank', val: '#1,242', icon: <Trophy size={20} color="#6366f1" />, sub: 'Top 2%' },
+                    { label: 'Rank', val: '#84', icon: <Trophy size={20} color="#6366f1" />, sub: 'Top 0.1%' },
                 ].map((m, i) => (
                     <div key={i} style={{ background: '#FFFFFF', padding: '1.75rem', borderRadius: '24px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -129,6 +129,36 @@ const Overview = () => {
             </div>
 
             {/* 3. Mastery & Insights */}
+            {/* 3. Velocity Chart (Middle) */}
+            <section style={{ background: '#FFFFFF', borderRadius: '32px', padding: '2.5rem', border: '1px solid var(--border-color)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem' }}>
+                    <div>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.5rem' }}>Learning Velocity</h3>
+                        <p style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem', fontWeight: 600 }}>Active development hours over the last 7 days</p>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text-primary)' }}>18.4h</div>
+                        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#10b981' }}>+2.1h vs last week</div>
+                    </div>
+                </div>
+                <div style={{ height: 300, width: '100%' }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={activityData}>
+                            <defs>
+                                <linearGradient id="velocityGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="var(--accent-color)" stopOpacity={0.15}/>
+                                    <stop offset="95%" stopColor="var(--accent-color)" stopOpacity={0}/>
+                                </linearGradient>
+                            </defs>
+                            <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: 'var(--text-tertiary)', fontWeight: 700 }} dy={15} />
+                            <Tooltip contentStyle={{ borderRadius: 16, border: 'none', boxShadow: '0 12px 32px rgba(0,0,0,0.1)' }} />
+                            <Area type="monotone" dataKey="hours" stroke="var(--accent-color)" strokeWidth={4} fill="url(#velocityGrad)" />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </div>
+            </section>
+
+            {/* 4. Mastery & Insights */}
             <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '2.5rem' }}>
                 <div style={{ background: '#FFFFFF', borderRadius: '32px', padding: '2.5rem', border: '1px solid var(--border-color)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
@@ -164,35 +194,6 @@ const Overview = () => {
                     </div>
                 </div>
             </div>
-
-            {/* 4. Velocity Chart */}
-            <section style={{ background: '#FFFFFF', borderRadius: '32px', padding: '2.5rem', border: '1px solid var(--border-color)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem' }}>
-                    <div>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.5rem' }}>Learning Velocity</h3>
-                        <p style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem', fontWeight: 600 }}>Active development hours over the last 7 days</p>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text-primary)' }}>18.4h</div>
-                        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#10b981' }}>+2.1h vs last week</div>
-                    </div>
-                </div>
-                <div style={{ height: 300, width: '100%' }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={activityData}>
-                            <defs>
-                                <linearGradient id="velocityGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="var(--accent-color)" stopOpacity={0.15}/>
-                                    <stop offset="95%" stopColor="var(--accent-color)" stopOpacity={0}/>
-                                </linearGradient>
-                            </defs>
-                            <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: 'var(--text-tertiary)', fontWeight: 700 }} dy={15} />
-                            <Tooltip contentStyle={{ borderRadius: 16, border: 'none', boxShadow: '0 12px 32px rgba(0,0,0,0.1)' }} />
-                            <Area type="monotone" dataKey="hours" stroke="var(--accent-color)" strokeWidth={4} fill="url(#velocityGrad)" />
-                        </AreaChart>
-                    </ResponsiveContainer>
-                </div>
-            </section>
         </div>
     );
 };

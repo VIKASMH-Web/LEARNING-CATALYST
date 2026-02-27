@@ -1,233 +1,339 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { 
   Search, BookOpen, ExternalLink, ChevronRight, Sparkles, 
-  Clock, CheckCircle, Wrench, FileText, Code, Play,
-  TrendingUp, Star, ArrowRight, Zap, Globe, X,
-  GraduationCap, Layers, Target, Upload, MessageSquare, AlertCircle,
-  Lightbulb, Brain, Terminal, ShieldCheck
+  CheckCircle, Globe, X, GraduationCap, Target, 
+  MessageSquare, Lightbulb, Brain, Zap, ArrowRight,
+  TrendingUp, BarChart2, Book, Code, ShieldCheck, Cpu
 } from 'lucide-react';
-import { useProgress } from '../context/ProgressContext';
 import { useTranslation } from '../utils/i18n';
 
 const LearningHub = () => {
   const { t } = useTranslation();
-  const [sessionActive, setSessionActive] = useState(false);
-  const [practiceQuery, setPracticeQuery] = useState('');
-  const [solutionBlocks, setSolutionBlocks] = useState(['']);
-  const [feedback, setFeedback] = useState([]);
-  const [hints, setHints] = useState([]);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResult, setSearchResult] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
 
-  const mockHints = [
-    { title: "Inductive Step Check", content: "Assume your hypothesis holds for 'n', then rigorously prove for 'n+1'." },
-    { title: "Temporal Complexity", content: "Are there redundant sub-calls? Memoization could optimize this into O(n)." },
-    { title: "Edge Case Safety", content: "Consider null inputs or extreme bounds. How does the logic handle zero-state?" }
-  ];
-
-  const handleStartSession = () => {
-    if (!practiceQuery.trim()) return;
-    setSessionActive(true);
-    setHints(mockHints);
+  // Mock Intelligence Database
+  const learningDB = {
+    'python': {
+      name: 'Python',
+      type: 'language',
+      category: 'Technical',
+      difficulty: 'Beginner',
+      explanation: 'Python is a high-level, interpreted language known for its readability and versatility. It is a cornerstone for modern data science and automation.',
+      overview: 'Interpreted, high-level, general-purpose programming language.',
+      coreConcepts: ['Variables & Types', 'Control Flow', 'Object-Oriented Programming (OOP)', 'Standard Libraries'],
+      useCases: ['Web Development (Django/Flask)', 'AI & Machine Learning', 'Automation', 'Data Analysis'],
+      careerPaths: ['Data Scientist', 'Backend Engineer', 'AI Researcher'],
+      relatedRoadmaps: ['AI Engineer', 'Python Developer', 'Data Science'],
+      relatedTopics: ['NumPy', 'Pandas', 'Asynchronous Programming'],
+      suggestedRoadmap: 'AI Engineer',
+      suggestedNext: 'Data Manipulation with Pandas'
+    },
+    'javascript': {
+        name: 'JavaScript',
+        type: 'language',
+        category: 'Technical',
+        difficulty: 'Beginner to Advanced',
+        explanation: 'JavaScript is the engine of the modern web, enabling interactive user interfaces and high-performance server-side applications.',
+        overview: 'A high-level, just-in-time compiled language that conforms to the ECMAScript specification.',
+        coreConcepts: ['DOM Manipulation', 'Asynchronous JS (Promises & Async/Await)', 'ES6+ Syntax', 'Functional Programming'],
+        useCases: ['Frontend Development', 'Server-side with Node.js', 'Mobile Development (React Native)'],
+        careerPaths: ['Frontend Developer', 'Full Stack Engineer', 'Mobile App Developer'],
+        relatedRoadmaps: ['Full Stack Developer', 'Frontend Specialist'],
+        relatedTopics: ['React', 'TypeScript', 'Node.js'],
+        suggestedRoadmap: 'Full Stack Developer',
+        suggestedNext: 'React Core Architecture'
+    },
+    'jwt authentication': {
+      name: 'JWT Authentication',
+      type: 'concept',
+      category: 'Technical',
+      difficulty: 'Intermediate',
+      explanation: 'JSON Web Token (JWT) is an open standard that defines a compact and self-contained way for securely transmitting information between parties as a JSON object.',
+      relatedRoadmap: 'Full Stack Developer',
+      stage: 'Backend API Security',
+      overview: 'A standard for representing claims to be transferred between two parties.',
+      suggestedNext: 'OAuth 2.0 & OpenID Connect',
+      nextTopics: ['OAuth', 'Session Management', 'Hacking JWTs (Prevention)'],
+      suggestedRoadmap: 'Cybersecurity Engineer'
+    },
+    'star method': {
+      name: 'STAR Method',
+      type: 'non-technical',
+      category: 'Professional Skills',
+      difficulty: 'Beginner',
+      explanation: 'The STAR method (Situation, Task, Action, Result) is a structured manner of responding to behavioral-based interview questions.',
+      stucture: {
+        'Situation': 'Set the scene and give the necessary details of your example.',
+        'Task': 'Describe what your responsibility was in that situation.',
+        'Action': 'Explain exactly what steps you took to address it.',
+        'Result': 'Share what outcomes your actions achieved.'
+      },
+      practicalTips: [
+        'Prepare 5-7 stories that can apply to multiple questions.',
+        'Be specific but concise.',
+        'Focus on YOUR actions, not just the team.',
+        'Emphasize measurable results where possible.'
+      ],
+      whereItApplies: 'Behavioral Interviews, Performance Reviews',
+      actions: ['Practice out loud', 'Map stories to common themes (Leadership, Failure, Conflict)'],
+      relatedTopics: ['Active Listening', 'Body Language', 'Value Quantification'],
+      suggestedRoadmap: 'Career Growth Path'
+    },
+    'full stack': {
+        name: 'Full Stack Developer',
+        type: 'domain',
+        category: 'Career Path',
+        difficulty: 'Advanced (Comprehensive)',
+        explanation: 'A Full Stack Developer handles both the client-facing frontend and the server-side backend logic of an application.',
+        roadmapName: 'Full Stack Engineering 2026',
+        stageName: 'Foundations of the Web',
+        stageDescription: 'Understanding HTTP, DNS, and how browsers interpret HTML/CSS/JS.',
+        suggestedNext: 'Database Schema Design',
+        relatedTopics: ['System Design', 'Deployment Strategies', 'API Optimization'],
+        suggestedRoadmap: 'Cloud Architect'
+    }
   };
 
-  const addBlock = () => setSolutionBlocks([...solutionBlocks, '']);
-  const updateBlock = (idx, val) => {
-    const b = [...solutionBlocks]; b[idx] = val; setSolutionBlocks(b);
-  };
-
-  const handleAnalyze = () => {
-    setIsAnalyzing(true);
+  const handleSearch = () => {
+    if (!searchQuery.trim()) return;
+    setIsSearching(true);
+    
+    // Simulate thinking
     setTimeout(() => {
-      setFeedback([
-        { type: 'validation', text: "Excellent structural integrity in your recursive hypothesis." },
-        { type: 'insight', text: "Critical Logic Gap: The boundary condition in Block 2 fails for negative integers." },
-        { type: 'growth', text: "Optimization: Refactoring the internal loop to a hash-map fetch would yield O(1) time." }
-      ]);
-      setIsAnalyzing(false);
-    }, 2000);
+      const q = searchQuery.toLowerCase();
+      // Simple fuzzy match strategy
+      const match = Object.keys(learningDB).find(key => q.includes(key) || key.includes(q));
+      
+      if (match) {
+        setSearchResult(learningDB[match]);
+      } else {
+        setSearchResult({
+          name: searchQuery,
+          type: 'unknown',
+          explanation: "We couldn't find an exact match in our high-fidelity database, but our AI engine suggests exploring related roadmap clusters.",
+          relatedTopics: ['System Design Basics', 'Algorithmic Thinking', 'Modern Web Standards'],
+          suggestedRoadmap: 'General Engineering Path'
+        });
+      }
+      setIsSearching(false);
+    }, 800);
   };
-
-  if (!sessionActive) {
-    return (
-      <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }} 
-          animate={{ opacity: 1, scale: 1 }}
-          style={{ maxWidth: 800, width: '100%', textAlign: 'center' }}
-        >
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 20px', borderRadius: '30px', background: 'rgba(99, 102, 241, 0.08)', color: 'var(--accent-color)', marginBottom: '2.5rem', fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
-            <Brain size={16} /> Cognitive Workspace
-          </div>
-          
-          <h1 style={{ fontSize: '3.5rem', fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.05em', marginBottom: '1.5rem', lineHeight: 1.1 }}>
-            Master any concept <br/>with <span style={{ color: 'var(--accent-color)' }}>AI Mentorship.</span>
-          </h1>
-          
-          <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', marginBottom: '3.5rem', fontWeight: 500, lineHeight: 1.6 }}>
-            Input a complex problem or domain. Our Socratic engine will <br/>guide your thinking through structured logical blocks.
-          </p>
-
-          <div style={{ 
-            background: '#FFFFFF', border: '1px solid var(--border-color)', borderRadius: '32px', padding: '12px',
-            display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 12px 48px rgba(0,0,0,0.05)',
-            maxWidth: 650, margin: '0 auto'
-          }}>
-            <div style={{ paddingLeft: '1.5rem', color: 'var(--text-tertiary)' }}><Search size={22} /></div>
-            <input 
-              type="text" 
-              placeholder="e.g. Distributed System Scaling or SQL Joins..." 
-              value={practiceQuery}
-              onChange={(e) => setPracticeQuery(e.target.value)}
-              style={{ flex: 1, border: 'none', background: 'transparent', fontSize: '1.25rem', fontWeight: 500, outline: 'none', color: 'var(--text-primary)' }}
-              onKeyDown={(e) => e.key === 'Enter' && handleStartSession()}
-            />
-            <button 
-              onClick={handleStartSession}
-              style={{ background: 'var(--text-primary)', color: 'white', border: 'none', padding: '14px 28px', borderRadius: '22px', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 8px 16px rgba(0,0,0,0.1)', transition: 'transform 0.2s' }}
-              onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-              onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
-            >
-              Initiate Workspace
-            </button>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 420px', height: 'calc(100vh - 120px)', margin: '-2.5rem -3rem', background: '#FFFFFF' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '2rem 1.5rem' }}>
       
-      {/* ═══ LEFT: STUDENT WORKSPACE ═══ */}
-      <div style={{ overflowY: 'auto', padding: '4rem', borderRight: '1px solid var(--border-color)' }}>
-        <div style={{ maxWidth: 750, margin: '0 auto' }}>
-          <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4rem' }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--accent-color)', fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '0.75rem', letterSpacing: '1.5px' }}>
-                <Terminal size={14} /> Active Practice Session
-              </div>
-              <h1 style={{ fontSize: '2.25rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.03em' }}>{practiceQuery}</h1>
-              <p style={{ color: 'var(--text-tertiary)', marginTop: '0.75rem', fontSize: '1rem', fontWeight: 500 }}>Deconstruct the solution into atomic logical stages.</p>
-            </div>
-            
-            <button 
-              onClick={handleAnalyze} 
-              disabled={isAnalyzing}
-              style={{ 
-                padding: '12px 24px', borderRadius: '14px', background: 'var(--text-primary)', color: 'white', 
-                border: 'none', fontWeight: 800, display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
-                boxShadow: '0 8px 24px rgba(30, 41, 59, 0.1)'
-              }}
-            >
-              {isAnalyzing ? <Clock size={18} className="spin" /> : <Zap size={18} fill="currentColor" />}
-              {isAnalyzing ? 'Synthesizing...' : 'Critique Solution'}
-            </button>
-          </header>
+      {/* 1. Search Header */}
+      <section style={{ textAlign: 'center', marginBottom: '4rem', paddingTop: '2rem' }}>
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }} 
+          animate={{ opacity: 1, y: 0 }}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 20px', borderRadius: '30px', background: 'rgba(99, 102, 241, 0.08)', color: 'var(--accent-color)', marginBottom: '2.5rem', fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}
+        >
+          <Brain size={16} /> Intelligent Learning Engine
+        </motion.div>
+        
+        <h1 style={{ fontSize: '3.5rem', fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.05em', marginBottom: '1.5rem', lineHeight: 1.1 }}>
+          Search any <span style={{ color: 'var(--accent-color)' }}>concept or career.</span>
+        </h1>
+        <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', marginBottom: '3.5rem', fontWeight: 500, lineHeight: 1.6, maxWidth: 650, margin: '0 auto 3.5rem' }}>
+          Get structured, industry-aligned insights directly connected to your growth path.
+        </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            {solutionBlocks.map((block, i) => (
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key={i} style={{ position: 'relative' }}>
-                <div style={{ position: 'absolute', left: -40, top: 12, width: 24, height: 24, borderRadius: '50%', background: 'var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800, border: '1px solid var(--border-color)', color: 'var(--text-tertiary)' }}>{i + 1}</div>
-                <textarea 
-                  value={block}
-                  onChange={(e) => updateBlock(i, e.target.value)}
-                  placeholder={i === 0 ? "Identify the core problem and initial assumptions..." : "Develop the next logic branch..."}
-                  style={{ 
-                    width: '100%', minHeight: 120, padding: '1.5rem', background: '#F8FAFC', 
-                    border: '1px solid var(--border-color)', borderRadius: '24px', fontSize: '1.1rem', 
-                    color: 'var(--text-primary)', fontWeight: 500, outline: 'none', transition: 'all 0.2s', resize: 'vertical',
-                    lineHeight: 1.6
-                  }}
-                  onFocus={e => { e.target.style.background = '#FFFFFF'; e.target.style.borderColor = 'var(--accent-color)'; e.target.style.boxShadow = '0 8px 24px rgba(99,102,241,0.04)'; }}
-                  onBlur={e => { e.target.style.background = '#F8FAFC'; e.target.style.borderColor = 'var(--border-color)'; e.target.style.boxShadow = 'none'; }}
-                />
-              </motion.div>
-            ))}
-            
-            <button 
-              onClick={addBlock}
-              style={{ padding: '16px', borderRadius: '20px', border: '2px dashed var(--border-color)', background: 'transparent', color: 'var(--text-tertiary)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.2s' }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--text-tertiary)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.color = 'var(--text-tertiary)'; }}
-            >
-              + Extend Logical Branch
-            </button>
-
-            <div style={{ marginTop: '3rem', padding: '2.5rem', background: '#F8FAFC', borderRadius: '32px', border: '1px solid var(--border-color)', textAlign: 'center' }}>
-              <div style={{ width: 48, height: 48, background: '#FFFFFF', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', border: '1px solid var(--border-color)' }}>
-                <Upload size={20} color="var(--text-tertiary)" />
-              </div>
-              <p style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Analyze Handwritten Work?</p>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', marginBottom: '1.5rem', fontWeight: 500 }}>Upload a photo and the AI will extract your logic for critique.</p>
-              <button style={{ padding: '10px 24px', background: '#FFFFFF', border: '1px solid var(--border-color)', borderRadius: '12px', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer' }}>Extract from Image</button>
-            </div>
-          </div>
+        <div style={{ 
+          background: '#FFFFFF', border: '1px solid var(--border-color)', borderRadius: '32px', padding: '12px',
+          display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 12px 48px rgba(0,0,0,0.05)',
+          maxWidth: 700, margin: '0 auto'
+        }}>
+          <div style={{ paddingLeft: '1.5rem', color: 'var(--text-tertiary)' }}><Search size={22} /></div>
+          <input 
+            type="text" 
+            placeholder="Search Python, Full Stack, JWT, or STAR method..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ flex: 1, border: 'none', background: 'transparent', fontSize: '1.25rem', fontWeight: 500, outline: 'none', color: 'var(--text-primary)' }}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          />
+          <button 
+            onClick={handleSearch}
+            disabled={isSearching}
+            style={{ background: 'var(--text-primary)', color: 'white', border: 'none', padding: '14px 32px', borderRadius: '22px', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 8px 16px rgba(0,0,0,0.1)', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 10 }}
+          >
+            {isSearching ? <Zap size={18} className="spin" /> : <Sparkles size={18} />}
+            {isSearching ? 'Processing...' : 'Search Engine'}
+          </button>
         </div>
-      </div>
+      </section>
 
-      {/* ═══ RIGHT: AI MENTOR ═══ */}
-      <div style={{ background: '#F8FAFC', overflowY: 'auto', padding: '3rem' }}>
-        <header style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '3rem' }}>
-          <div style={{ width: 40, height: 40, borderRadius: '12px', background: 'var(--accent-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', boxShadow: '0 8px 16px rgba(99,102,241,0.2)' }}>
-            <Sparkles size={20} />
-          </div>
-          <div>
-            <div style={{ fontSize: '0.9rem', fontWeight: 900, color: 'var(--text-primary)' }}>AI Mentor</div>
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase' }}>Active Socratic Mode</div>
-          </div>
-        </header>
-
-        <section style={{ marginBottom: '3.5rem' }}>
-          <h3 style={{ fontSize: '0.7rem', fontWeight: 900, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '1.5rem' }}>Thinking Prompts</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {hints.map((hint, i) => (
-              <details key={i} style={{ background: '#FFFFFF', borderRadius: '20px', border: '1px solid var(--border-color)', overflow: 'hidden' }}>
-                <summary style={{ padding: '1.25rem', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 800, display: 'flex', justifyContent: 'space-between', alignItems: 'center', listStyle: 'none' }}>
-                  {hint.title}
-                  <Lightbulb size={16} color="var(--warning)" />
-                </summary>
-                <div style={{ padding: '0 1.25rem 1.25rem', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, fontWeight: 500 }}>
-                  {hint.content}
-                </div>
-              </details>
-            ))}
-          </div>
-        </section>
-
-        <AnimatePresence>
-          {feedback.length > 0 && (
-            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-              <h3 style={{ fontSize: '0.7rem', fontWeight: 900, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '1.5rem' }}>Synthesis Feedback</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                {feedback.map((item, i) => (
-                  <div key={i} style={{ 
-                    padding: '1.5rem', borderRadius: '24px', 
-                    background: item.type === 'validation' ? 'rgba(16,185,129,0.05)' : item.type === 'insight' ? 'rgba(239,68,68,0.05)' : 'rgba(99,102,241,0.05)',
-                    border: '1px solid',
-                    borderColor: item.type === 'validation' ? 'rgba(16,185,129,0.1)' : item.type === 'insight' ? 'rgba(239,68,68,0.1)' : 'rgba(99,102,241,0.1)'
-                  }}>
-                    <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                      {item.type === 'validation' && <CheckCircle size={18} color="#10B981" />}
-                      {item.type === 'insight' && <AlertCircle size={18} color="#EF4444" />}
-                      {item.type === 'growth' && <TrendingUp size={18} color="var(--accent-color)" />}
-                      <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 600, lineHeight: 1.5, color: '#1E293B' }}>{item.text}</p>
+      <AnimatePresence mode="wait">
+        {searchResult && (
+          <motion.div 
+            key={searchResult.name}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.5fr) minmax(0, 1fr)', gap: '2.5rem', marginBottom: '5rem' }}
+          >
+            {/* Left Column: Result Content */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              <div style={{ background: '#FFFFFF', borderRadius: '32px', padding: '3rem', border: '1px solid var(--border-color)', boxShadow: '0 8px 32px rgba(0,0,0,0.02)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
+                  <div>
+                    <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.04em' }}>{searchResult.name}</h2>
+                    <div style={{ display: 'flex', gap: '12px', marginTop: '1rem' }}>
+                      <span style={{ padding: '4px 12px', background: 'rgba(99,102,241,0.08)', color: 'var(--accent-color)', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase' }}>{searchResult.category || searchResult.type}</span>
+                      <span style={{ padding: '4px 12px', background: 'var(--bg-primary)', color: 'var(--text-tertiary)', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', border: '1px solid var(--border-color)' }}>{searchResult.difficulty}</span>
                     </div>
                   </div>
-                ))}
+                </div>
+
+                <p style={{ fontSize: '1.2rem', lineHeight: 1.7, color: 'var(--text-secondary)', fontWeight: 500, margin: 0 }}>
+                  {searchResult.explanation}
+                </p>
+
+                {/* Specific Language Path */}
+                {searchResult.type === 'language' && (
+                  <div style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2.5rem' }}>
+                    <div>
+                      <h4 style={{ fontSize: '0.9rem', fontWeight: 900, color: 'var(--text-primary)', textTransform: 'uppercase', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <Code size={18} color="var(--accent-color)" /> Core Concepts
+                      </h4>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {searchResult.coreConcepts.map((c, i) => (
+                          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '1rem', color: 'var(--text-secondary)' }}>
+                            <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--border-color)' }} /> {c}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <h4 style={{ fontSize: '0.9rem', fontWeight: 900, color: 'var(--text-primary)', textTransform: 'uppercase', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <Target size={18} color="var(--accent-color)" /> Use Cases
+                      </h4>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {searchResult.useCases.map((u, i) => (
+                          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '1rem', color: 'var(--text-secondary)' }}>
+                            <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--border-color)' }} /> {u}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Non-Technical Content */}
+                {searchResult.type === 'non-technical' && (
+                  <div style={{ marginTop: '3rem' }}>
+                     <h4 style={{ fontSize: '0.9rem', fontWeight: 900, color: 'var(--text-primary)', textTransform: 'uppercase', marginBottom: '1.5rem' }}>STAR Structure Analysis</h4>
+                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.25rem' }}>
+                        {Object.entries(searchResult.stucture).map(([k, v]) => (
+                          <div key={k} style={{ padding: '1.5rem', background: 'var(--bg-primary)', borderRadius: '20px', border: '1px solid var(--border-color)' }}>
+                            <div style={{ fontWeight: 900, color: 'var(--accent-color)', marginBottom: '0.5rem' }}>{k}</div>
+                            <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{v}</div>
+                          </div>
+                        ))}
+                     </div>
+                  </div>
+                )}
               </div>
 
-              <div style={{ marginTop: '2.5rem', padding: '1.5rem', background: 'var(--text-primary)', borderRadius: '24px', textAlign: 'center' }}>
-                <p style={{ color: 'white', fontSize: '0.85rem', fontWeight: 500, marginBottom: '1.25rem', opacity: 0.8 }}>Does this resolution satisfy your learning objective?</p>
-                <Link to="/reviews" style={{ background: 'white', color: 'var(--text-primary)', padding: '12px 24px', borderRadius: '14px', fontWeight: 800, textDecoration: 'none', display: 'inline-block', fontSize: '0.9rem' }}>Confirm & Archive Mastery</Link>
+              {/* Related roadmap link if exists */}
+              {(searchResult.roadmapName || searchResult.relatedRoadmap) && (
+                <div style={{ background: 'var(--text-primary)', borderRadius: '32px', padding: '2.5rem', color: '#FFFFFF', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 900, textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginBottom: '0.5rem' }}>Integrated Roadmap Context</div>
+                    <h3 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>{searchResult.roadmapName || searchResult.relatedRoadmap}</h3>
+                    {searchResult.stageName && <p style={{ margin: '0.5rem 0 0', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>Currently at: <span style={{ color: '#white', fontWeight: 800 }}>{searchResult.stageName}</span></p>}
+                  </div>
+                  <Link to="/roadmap" style={{ padding: '12px 24px', background: 'rgba(255,255,255,0.1)', color: 'white', borderRadius: '16px', textDecoration: 'none', fontWeight: 800, border: '1px solid rgba(255,255,255,0.2)' }}>View Roadmap</Link>
+                </div>
+              )}
+            </div>
+
+            {/* Right Column: Recommendations & Actions */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              <div style={{ background: '#FFFFFF', borderRadius: '32px', padding: '2.5rem', border: '1px solid var(--border-color)', boxShadow: '0 8px 32px rgba(0,0,0,0.02)' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 900, marginBottom: '2rem', textTransform: 'uppercase', color: 'var(--text-tertiary)', letterSpacing: '1px' }}>Intelligence Recommendations</h3>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  {/* Related Roadmaps */}
+                  <div>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-tertiary)', textTransform: 'uppercase', display: 'block', marginBottom: '1rem' }}>Recommended Roadmap</label>
+                    <div style={{ padding: '1.25rem', background: 'var(--bg-primary)', borderRadius: '20px', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <Compass size={20} color="var(--accent-color)" />
+                      <span style={{ fontWeight: 800, fontSize: '0.95rem' }}>{searchResult.suggestedRoadmap || 'Elite Engineering 2026'}</span>
+                    </div>
+                  </div>
+
+                  {/* Next Suggested Phase */}
+                  {searchResult.suggestedNext && (
+                    <div>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-tertiary)', textTransform: 'uppercase', display: 'block', marginBottom: '1rem' }}>Next Progression Stage</label>
+                      <div style={{ padding: '1.25rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <Zap size={20} color="#10b981" />
+                        <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#065f46' }}>{searchResult.suggestedNext}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Related Topics (The 3 topics rule) */}
+                  {(searchResult.relatedTopics || searchResult.nextTopics) && (
+                    <div>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-tertiary)', textTransform: 'uppercase', display: 'block', marginBottom: '1rem' }}>Related Knowledge Clusters</label>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {(searchResult.relatedTopics || searchResult.nextTopics || []).slice(0, 3).map((topic, i) => (
+                          <div 
+                            key={i} 
+                            onClick={() => { setSearchQuery(topic); handleSearch(); }}
+                            style={{ 
+                              padding: '12px 18px', background: '#FFFFFF', border: '1px solid var(--border-color)', borderRadius: '14px', 
+                              cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                              fontSize: '0.9rem', fontWeight: 700, transition: 'all 0.2s'
+                            }}
+                            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-color)'; e.currentTarget.style.background = 'var(--bg-primary)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.background = '#FFFFFF'; }}
+                          >
+                            {topic}
+                            <ArrowRight size={14} color="var(--text-tertiary)" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </motion.section>
-          )}
-        </AnimatePresence>
-      </div>
+
+              {/* Action for Non-Tech */}
+              {searchResult.type === 'non-technical' && searchResult.actions && (
+                <div style={{ background: '#FFFFFF', borderRadius: '32px', padding: '2.5rem', border: '1px solid var(--border-color)', boxShadow: '0 8px 32px rgba(0,0,0,0.02)' }}>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 900, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Lightbulb size={20} color="#f59e0b" /> Skill Improvement Plan
+                  </h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {searchResult.actions.map((act, i) => (
+                      <div key={i} style={{ display: 'flex', gap: 10, fontSize: '0.95rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                        <CheckCircle size={16} color="#10b981" style={{ marginTop: 2, flexShrink: 0 }} /> {act}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <style>{`
+        .spin { animation: rotate 1s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+      `}</style>
     </div>
   );
 };
+
+// Simplified Placeholder Items to mirror Sidebar imports
+const Compass = ({ size, color }) => <div style={{ width: size, height: size, border: '2px solid ' + color, borderRadius: '50%' }} />;
 
 export default LearningHub;

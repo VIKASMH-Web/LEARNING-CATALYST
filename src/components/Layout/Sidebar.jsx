@@ -15,10 +15,10 @@ const Sidebar = () => {
 
   const menuItems = [
     { path: '/', name: 'Analytics', icon: Layout },
-    { path: '/practice', name: 'Intelligence Hub', icon: Zap },
-    { path: '/reviews', name: 'Mastery Board', icon: ShieldCheck },
-    { path: '/roadmap', name: 'Growth Path', icon: Compass },
-    { path: '/career-simulator', name: 'Simulation', icon: Sparkles },
+    { path: '/practice', name: 'Learning Hub', icon: Zap },
+    { path: '/reviews', name: 'Project Reviewer', icon: ShieldCheck },
+    { path: '/roadmap', name: 'Academic Planner', icon: Compass },
+    { path: '/career-simulator', name: 'AI Mock Interview', icon: Sparkles },
     { path: '/profile', name: t('profile'), icon: User },
     { path: '/help', name: t('help_centre'), icon: LifeBuoy },
   ];
