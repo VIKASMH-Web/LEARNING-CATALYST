@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Play, Code, Loader2, AlertCircle, Hash, GitBranch, 
     TerminalSquare, Languages, BookOpen, Lightbulb, 
-    Volume2, Pause, StopCircle, Cpu, ChevronRight,
+    Volume2, Pause, StopCircle, Cpu,
     Sparkles, Brain, Code2
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
@@ -166,7 +166,6 @@ const CodeEnginePage = () => {
     };
 
     return (
-      <ErrorBoundary>
         <div style={{ padding: '0', display: 'flex', flexDirection: 'column', gap: '2rem', height: 'calc(100vh - 120px)' }}>
             {/* Header */}
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -428,7 +427,6 @@ const CodeEnginePage = () => {
                 &::selection { background: var(--accent-muted); color: var(--accent-color); }
             `}</style>
         </div>
-      </ErrorBoundary>
     );
 };
 

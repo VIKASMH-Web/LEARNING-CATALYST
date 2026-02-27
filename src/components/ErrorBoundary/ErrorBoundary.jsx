@@ -29,7 +29,7 @@ class ErrorBoundary extends React.Component {
           alignItems: 'center',
           fontFamily: 'monospace'
         }}>
-          <h2>Something went wrong in Code Engine.</h2>
+          <h2>{this.props.message || "Something went wrong."}</h2>
           <p>{this.state.error && this.state.error.toString()}</p>
           <button 
             onClick={() => window.location.reload()}

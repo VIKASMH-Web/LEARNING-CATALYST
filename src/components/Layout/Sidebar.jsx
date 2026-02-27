@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
-  Layout, Code, User, Mic, Search, GraduationCap, Sparkles, LifeBuoy, Globe, Clock, Compass, ShieldCheck, Zap
+  Layout, Code, User, Mic, Search, GraduationCap, Sparkles, LifeBuoy, Globe, Clock, Compass, ShieldCheck, Zap, ChevronRight
 } from 'lucide-react';
 import { requestNotificationPermission } from '../../utils/notifications';
 import { useTranslation } from '../../utils/i18n';

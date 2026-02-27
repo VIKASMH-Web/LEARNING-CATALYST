@@ -59,7 +59,7 @@ function App() {
                                     <Route path="roadmap" element={<AcademicPlanner />} />
                                     <Route path="career-simulator" element={<MockInterview />} />
                                     <Route path="code-engine" element={
-                                        <ErrorBoundary>
+                                        <ErrorBoundary message="Code Engine">
                                             <CodeEnginePage />
                                         </ErrorBoundary>
                                     } />
