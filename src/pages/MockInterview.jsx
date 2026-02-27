@@ -12,11 +12,11 @@ import {
 } from 'lucide-react';
 
 const domains = [
-    { key: 'backend_developer', label: 'Backend Development', icon: '⚙️', color: '#6366f1', image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80' },
-    { key: 'frontend_developer', label: 'Frontend Development', icon: '🎨', color: '#10b981', image: 'https://images.unsplash.com/photo-1593720213428-28a5b9e94613?auto=format&fit=crop&w=600&q=80' },
-    { key: 'data_scientist', label: 'Data Science', icon: '📊', color: '#f59e0b', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80' },
-    { key: 'product_manager', label: 'Product Design', icon: '📱', color: '#a78bfa', image: 'https://images.unsplash.com/photo-1586717791821-3f44a563fc4c?auto=format&fit=crop&w=600&q=80' },
-    { key: 'general', label: 'Behavioral', icon: '💬', color: '#94a3b8', image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80' },
+    { key: 'backend_developer', label: 'Backend Development', icon: '⚙️', color: '#6366f1', image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&w=800&q=80' },
+    { key: 'frontend_developer', label: 'Frontend Development', icon: '🎨', color: '#10b981', image: 'https://images.unsplash.com/photo-1547658719-da2b51159128?auto=format&fit=crop&w=800&q=80' },
+    { key: 'data_scientist', label: 'Data Science', icon: '📊', color: '#f59e0b', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80' },
+    { key: 'product_manager', label: 'Product Design', icon: '📱', color: '#a78bfa', image: 'https://images.unsplash.com/photo-1561070791-23c1181989dc?auto=format&fit=crop&w=800&q=80' },
+    { key: 'general', label: 'Behavioral', icon: '💬', color: '#94a3b8', image: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=800&q=80' },
 ];
 
 const MockInterview = () => {
@@ -123,7 +123,10 @@ const MockInterview = () => {
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                     marginBottom: '3rem', position: 'relative', overflow: 'hidden'
                 }}>
-                    <div style={{ position: 'absolute', top: -50, right: -50, width: 300, height: 300, background: 'radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 70%)', borderRadius: '50%' }} />
+                    <div style={{ position: 'absolute', top: 0, right: 0, width: '45%', height: '100%', borderLeft: '1px solid var(--border-color)' }}>
+                        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80" alt="Interview" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9 }} />
+                         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #FFFFFF, transparent)' }} />
+                    </div>
                     <div style={{ flex: 1, position: 'relative', zIndex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '1.5rem' }}>
                             <div style={{ padding: '6px 14px', background: 'rgba(99,102,241,0.08)', color: 'var(--accent-color)', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>

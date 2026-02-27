@@ -76,6 +76,9 @@ const Overview = () => {
                         <div style={{ padding: '6px 16px', background: `${userLevel.color}10`, color: userLevel.color, borderRadius: '20px', fontSize: '0.85rem', fontWeight: 700, border: `1px solid ${userLevel.color}30` }}>
                             {userLevel.badge} {userLevel.name} Level
                         </div>
+                        <div style={{ padding: '6px 16px', background: 'rgba(239,68,68,0.06)', color: '#ef4444', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                             <Cpu size={14} /> AMD ROCm™ Accelerated
+                        </div>
                         <div style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Active potential: <span style={{ color: 'var(--text-primary)' }}>{userLevel.salary}</span></div>
                     </div>
                     
@@ -113,7 +116,7 @@ const Overview = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem' }}>
                 {[
                     { label: 'Total Experience', val: xp.toLocaleString(), icon: <Star size={20} color="#f59e0b" />, sub: 'XP Points' },
-                    { label: 'Cognitive Score', val: '862', icon: <Brain size={20} color="var(--accent-color)" />, sub: '+12% this week' },
+                    { label: 'GPU Acceleration', val: 'ROCm™', icon: <Cpu size={20} color="#ef4444" />, sub: 'Radeon™️ Enabled' },
                     { label: 'Efficiency', val: '94%', icon: <Activity size={20} color="#10b981" />, sub: 'Steady growth' },
                     { label: 'Rank', val: '#84', icon: <Trophy size={20} color="#6366f1" />, sub: 'Top 0.1%' },
                 ].map((m, i) => (

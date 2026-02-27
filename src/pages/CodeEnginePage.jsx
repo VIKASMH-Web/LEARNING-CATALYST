@@ -166,7 +166,7 @@ const CodeEnginePage = () => {
     };
 
     return (
-        <div style={{ padding: '0', display: 'flex', flexDirection: 'column', gap: '2rem', height: 'calc(100vh - 120px)' }}>
+        <div style={{ padding: '2rem 0', display: 'flex', flexDirection: 'column', gap: '3rem', minHeight: 'calc(100vh - 80px)' }}>
             {/* Header */}
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
@@ -231,16 +231,16 @@ const CodeEnginePage = () => {
             
             <div aria-live="polite" className="sr-only" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)' }}>{announcement}</div>
 
-            {/* Main Editor Grid */}
-            <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)', gap: '2rem', minHeight: 0 }}>
+            {/* Main Editor & Output Grid */}
+            <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'minmax(0, 1.25fr) minmax(0, 1fr)', gap: '2.5rem', minHeight: '600px' }}>
                 {/* Editor Panel */}
                 <div style={{ 
                     display: 'flex', flexDirection: 'column', background: '#FFFFFF', 
                     border: '1px solid var(--border-color)', borderRadius: '32px', overflow: 'hidden',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
+                    boxShadow: '0 4px 24px rgba(0,0,0,0.03)', marginTop: '2rem'
                 }}>
                     <div style={{ 
-                        padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-color)', 
+                        padding: '1.25rem 1.75rem', borderBottom: '1px solid var(--border-color)', 
                         display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'rgba(99,102,241,0.03)' 
                     }}>
                         <Code2 size={18} color="var(--accent-color)" />
@@ -250,157 +250,34 @@ const CodeEnginePage = () => {
                         value={code}
                         onChange={(e) => setCode(e.target.value)}
                         style={{ 
-                            flex: 1, padding: '2rem', background: 'transparent', border: 'none', 
+                            flex: 1, padding: '2.5rem', background: 'transparent', border: 'none', 
                             color: 'var(--text-primary)', fontFamily: "'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace", 
-                            fontSize: '0.95rem', outline: 'none', resize: 'none', lineHeight: 1.7
+                            fontSize: '1rem', outline: 'none', resize: 'none', lineHeight: 1.8
                         }}
                         spellCheck="false"
                     />
                 </div>
 
-                {/* Info Side */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', minHeight: 0 }}>
-                    {/* Explanation Panel */}
-                    <div style={{ 
-                        flex: 1, display: 'flex', flexDirection: 'column', background: '#FFFFFF', 
-                        border: '1px solid var(--border-color)', borderRadius: '32px', overflow: 'hidden',
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
-                    }}>
-                        <div style={{ 
-                            padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-color)', 
-                            display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-                            background: 'rgba(245,158,11,0.03)' 
-                        }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                <BookOpen size={18} color="#d97706" />
-                                <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Narrative Explanation</span>
-                            </div>
-                            <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                <button 
-                                    onClick={() => setAutoVoice(!autoVoice)}
-                                    style={{ 
-                                        padding: '4px 12px', borderRadius: 12, border: '1px solid',
-                                        background: autoVoice ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
-                                        borderColor: autoVoice ? 'rgba(16, 185, 129, 0.2)' : 'var(--border-color)',
-                                        color: autoVoice ? '#059669' : 'var(--text-tertiary)',
-                                        fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer'
-                                    }}
-                                >
-                                    AUTO: {autoVoice ? 'ON' : 'OFF'}
-                                </button>
-                                
-                                {audioState.type === 'explanation' && (
-                                    <button 
-                                        onClick={stopSpeaking} 
-                                        style={{ border: 'none', background: 'rgba(239,68,68,0.1)', color: '#dc2626', width: 28, height: 28, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                    >
-                                        <StopCircle size={14} />
-                                    </button>
-                                )}
-                                <button
-                                    onClick={triggerExplanation}
-                                    style={{ 
-                                        padding: '4px 16px', borderRadius: 12, border: 'none',
-                                        background: 'var(--accent-muted)', color: 'var(--accent-color)',
-                                        fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer',
-                                        display: 'flex', alignItems: 'center', gap: 6
-                                    }}
-                                >
-                                    {audioState.type === 'explanation' && !audioState.isPaused ? <Pause size={12} /> : <Volume2 size={12} />}
-                                    {audioState.type === 'explanation' ? (audioState.isPaused ? "RESUME" : "PAUSE") : "LISTEN"}
-                                </button>
-                            </div>
-                        </div>
-
-                        <div style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
-                            <AnimatePresence mode="wait">
-                                {error ? (
-                                    <motion.div 
-                                        key="error-box"
-                                        initial={{ opacity: 0, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        style={{ 
-                                            background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.1)', 
-                                            padding: '1.5rem', borderRadius: '20px', display: 'flex', gap: '16px', color: '#dc2626' 
-                                        }}
-                                    >
-                                        <AlertCircle size={24} />
-                                        <div>
-                                            <div style={{ fontWeight: 800, marginBottom: '4px' }}>Validation Failed</div>
-                                            <div style={{ fontSize: '0.9rem', lineHeight: 1.5 }}>{error}</div>
-                                        </div>
-                                    </motion.div>
-                                ) : explanation ? (
-                                    <motion.div 
-                                        key="explanation-box"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
-                                    >
-                                        <div style={{ background: 'rgba(245,158,11,0.03)', padding: '1.5rem', borderRadius: '24px', border: '1px solid rgba(245,158,11,0.1)' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem', color: '#d97706' }}>
-                                                <Lightbulb size={20} />
-                                                <h3 style={{ fontSize: '1rem', fontWeight: 800 }}>{explanation.titles?.overview || 'Logic Overview'}</h3>
-                                            </div>
-                                            <p style={{ color: 'var(--text-primary)', fontSize: '0.975rem', lineHeight: 1.7, margin: 0 }}>{explanation.overview}</p>
-                                        </div>
-
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                                            {explanation.lines && explanation.lines.map((line, i) => (
-                                                <div key={i} style={{ border: '1px solid var(--border-color)', borderRadius: '20px', overflow: 'hidden' }}>
-                                                    <div style={{ padding: '0.75rem 1.25rem', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                        <span style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                                                            Line {line.line_number}
-                                                        </span>
-                                                    </div>
-                                                    <div style={{ padding: '1.25rem' }}>
-                                                        <div style={{ marginBottom: '1rem', fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                                                            {line.explanation}
-                                                        </div>
-                                                        <div style={{ padding: '1rem', background: 'rgba(99,102,241,0.03)', borderRadius: '12px', border: '1px solid rgba(99,102,241,0.05)', fontFamily: 'monospace', fontSize: '0.85rem', color: 'var(--accent-color)', marginBottom: '1rem' }}>
-                                                            {line.content}
-                                                        </div>
-                                                        <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                                                            <Sparkles size={14} color="#10b981" style={{ marginTop: 2 }} />
-                                                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>{line.reason}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </motion.div>
-                                ) : (
-                                    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', opacity: 0.3, textAlign: 'center' }}>
-                                        <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--bg-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
-                                            <Brain size={40} color="var(--text-tertiary)" />
-                                        </div>
-                                        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Awaiting Analysis</h3>
-                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Click "Analyze Code" to generate <br/>deep logic insights.</p>
-                                    </div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    </div>
-
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                     {/* Output Panel */}
                     <div style={{ 
-                        height: '240px', display: 'flex', flexDirection: 'column', 
+                        flex: 1, display: 'flex', flexDirection: 'column', 
                         background: '#1a1a2e', borderRadius: '32px', overflow: 'hidden',
-                        boxShadow: '0 12px 32px rgba(0,0,0,0.15)'
+                        boxShadow: '0 12px 32px rgba(0,0,0,0.15)', marginTop: '2rem'
                     }}>
                         <div style={{ 
-                            padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.05)', 
+                            padding: '1rem 1.75rem', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.05)', 
                             display: 'flex', alignItems: 'center', gap: '0.75rem' 
                         }}>
                             <TerminalSquare size={16} color="#10b981" />
                             <span style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(255,255,255,0.5)' }}>System Output</span>
                         </div>
                         <div style={{ 
-                            flex: 1, padding: '1.5rem', background: 'transparent',
-                            color: '#10b981', fontFamily: "'SF Mono', monospace", fontSize: '0.9rem', overflowY: 'auto'
+                            flex: 1, padding: '2rem', background: 'transparent',
+                            color: '#10b981', fontFamily: "'SF Mono', monospace", fontSize: '0.95rem', overflowY: 'auto'
                         }}>
                             {output ? (
-                                <pre style={{ margin: 0, whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{output}</pre>
+                                <pre style={{ margin: 0, whiteSpace: 'pre-wrap', lineHeight: 1.7 }}>{output}</pre>
                             ) : (
                                 <span style={{ opacity: 0.3, fontStyle: 'italic' }}>Terminal idle — Waiting for execution...</span>
                             )}
@@ -409,14 +286,133 @@ const CodeEnginePage = () => {
                 </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '2.5rem', justifyContent: 'center', alignItems: 'center', padding: '1.5rem', background: '#FFFFFF', borderRadius: '20px', border: '1px solid var(--border-color)', margin: '0 auto' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>
-                    <kbd style={{ padding: '4px 8px', borderRadius: 6, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', fontSize: '0.7rem' }}>{isMac ? '⌥' : 'Alt'} + L</kbd>
+            {/* Narrative Explanation Panel (Moved Down) */}
+            <div style={{ 
+                background: '#FFFFFF', border: '1px solid var(--border-color)', borderRadius: '32px', overflow: 'hidden',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.04)', display: 'flex', flexDirection: 'column'
+            }}>
+                <div style={{ 
+                    padding: '1.25rem 2rem', borderBottom: '1px solid var(--border-color)', 
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
+                    background: 'rgba(245,158,11,0.03)' 
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <BookOpen size={20} color="#d97706" />
+                        <span style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Narrative Explanation</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                        <button 
+                            onClick={() => setAutoVoice(!autoVoice)}
+                            style={{ 
+                                padding: '6px 16px', borderRadius: 14, border: '1px solid',
+                                background: autoVoice ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
+                                borderColor: autoVoice ? 'rgba(16, 185, 129, 0.2)' : 'var(--border-color)',
+                                color: autoVoice ? '#059669' : 'var(--text-tertiary)',
+                                fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer'
+                            }}
+                        >
+                            AUTO: {autoVoice ? 'ON' : 'OFF'}
+                        </button>
+                        
+                        {audioState.type === 'explanation' && (
+                            <button 
+                                onClick={stopSpeaking} 
+                                style={{ border: 'none', background: 'rgba(239,68,68,0.1)', color: '#dc2626', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            >
+                                <StopCircle size={16} />
+                            </button>
+                        )}
+                        <button
+                            onClick={triggerExplanation}
+                            style={{ 
+                                padding: '6px 20px', borderRadius: 14, border: 'none',
+                                background: 'var(--accent-muted)', color: 'var(--accent-color)',
+                                fontSize: '0.85rem', fontWeight: 800, cursor: 'pointer',
+                                display: 'flex', alignItems: 'center', gap: 8
+                            }}
+                        >
+                            {audioState.type === 'explanation' && !audioState.isPaused ? <Pause size={14} /> : <Volume2 size={14} />}
+                            {audioState.type === 'explanation' ? (audioState.isPaused ? "RESUME" : "PAUSE") : "LISTEN"}
+                        </button>
+                    </div>
+                </div>
+
+                <div style={{ padding: '3rem', minHeight: '200px' }}>
+                    <AnimatePresence mode="wait">
+                        {error ? (
+                            <motion.div 
+                                key="error-box"
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                style={{ 
+                                    background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.1)', 
+                                    padding: '2rem', borderRadius: '24px', display: 'flex', gap: '20px', color: '#dc2626' 
+                                }}
+                            >
+                                <AlertCircle size={28} />
+                                <div>
+                                    <div style={{ fontWeight: 800, marginBottom: '6px', fontSize: '1.1rem' }}>Validation Failed</div>
+                                    <div style={{ fontSize: '1rem', lineHeight: 1.6 }}>{error}</div>
+                                </div>
+                            </motion.div>
+                        ) : explanation ? (
+                            <motion.div 
+                                key="explanation-box"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}
+                            >
+                                <div style={{ background: 'rgba(245,158,11,0.03)', padding: '2rem', borderRadius: '28px', border: '1px solid rgba(245,158,11,0.1)' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.25rem', color: '#d97706' }}>
+                                        <Lightbulb size={24} />
+                                        <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>{explanation.titles?.overview || 'Logic Overview'}</h3>
+                                    </div>
+                                    <p style={{ color: 'var(--text-primary)', fontSize: '1.05rem', lineHeight: 1.8, margin: 0 }}>{explanation.overview}</p>
+                                </div>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                                    {explanation.lines && explanation.lines.map((line, i) => (
+                                        <div key={i} style={{ border: '1px solid var(--border-color)', borderRadius: '24px', overflow: 'hidden' }}>
+                                            <div style={{ padding: '1rem 1.5rem', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                                                    Line {line.line_number}
+                                                </span>
+                                            </div>
+                                            <div style={{ padding: '1.5rem' }}>
+                                                <div style={{ marginBottom: '1rem', fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                                                    {line.explanation}
+                                                </div>
+                                                <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                                                    <Sparkles size={16} color="#10b981" style={{ marginTop: 2 }} />
+                                                    <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.6 }}>{line.reason}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        ) : (
+                            <div style={{ height: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', opacity: 0.3, textAlign: 'center' }}>
+                                <div style={{ width: 100, height: 100, borderRadius: '50%', background: 'var(--bg-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem' }}>
+                                    <Brain size={50} color="var(--text-tertiary)" />
+                                </div>
+                                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>Awaiting Analysis</h3>
+                                <p style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>Click "Analyze Code" to generate <br/>deep logic insights.</p>
+                            </div>
+                        )}
+                    </AnimatePresence>
+                </div>
+            </div>
+
+            {/* Shortcuts Section (Explainer) */}
+            <div style={{ display: 'flex', gap: '3rem', justifyContent: 'center', alignItems: 'center', padding: '2rem', background: '#FFFFFF', borderRadius: '24px', border: '1px solid var(--border-color)', margin: '2rem auto 0', width: 'fit-content' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 700 }}>
+                    <kbd style={{ padding: '6px 12px', borderRadius: 8, background: 'var(--bg-primary)', border: '1px solid var(--border-color)', fontSize: '0.8rem', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>{isMac ? '⌥' : 'Alt'} + L</kbd>
                     <span>Explain Logic</span>
                 </div>
-                <div style={{ width: 1, height: 16, background: 'var(--border-color)' }} />
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>
-                    <kbd style={{ padding: '4px 8px', borderRadius: 6, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', fontSize: '0.7rem' }}>{isMac ? '⌥' : 'Alt'} + S</kbd>
+                <div style={{ width: 1, height: 20, background: 'var(--border-color)' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 700 }}>
+                    <kbd style={{ padding: '6px 12px', borderRadius: 8, background: 'var(--bg-primary)', border: '1px solid var(--border-color)', fontSize: '0.8rem', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>{isMac ? '⌥' : 'Alt'} + S</kbd>
                     <span>Stop Speech</span>
                 </div>
             </div>
