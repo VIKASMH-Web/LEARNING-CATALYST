@@ -4,11 +4,10 @@ import {
     Play, Code, Loader2, AlertCircle, Hash, GitBranch, 
     TerminalSquare, Languages, BookOpen, Lightbulb, 
     Volume2, Pause, StopCircle, Cpu,
-    Sparkles, Brain, Code2
+    Sparkles, Brain, Code2, ChevronDown, Monitor, Zap
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { analyzeCodeLocally } from '../utils/codeAnalysis';
-import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary';
 
 const CodeEnginePage = () => {
     const { incrementCodeRuns } = useProgress();
@@ -36,7 +35,6 @@ const CodeEnginePage = () => {
 
     const [audioState, setAudioState] = useState({ type: 'idle', isPaused: false });
     const [autoVoice, setAutoVoice] = useState(false);
-    const [announcement, setAnnouncement] = useState('');
     const [isMac, setIsMac] = useState(false);
 
     // Refs for safe access in event listeners
@@ -143,284 +141,260 @@ const CodeEnginePage = () => {
         setError('');
         setExplanation(null);
         setOutput('');
-        setAnnouncement("Analyzing code logic...");
         
         try {
             const data = await analyzeCodeLocally(code, language, explanationLanguage);
             if (data.error) {
                 setError(data.error);
-                setExplanation(null);
-                setOutput('');
             } else {
                 setExplanation(data.explanation || null);
                 setOutput(data.output || '');
-                setError('');
                 if (autoVoice) setTimeout(() => triggerExplanation(), 500);
-                setAnnouncement("Analysis complete.");
             }
         } catch (e) {
             setError("Analysis engine encountered an error.");
-            setIsAnalyzing(false);
         }
         setIsAnalyzing(false);
     };
 
+    const Card = ({ children, title, icon: Icon, rightContent, style }) => (
+        <div style={{ 
+            background: '#12121e', 
+            borderRadius: '16px', 
+            border: '1px solid rgba(255,255,255,0.06)', 
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            ...style
+        }}>
+            <div style={{ 
+                padding: '12px 20px', 
+                borderBottom: '1px solid rgba(255,255,255,0.04)', 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center',
+                background: 'rgba(255,255,255,0.01)'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Icon size={14} color="#a5b4fc" style={{ opacity: 0.8 }} />
+                    <span style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(255,255,255,0.4)' }}>{title}</span>
+                </div>
+                {rightContent}
+            </div>
+            <div style={{ flex: 1, position: 'relative' }}>
+                {children}
+            </div>
+        </div>
+    );
+
     return (
-        <div style={{ padding: '2rem 0', display: 'flex', flexDirection: 'column', gap: '3rem', minHeight: 'calc(100vh - 80px)' }}>
-            {/* Header */}
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div style={{ 
+            padding: '2rem 1.5rem', 
+            background: '#0a0a0f', 
+            minHeight: '100vh', 
+            color: '#e2e8f0',
+            fontFamily: "'Inter', sans-serif"
+        }}>
+            
+            {/* Header / Control Bar */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
                 <div>
-                    <div style={{
-                        display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px',
-                        borderRadius: 20, background: 'rgba(16,185,129,0.1)',
-                        border: '1px solid rgba(16,185,129,0.2)', marginBottom: 16,
-                        fontSize: '0.8rem', color: '#059669', fontWeight: 600
-                    }}>
-                        <Cpu size={14} /> AMD Ryzen™ AI Accelerated
-                    </div>
-                    <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.03em', margin: 0 }}>
-                        Code Engine
-                    </h1>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginTop: '0.5rem' }}>
-                        High-fidelity logic analysis for competitive programming.
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0, color: '#FFFFFF' }}>Code Engine</h1>
+                    <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', marginTop: '4px' }}>
+                        High-fidelity logic analysis powered by AMD silicon.
                     </p>
                 </div>
-                
+
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    {/* AMD Badge */}
                     <div style={{ 
-                        display: 'flex', alignItems: 'center', gap: '12px', background: '#FFFFFF', 
-                        padding: '10px 20px', borderRadius: '16px', border: '1px solid var(--border-color)',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
+                        padding: '8px 16px', 
+                        background: '#0f172a', 
+                        borderRadius: '20px', 
+                        border: '1px solid rgba(34, 197, 94, 0.2)',
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '8px',
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        color: 'rgba(255,255,255,0.9)'
                     }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <Languages size={16} color="var(--text-tertiary)" />
-                            <select 
-                                value={explanationLanguage}
-                                onChange={(e) => setExplanationLanguage(e.target.value)}
-                                style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontSize: '0.9rem', fontWeight: 600 }}
-                            >
-                                {explanationLanguages.map(l => <option key={l} value={l}>{l}</option>)}
-                            </select>
-                        </div>
-                        <div style={{ width: 1, height: 20, background: 'var(--border-color)' }} />
+                        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
+                        AMD Ryzen™ AI Ready
+                    </div>
+
+                    {/* Translation Dropdown */}
+                    <div style={{ 
+                        padding: '8px 12px', 
+                        background: '#0f172a', 
+                        borderRadius: '12px', 
+                        border: '1px solid rgba(255,255,255,0.06)',
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '8px'
+                    }}>
+                        <Languages size={14} color="rgba(255,255,255,0.5)" />
+                        <select 
+                            value={explanationLanguage}
+                            onChange={(e) => setExplanationLanguage(e.target.value)}
+                            style={{ background: 'transparent', border: 'none', color: '#FFFFFF', fontSize: '0.8rem', outline: 'none', cursor: 'pointer' }}
+                        >
+                            {explanationLanguages.map(l => <option key={l} value={l} style={{ background: '#0f172a' }}>{l}</option>)}
+                        </select>
+                        <ChevronDown size={12} color="rgba(255,255,255,0.3)" />
+                    </div>
+
+                    {/* Language Dropdown */}
+                    <div style={{ 
+                        padding: '8px 12px', 
+                        background: '#0f172a', 
+                        borderRadius: '12px', 
+                        border: '1px solid rgba(255,255,255,0.06)',
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '8px'
+                    }}>
                         <select 
                             value={language}
                             onChange={(e) => setLanguage(e.target.value)}
-                            style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontSize: '0.9rem', fontWeight: 600 }}
+                            style={{ background: 'transparent', border: 'none', color: '#FFFFFF', fontSize: '0.8rem', outline: 'none', cursor: 'pointer', minWidth: '40px' }}
                         >
-                            {languages.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+                            {languages.map(l => <option key={l.id} value={l.id} style={{ background: '#0f172a' }}>{l.name}</option>)}
                         </select>
+                        <ChevronDown size={12} color="rgba(255,255,255,0.3)" />
                     </div>
 
+                    {/* Analyze Button */}
                     <button 
                         onClick={handleRun}
                         disabled={isAnalyzing}
                         style={{
-                            padding: '12px 28px', borderRadius: '16px', border: 'none',
-                            background: 'var(--text-primary)', color: '#FFFFFF',
-                            fontWeight: 700, fontSize: '1rem', cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '10px',
-                            boxShadow: '0 8px 16px rgba(0,0,0,0.1)', transition: 'all 0.2s'
+                            padding: '10px 24px', 
+                            borderRadius: '12px', 
+                            border: 'none',
+                            background: '#f8fafc', 
+                            color: '#0f172a',
+                            fontWeight: 700, 
+                            fontSize: '0.85rem', 
+                            cursor: 'pointer',
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '8px',
+                            transition: 'all 0.2s',
+                            boxShadow: '0 4px 12px rgba(255,255,255,0.05)'
                         }}
                     >
-                        {isAnalyzing ? <Loader2 size={18} className="animate-spin" /> : <Play size={18} fill="currentColor" />}
-                        {isAnalyzing ? 'Analyzing...' : 'Analyze Code'}
+                        {isAnalyzing ? <Loader2 size={16} className="animate-spin" /> : <Play size={14} fill="#0f172a" />}
+                        Analyze
                     </button>
                 </div>
-            </header>
-            
-            <div aria-live="polite" className="sr-only" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)' }}>{announcement}</div>
-
-            {/* Main Editor & Output Grid */}
-            <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'minmax(0, 1.25fr) minmax(0, 1fr)', gap: '2.5rem', minHeight: '600px' }}>
-                {/* Editor Panel */}
-                <div style={{ 
-                    display: 'flex', flexDirection: 'column', background: '#FFFFFF', 
-                    border: '1px solid var(--border-color)', borderRadius: '32px', overflow: 'hidden',
-                    boxShadow: '0 4px 24px rgba(0,0,0,0.03)', marginTop: '2rem'
-                }}>
-                    <div style={{ 
-                        padding: '1.25rem 1.75rem', borderBottom: '1px solid var(--border-color)', 
-                        display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'rgba(99,102,241,0.03)' 
-                    }}>
-                        <Code2 size={18} color="var(--accent-color)" />
-                        <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Source Editor</span>
-                    </div>
-                    <textarea 
-                        value={code}
-                        onChange={(e) => setCode(e.target.value)}
-                        style={{ 
-                            flex: 1, padding: '2.5rem', background: 'transparent', border: 'none', 
-                            color: 'var(--text-primary)', fontFamily: "'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace", 
-                            fontSize: '1rem', outline: 'none', resize: 'none', lineHeight: 1.8
-                        }}
-                        spellCheck="false"
-                    />
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                    {/* Output Panel */}
-                    <div style={{ 
-                        flex: 1, display: 'flex', flexDirection: 'column', 
-                        background: '#1a1a2e', borderRadius: '32px', overflow: 'hidden',
-                        boxShadow: '0 12px 32px rgba(0,0,0,0.15)', marginTop: '2rem'
-                    }}>
-                        <div style={{ 
-                            padding: '1rem 1.75rem', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.05)', 
-                            display: 'flex', alignItems: 'center', gap: '0.75rem' 
-                        }}>
-                            <TerminalSquare size={16} color="#10b981" />
-                            <span style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(255,255,255,0.5)' }}>System Output</span>
-                        </div>
-                        <div style={{ 
-                            flex: 1, padding: '2rem', background: 'transparent',
-                            color: '#10b981', fontFamily: "'SF Mono', monospace", fontSize: '0.95rem', overflowY: 'auto'
-                        }}>
-                            {output ? (
-                                <pre style={{ margin: 0, whiteSpace: 'pre-wrap', lineHeight: 1.7 }}>{output}</pre>
-                            ) : (
-                                <span style={{ opacity: 0.3, fontStyle: 'italic' }}>Terminal idle — Waiting for execution...</span>
-                            )}
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            {/* Narrative Explanation Panel (Moved Down) */}
-            <div style={{ 
-                background: '#FFFFFF', border: '1px solid var(--border-color)', borderRadius: '32px', overflow: 'hidden',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.04)', display: 'flex', flexDirection: 'column'
-            }}>
-                <div style={{ 
-                    padding: '1.25rem 2rem', borderBottom: '1px solid var(--border-color)', 
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-                    background: 'rgba(245,158,11,0.03)' 
-                }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <BookOpen size={20} color="#d97706" />
-                        <span style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Narrative Explanation</span>
-                    </div>
-                    <div style={{ display: 'flex', gap: '1rem' }}>
-                        <button 
-                            onClick={() => setAutoVoice(!autoVoice)}
+            {/* Main Application Interface */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)', gap: '1.5rem', height: 'calc(100vh - 200px)' }}>
+                
+                {/* 1. Source Editor Panel */}
+                <Card title="Source Editor" icon={Code2}>
+                    <div style={{ display: 'flex', height: '100%', background: '#0c0c14' }}>
+                        {/* Line Numbers Simulation */}
+                        <div style={{ padding: '20px 12px', background: '#09090f', color: 'rgba(255,255,255,0.1)', fontSize: '0.8rem', fontFamily: "'SF Mono', monospace", textAlign: 'right', borderRight: '1px solid rgba(255,255,255,0.03)', userSelect: 'none' }}>
+                            {code.split('\n').map((_, i) => <div key={i}>{i + 1}</div>)}
+                        </div>
+                        <textarea 
+                            value={code}
+                            onChange={(e) => setCode(e.target.value)}
                             style={{ 
-                                padding: '6px 16px', borderRadius: 14, border: '1px solid',
-                                background: autoVoice ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
-                                borderColor: autoVoice ? 'rgba(16, 185, 129, 0.2)' : 'var(--border-color)',
-                                color: autoVoice ? '#059669' : 'var(--text-tertiary)',
-                                fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer'
+                                flex: 1, padding: '20px', background: 'transparent', border: 'none', 
+                                color: '#cbd5e1', fontFamily: "'SF Mono', 'Menlo', 'Monaco', monospace", 
+                                fontSize: '0.9rem', outline: 'none', resize: 'none', lineHeight: 1.6
                             }}
-                        >
-                            AUTO: {autoVoice ? 'ON' : 'OFF'}
-                        </button>
-                        
-                        {audioState.type === 'explanation' && (
-                            <button 
-                                onClick={stopSpeaking} 
-                                style={{ border: 'none', background: 'rgba(239,68,68,0.1)', color: '#dc2626', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                            >
-                                <StopCircle size={16} />
-                            </button>
-                        )}
-                        <button
-                            onClick={triggerExplanation}
-                            style={{ 
-                                padding: '6px 20px', borderRadius: 14, border: 'none',
-                                background: 'var(--accent-muted)', color: 'var(--accent-color)',
-                                fontSize: '0.85rem', fontWeight: 800, cursor: 'pointer',
-                                display: 'flex', alignItems: 'center', gap: 8
-                            }}
-                        >
-                            {audioState.type === 'explanation' && !audioState.isPaused ? <Pause size={14} /> : <Volume2 size={14} />}
-                            {audioState.type === 'explanation' ? (audioState.isPaused ? "RESUME" : "PAUSE") : "LISTEN"}
-                        </button>
+                            spellCheck="false"
+                        />
                     </div>
-                </div>
+                </Card>
 
-                <div style={{ padding: '3rem', minHeight: '200px' }}>
-                    <AnimatePresence mode="wait">
-                        {error ? (
-                            <motion.div 
-                                key="error-box"
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                style={{ 
-                                    background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.1)', 
-                                    padding: '2rem', borderRadius: '24px', display: 'flex', gap: '20px', color: '#dc2626' 
-                                }}
-                            >
-                                <AlertCircle size={28} />
-                                <div>
-                                    <div style={{ fontWeight: 800, marginBottom: '6px', fontSize: '1.1rem' }}>Validation Failed</div>
-                                    <div style={{ fontSize: '1rem', lineHeight: 1.6 }}>{error}</div>
+                {/* 2. Side Panel Stack */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    
+                    {/* Narrative Explanation Panel */}
+                    <Card 
+                        title="Narrative Explanation" 
+                        icon={BookOpen}
+                        rightContent={
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.65rem', fontWeight: 800, color: 'rgba(255,255,255,0.3)' }}>
+                                    <Volume2 size={12} /> AUTO: {autoVoice ? 'ON' : 'OFF'}
                                 </div>
-                            </motion.div>
-                        ) : explanation ? (
-                            <motion.div 
-                                key="explanation-box"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}
-                            >
-                                <div style={{ background: 'rgba(245,158,11,0.03)', padding: '2rem', borderRadius: '28px', border: '1px solid rgba(245,158,11,0.1)' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.25rem', color: '#d97706' }}>
-                                        <Lightbulb size={24} />
-                                        <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>{explanation.titles?.overview || 'Logic Overview'}</h3>
-                                    </div>
-                                    <p style={{ color: 'var(--text-primary)', fontSize: '1.05rem', lineHeight: 1.8, margin: 0 }}>{explanation.overview}</p>
-                                </div>
-
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                                    {explanation.lines && explanation.lines.map((line, i) => (
-                                        <div key={i} style={{ border: '1px solid var(--border-color)', borderRadius: '24px', overflow: 'hidden' }}>
-                                            <div style={{ padding: '1rem 1.5rem', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                                                    Line {line.line_number}
-                                                </span>
-                                            </div>
-                                            <div style={{ padding: '1.5rem' }}>
-                                                <div style={{ marginBottom: '1rem', fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                                                    {line.explanation}
-                                                </div>
-                                                <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                                                    <Sparkles size={16} color="#10b981" style={{ marginTop: 2 }} />
-                                                    <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.6 }}>{line.reason}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </motion.div>
-                        ) : (
-                            <div style={{ height: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', opacity: 0.3, textAlign: 'center' }}>
-                                <div style={{ width: 100, height: 100, borderRadius: '50%', background: 'var(--bg-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem' }}>
-                                    <Brain size={50} color="var(--text-tertiary)" />
-                                </div>
-                                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>Awaiting Analysis</h3>
-                                <p style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>Click "Analyze Code" to generate <br/>deep logic insights.</p>
+                                <button 
+                                    onClick={triggerExplanation}
+                                    style={{ 
+                                        padding: '4px 12px', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', 
+                                        borderRadius: '8px', color: '#FFFFFF', fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer',
+                                        display: 'flex', alignItems: 'center', gap: '6px'
+                                    }}
+                                >
+                                    <Volume2 size={12} /> {audioState.type === 'explanation' ? (audioState.isPaused ? "Listen" : "Pause") : "Listen"}
+                                </button>
                             </div>
-                        )}
-                    </AnimatePresence>
+                        }
+                        style={{ flex: 1.5 }}
+                    >
+                        <div style={{ padding: '2rem', height: '100%', overflowY: 'auto' }}>
+                            <AnimatePresence mode="wait">
+                                {explanation ? (
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} key="content">
+                                        <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#a5b4fc', marginBottom: '1rem' }}>
+                                            {explanation.titles?.overview || 'Logic Overview'}
+                                        </h3>
+                                        <p style={{ fontSize: '0.85rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.7)', marginBottom: '1.5rem' }}>
+                                            {explanation.overview}
+                                        </p>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                            {explanation.lines?.map((line, idx) => (
+                                                <div key={idx} style={{ background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                                                   <div style={{ fontSize: '0.6rem', color: '#6366f1', fontWeight: 900, marginBottom: '4px' }}>LINE {line.line_number}</div>
+                                                   <div style={{ fontSize: '0.8rem', fontWeight: 600 }}>{line.explanation}</div>
+                                                   <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>{line.reason}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                ) : (
+                                    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', opacity: 0.15 }}>
+                                        <Monitor size={48} style={{ marginBottom: '1rem' }} />
+                                        <p style={{ fontSize: '0.85rem', fontWeight: 600 }}>Deep Logic Analysis Ready.</p>
+                                    </div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </Card>
+
+                    {/* Execution Result Panel */}
+                    <Card title="Execution Result" icon={TerminalSquare} style={{ flex: 1 }}>
+                        <div style={{ padding: '1.5rem', background: '#09090f', height: '100%', fontFamily: "'SF Mono', monospace", fontSize: '0.85rem' }}>
+                            <div style={{ color: '#22c55e', opacity: 0.8 }}>
+                                {output || (isAnalyzing ? 'Processing logic kernels...' : 'Terminal idle...')}
+                            </div>
+                            {error && <div style={{ color: '#ef4444', marginTop: '10px' }}>{error}</div>}
+                        </div>
+                    </Card>
                 </div>
             </div>
 
-            {/* Shortcuts Section (Explainer) */}
-            <div style={{ display: 'flex', gap: '3rem', justifyContent: 'center', alignItems: 'center', padding: '2rem', background: '#FFFFFF', borderRadius: '24px', border: '1px solid var(--border-color)', margin: '2rem auto 0', width: 'fit-content' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 700 }}>
-                    <kbd style={{ padding: '6px 12px', borderRadius: 8, background: 'var(--bg-primary)', border: '1px solid var(--border-color)', fontSize: '0.8rem', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>{isMac ? '⌥' : 'Alt'} + L</kbd>
-                    <span>Explain Logic</span>
+            {/* Shortcuts Legend */}
+            <div style={{ position: 'fixed', bottom: '1.5rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '2rem', opacity: 0.3, fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <kbd style={{ background: '#1e1e2d', padding: '2px 6px', borderRadius: '4px' }}>{isMac ? 'Option' : 'Alt'} + L</kbd> <span>Explain</span>
                 </div>
-                <div style={{ width: 1, height: 20, background: 'var(--border-color)' }} />
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 700 }}>
-                    <kbd style={{ padding: '6px 12px', borderRadius: 8, background: 'var(--bg-primary)', border: '1px solid var(--border-color)', fontSize: '0.8rem', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>{isMac ? '⌥' : 'Alt'} + S</kbd>
-                    <span>Stop Speech</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <kbd style={{ background: '#1e1e2d', padding: '2px 6px', borderRadius: '4px' }}>{isMac ? 'Option' : 'Alt'} + S</kbd> <span>Stop</span>
                 </div>
             </div>
 
             <style>{`
                 .animate-spin { animation: spin 1s linear infinite; }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-                &::selection { background: var(--accent-muted); color: var(--accent-color); }
+                select option { background: #12121e; color: white; }
             `}</style>
         </div>
     );

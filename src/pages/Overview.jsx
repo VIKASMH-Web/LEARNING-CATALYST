@@ -12,6 +12,7 @@ import { useGame } from '../context/GameContext';
 import { Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { useTranslation } from '../utils/i18n';
+import LearningVelocityGraph from '../components/Cards/LearningVelocityGraph';
 
 const Overview = () => {
     const { t } = useTranslation();
@@ -131,35 +132,9 @@ const Overview = () => {
                 ))}
             </div>
 
-            {/* 3. Mastery & Insights */}
-            {/* 3. Velocity Chart (Middle) */}
-            <section style={{ background: '#FFFFFF', borderRadius: '32px', padding: '2.5rem', border: '1px solid var(--border-color)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem' }}>
-                    <div>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.5rem' }}>Learning Velocity</h3>
-                        <p style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem', fontWeight: 600 }}>Active development hours over the last 7 days</p>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text-primary)' }}>18.4h</div>
-                        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#10b981' }}>+2.1h vs last week</div>
-                    </div>
-                </div>
-                <div style={{ height: 300, width: '100%' }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={activityData}>
-                            <defs>
-                                <linearGradient id="velocityGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="var(--accent-color)" stopOpacity={0.15}/>
-                                    <stop offset="95%" stopColor="var(--accent-color)" stopOpacity={0}/>
-                                </linearGradient>
-                            </defs>
-                            <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: 'var(--text-tertiary)', fontWeight: 700 }} dy={15} />
-                            <Tooltip contentStyle={{ borderRadius: 16, border: 'none', boxShadow: '0 12px 32px rgba(0,0,0,0.1)' }} />
-                            <Area type="monotone" dataKey="hours" stroke="var(--accent-color)" strokeWidth={4} fill="url(#velocityGrad)" />
-                        </AreaChart>
-                    </ResponsiveContainer>
-                </div>
-            </section>
+
+            {/* 3. High Velocity Engine Section */}
+            <LearningVelocityGraph />
 
             {/* 4. Mastery & Insights */}
             <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '2.5rem' }}>
