@@ -4,7 +4,7 @@ import {
   Clock, Zap, Trophy, Target, Star,
   TrendingUp, BarChart2, MoreHorizontal, ArrowRight, Activity,
   Lock, CheckCircle, AlertTriangle, FileText, Sparkles, Flame,
-  Brain, Rocket, Briefcase, GraduationCap, ArrowUpRight
+  Brain, Rocket, Briefcase, GraduationCap, ArrowUpRight, Cpu
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
