@@ -182,7 +182,6 @@ const Profile = () => {
                 <div style={{ padding: '1.5rem 3rem', background: 'rgba(99,102,241,0.03)', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '2.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600 }}><MapPin size={16} /> {profile.location}</div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600 }}><Mail size={16} /> {profile.email}</div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600 }}><Calendar size={16} /> Joined Feb 2024</div>
                 </div>
             </header>
 
