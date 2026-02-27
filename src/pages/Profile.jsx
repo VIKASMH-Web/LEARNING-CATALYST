@@ -34,7 +34,6 @@ const Profile = () => {
         title: 'Learning Catalyst Explorer',
         location: 'Global',
         email: authCtx.user?.email || 'guest@learningcatalyst.ai',
-        joinedDate: '2024-02',
         avatarUrl: null,
         bannerUrl: null,
         focusAreas: ['C', 'Mathematics', 'Logic'],
@@ -45,6 +44,8 @@ const Profile = () => {
 
     const storageKey = authCtx.user?.id ? `lc_profile_${authCtx.user.id}` : 'lc_profile_guest';
     const [profile, setProfile] = useState(defaultProfile);
+    const [addItemType, setAddItemType] = useState(null);
+    const [itemInput, setItemInput] = useState('');
 
     useEffect(() => {
         try {
@@ -83,6 +84,23 @@ const Profile = () => {
         }
         return data;
     }, [dailyFocus]);
+
+    const handleAddItem = (type) => {
+        if (!itemInput.trim()) return;
+        setProfile(prev => ({
+            ...prev,
+            [type]: [...(prev[type] || []), itemInput]
+        }));
+        setItemInput('');
+        setAddItemType(null);
+    };
+
+    const handleRemoveItem = (type, index) => {
+        setProfile(prev => ({
+            ...prev,
+            [type]: prev[type].filter((_, i) => i !== index)
+        }));
+    };
 
     const inputStyle = {
         width: '100%', padding: '12px 16px', background: 'var(--bg-primary)',
@@ -180,8 +198,18 @@ const Profile = () => {
                 </div>
 
                 <div style={{ padding: '1.5rem 3rem', background: 'rgba(99,102,241,0.03)', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '2.5rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600 }}><MapPin size={16} /> {profile.location}</div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600 }}><Mail size={16} /> {profile.email}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600 }}>
+                        <MapPin size={16} /> 
+                        {isEditing ? (
+                            <input value={profile.location} onChange={e => setProfile({...profile, location: e.target.value})} style={{...inputStyle, padding: '4px 8px', width: 200}} />
+                        ) : profile.location}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600 }}>
+                        <Mail size={16} /> 
+                        {isEditing ? (
+                            <input value={profile.email} onChange={e => setProfile({...profile, email: e.target.value})} style={{...inputStyle, padding: '4px 8px', width: 250}} />
+                        ) : profile.email}
+                    </div>
                 </div>
             </header>
 
@@ -204,15 +232,70 @@ const Profile = () => {
                         </div>
                     </section>
 
+                    {/* Experience Section */}
+                    <section style={{ background: '#FFFFFF', borderRadius: '32px', padding: '2.5rem', border: '1px solid var(--border-color)' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <Briefcase size={20} color="var(--accent-color)" /> Experience
+                        </h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            {profile.experiences.map((exp, i) => (
+                                <div key={i} style={{ padding: '1rem', background: 'var(--bg-primary)', borderRadius: '16px', position: 'relative' }}>
+                                    <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>{exp}</p>
+                                    {isEditing && <Trash2 size={16} color="#ef4444" style={{ cursor: 'pointer', position: 'absolute', top: 12, right: 12 }} onClick={() => handleRemoveItem('experiences', i)} />}
+                                </div>
+                            ))}
+                            {isEditing && (
+                                addItemType === 'experiences' ? (
+                                    <div style={{ display: 'flex', gap: 10 }}>
+                                        <input autoFocus value={itemInput} onChange={e => setItemInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddItem('experiences')} style={inputStyle} placeholder="Type experience..." />
+                                        <button onClick={() => handleAddItem('experiences')} style={{ background: 'var(--text-primary)', color: 'white', border: 'none', px: 16, borderRadius: 12, cursor: 'pointer' }}>Add</button>
+                                    </div>
+                                ) : <button onClick={() => setAddItemType('experiences')} style={{ padding: '1rem', border: '1px dashed var(--accent-color)', borderRadius: '16px', color: 'var(--accent-color)', fontWeight: 700, cursor: 'pointer', background: 'transparent' }}>+ Add Experience</button>
+                            )}
+                            {!isEditing && profile.experiences.length === 0 && <p style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem' }}>No experiences shared yet.</p>}
+                        </div>
+                    </section>
+
+                    {/* Certifications Section */}
+                    <section style={{ background: '#FFFFFF', borderRadius: '32px', padding: '2.5rem', border: '1px solid var(--border-color)' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <Award size={20} color="var(--accent-color)" /> Certifications
+                        </h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            {profile.certifications.map((cert, i) => (
+                                <div key={i} style={{ padding: '1rem', background: 'var(--bg-primary)', borderRadius: '16px', position: 'relative' }}>
+                                    <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>{cert}</p>
+                                    {isEditing && <Trash2 size={16} color="#ef4444" style={{ cursor: 'pointer', position: 'absolute', top: 12, right: 12 }} onClick={() => handleRemoveItem('certifications', i)} />}
+                                </div>
+                            ))}
+                            {isEditing && (
+                                addItemType === 'certifications' ? (
+                                    <div style={{ display: 'flex', gap: 10 }}>
+                                        <input autoFocus value={itemInput} onChange={e => setItemInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddItem('certifications')} style={inputStyle} placeholder="Type certification..." />
+                                        <button onClick={() => handleAddItem('certifications')} style={{ background: 'var(--text-primary)', color: 'white', border: 'none', px: 16, borderRadius: 12, cursor: 'pointer' }}>Add</button>
+                                    </div>
+                                ) : <button onClick={() => setAddItemType('certifications')} style={{ padding: '1rem', border: '1px dashed var(--accent-color)', borderRadius: '16px', color: 'var(--accent-color)', fontWeight: 700, cursor: 'pointer', background: 'transparent' }}>+ Add Certification</button>
+                            )}
+                            {!isEditing && profile.certifications.length === 0 && <p style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem' }}>No certifications shared yet.</p>}
+                        </div>
+                    </section>
+
                     <section style={{ background: '#FFFFFF', borderRadius: '32px', padding: '2.5rem', border: '1px solid var(--border-color)' }}>
                         <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '1.5rem' }}>Core Specializations</h3>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-                            {profile.focusAreas.map(tag => (
+                            {profile.focusAreas.map((tag, i) => (
                                 <div key={tag} style={{ padding: '8px 20px', background: 'var(--bg-primary)', borderRadius: '14px', border: '1px solid var(--border-color)', fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 10 }}>
-                                    {tag} {isEditing && <X size={14} color="#ef4444" style={{ cursor: 'pointer' }} />}
+                                    {tag} {isEditing && <X size={14} color="#ef4444" style={{ cursor: 'pointer' }} onClick={() => handleRemoveItem('focusAreas', i)} />}
                                 </div>
                             ))}
-                            {isEditing && <div style={{ padding: '8px 20px', borderRadius: '14px', border: '1px dashed var(--accent-color)', color: 'var(--accent-color)', fontSize: '0.95rem', fontWeight: 700, cursor: 'pointer' }}>+ Add Skill</div>}
+                            {isEditing && (
+                                addItemType === 'focusAreas' ? (
+                                    <div style={{ display: 'flex', gap: 10 }}>
+                                        <input autoFocus value={itemInput} onChange={e => setItemInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddItem('focusAreas')} style={{...inputStyle, padding: '8px 16px', width: 150}} placeholder="Skill..." />
+                                        <button onClick={() => handleAddItem('focusAreas')} style={{ background: 'var(--text-primary)', color: 'white', border: 'none', px: 12, borderRadius: 10, cursor: 'pointer' }}>Add</button>
+                                    </div>
+                                ) : <div onClick={() => setAddItemType('focusAreas')} style={{ padding: '8px 20px', borderRadius: '14px', border: '1px dashed var(--accent-color)', color: 'var(--accent-color)', fontSize: '0.95rem', fontWeight: 700, cursor: 'pointer' }}>+ Add Skill</div>
+                            )}
                         </div>
                     </section>
                 </div>
