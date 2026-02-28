@@ -495,7 +495,6 @@ export const roadmapResources = {
              { title: "Google Play Console", description: "Publishing on Android.", type: "Documentation", difficulty: "Intermediate", link: "https://play.google.com/console/about/", duration: "Guide", source: "Google", relevance: 94, aiCurated: true }
          ],
          "Storage & Offline Sync": [
-             { title: "Firebase Realtime DB", description: "NoSQL cloud database.", type: "Documentation", difficulty: "Intermediate", link: "https://firebase.google.com/docs/database", duration: "Ref", source: "Firebase", relevance: 96, aiCurated: true },
              { title: "SQLite on Android", description: "Local storage.", type: "Documentation", difficulty: "Intermediate", link: "https://developer.android.com/training/data-storage/sqlite", duration: "Ref", source: "Android", relevance: 92, aiCurated: false }
          ]
     },

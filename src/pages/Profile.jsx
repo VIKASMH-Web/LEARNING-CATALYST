@@ -8,7 +8,6 @@ import {
     Activity, Sparkles
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
-import { useAuth } from '../context/AuthContext';
 import { useGame } from '../context/GameContext';
 import { ResponsiveContainer, AreaChart, Area, XAxis, Tooltip, YAxis } from 'recharts';
 
@@ -22,7 +21,6 @@ const BADGE_DEFINITIONS = [
 const Profile = () => {
     const ctx = useProgress();
     const { activeDays = [], focusMinutes = 0, codeRuns = 0, badges = {}, dailyFocus = {}, interviewHistory = [] } = ctx || {};
-    const authCtx = useAuth() || {};
     const { xp, streak } = useGame() || { xp: 0, streak: 0 };
 
     const [isEditing, setIsEditing] = useState(false);
@@ -31,10 +29,10 @@ const Profile = () => {
     const avatarInputRef = useRef(null);
 
     const defaultProfile = {
-        name: authCtx.user?.name || 'Guest User',
+        name: 'Guest User',
         title: 'Professional Learner',
         location: 'Bengaluru, India',
-        email: authCtx.user?.email || 'user@learningcatalyst.ai',
+        email: 'user@learningcatalyst.ai',
         avatarUrl: null,
         bannerUrl: null,
         focusAreas: ['React', 'System Design', 'Algorithms'],
@@ -42,7 +40,7 @@ const Profile = () => {
         certifications: []
     };
 
-    const storageKey = authCtx.user?.id ? `lc_profile_${authCtx.user.id}` : 'lc_profile_guest';
+    const storageKey = 'lc_profile_guest';
     const [profile, setProfile] = useState(defaultProfile);
     const [addItemType, setAddItemType] = useState(null);
     const [itemInput, setItemInput] = useState('');
@@ -196,12 +194,6 @@ const Profile = () => {
                                 }}
                             >
                                 {isEditing ? <><Save size={18} /> Save Profile</> : <><Edit2 size={18} /> Edit Settings</>}
-                            </button>
-                            <button 
-                                onClick={() => setShowSignOutWarning(true)}
-                                style={{ padding: '14px 20px', borderRadius: '16px', background: '#FEE2E2', color: '#EF4444', border: '1px solid #FECACA', cursor: 'pointer' }}
-                            >
-                                <LogOut size={20} />
                             </button>
                         </div>
                     </div>
@@ -365,22 +357,7 @@ const Profile = () => {
 
             </div>
 
-            {/* Sign Out Modal */}
-            <AnimatePresence>
-                {showSignOutWarning && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowSignOutWarning(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} onClick={e => e.stopPropagation()} style={{ background: '#FFFFFF', padding: '3.5rem', borderRadius: '40px', width: '90%', maxWidth: '440px', textAlign: 'center', boxShadow: '0 30px 60px rgba(0,0,0,0.1)' }}>
-                            <LogOut size={56} color="#ef4444" style={{ marginBottom: '1.5rem' }} />
-                            <h3 style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '1rem' }}>Security Protocol</h3>
-                            <p style={{ color: '#64748B', lineHeight: 1.6, marginBottom: '2.5rem', fontSize: '1.1rem' }}>Are you sure you want to terminate your session? Your progress is synchronized.</p>
-                            <div style={{ display: 'flex', gap: '1.25rem' }}>
-                                <button onClick={() => setShowSignOutWarning(false)} style={{ flex: 1, padding: '16px', borderRadius: '18px', border: '1px solid #E2E8F0', background: '#FFFFFF', fontWeight: 800, cursor: 'pointer' }}>Cancel</button>
-                                <button onClick={() => authCtx.logout()} style={{ flex: 1, padding: '16px', borderRadius: '18px', background: '#ef4444', color: 'white', border: 'none', fontWeight: 800, cursor: 'pointer' }}>Sign Out</button>
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+
         </div>
     );
 };

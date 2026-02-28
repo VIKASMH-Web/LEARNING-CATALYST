@@ -7,7 +7,6 @@ import {
   Brain, Rocket, Briefcase, GraduationCap, ArrowUpRight, Cpu
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
-import { useAuth } from '../context/AuthContext';
 import { useGame } from '../context/GameContext';
 import { Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
@@ -17,9 +16,8 @@ import LearningVelocityGraph from '../components/Cards/LearningVelocityGraph';
 const Overview = () => {
     const { t } = useTranslation();
     const { focusMinutes, roadmapProgress, activeDays, getSkillLevel, interviewHistory, dailyFocus } = useProgress();
-    const { user } = useAuth();
     const { xp, streak } = useGame();
-    const displayName = user?.name || user?.email?.split('@')[0] || 'Learner';
+    const displayName = 'Learner';
     
     const userLevel = useMemo(() => {
         if (xp > 10000) return { name: 'Expert', salary: '$150k+', color: '#10B981', badge: '💎' };
@@ -40,12 +38,6 @@ const Overview = () => {
         }
         return data;
     }, [dailyFocus]);
-
-    const processedSkills = [
-        { name: 'Frontend', score: getSkillLevel('Full Stack Developer').percentage || 0, icon: <Layout size={16} /> },
-        { name: 'Architecture', score: getSkillLevel('System Design').percentage || 0, icon: <Brain size={16} /> },
-        { name: 'Algorithms', score: getSkillLevel('DSA').percentage || 0, icon: <Zap size={16} /> },
-    ];
 
     const masteryConcepts = [
         { name: 'React Hooks', status: 'Mastered', type: 'success' },
